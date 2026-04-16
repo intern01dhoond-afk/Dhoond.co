@@ -16,13 +16,18 @@ const corsOptions = {
     // Allow requests with no origin (mobile apps, Postman, server-to-server)
     if (!origin) return callback(null, true);
 
+    // Always allow any Vercel deployment (covers preview + production URLs)
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+
+    // Allow explicit origins from ALLOWED_ORIGINS env var
+    if (allowedList.length > 0 && allowedList.includes(origin)) return callback(null, true);
+
     // In development (no ALLOWED_ORIGINS set) allow localhost variants
     if (allowedList.length === 0) {
       const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
       return callback(null, isLocal);
     }
 
-    if (allowedList.includes(origin)) return callback(null, true);
     callback(new Error(`CORS: origin '${origin}' is not allowed`));
   },
   credentials: true,
