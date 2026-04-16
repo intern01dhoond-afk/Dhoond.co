@@ -1,0 +1,75 @@
+# =========================
+# Node Modules
+# =========================
+node_modules/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Build / Output
+# =========================
+dist/
+build/
+
+# =========================
+# Coverage (Testing)
+# =========================
+coverage/
+
+# =========================
+# Temporary Files
+# =========================
+tmp/
+temp/
+
+# =========================
+# IDE / Editor Files
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# Database / Local Files
+# =========================
+*.sqlite
+*.db
+
+# =========================
+# Firebase Credentials (IMPORTANT 🔐)
+# =========================
+firebase-adminsdk.json
+serviceAccountKey.json
+
+# =========================
+# Logs / Logger Output
+# =========================
+src/utils/logs/
+*.log
+
+# =========================
+# Misc
+# =========================
+*.tgz
+*.zip

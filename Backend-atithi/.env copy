@@ -1,0 +1,18 @@
+PORT=5000
+DATABASE_URL=postgresql://postgres:Intern@01@localhost:5432/dhoond
+DB_USER=postgres
+DB_PASSWORD=Intern@01
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=dhoond
+
+# Razorpay Credentials (Test Mode)
+# Get your keys from https://dashboard.razorpay.com/app/keys
+RAZORPAY_KEY_ID=rzp_test_Sdh2WaT4aYxo9E
+RAZORPAY_KEY_SECRET=JivdfmLjDcOMmJTt4p39f62Q
+
+# BulkSMS OTP (yourbulksms.com)
+BULKSMS_AUTH_KEY=3438414d454335373509
+BULKSMS_SENDER=DHOOND
+BULKSMS_ROUTE=2
+BULKSMS_DLT_TE_ID=1707173692732838515
