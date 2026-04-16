@@ -1,0 +1,7 @@
+[build]
+builder = "NIXPACKS"
+watch = ["Backend-atithi/**"]
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/api/V1/services"
