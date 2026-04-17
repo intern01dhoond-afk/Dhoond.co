@@ -129,9 +129,9 @@ const Home = () => {
            .video-container { border-radius: 0 !important; box-shadow: none !important; margin-bottom: 2rem; }
            .floating-rating { bottom: -10px !important; left: 50% !important; transform: translateX(-50%) !important; width: 85% !important; padding: 0.75rem 1rem !important; border-radius: 16px !important; box-shadow: 0 12px 36px rgba(0,0,0,0.15) !important; border: 1px solid rgba(255,255,255,0.2); }
            
-           .service-grid-mobile { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 0.4rem !important; padding: 0 !important; }
-           .service-grid-mobile > div { width: 100% !important; min-height: 105px !important; padding: 0.8rem 0.2rem !important; border-radius: 18px !important; border: 1.5px solid #f1f5f9 !important; }
-           .service-grid-mobile img { width: 40px !important; height: 40px !important; margin-bottom: 4px !important; }
+           .service-grid-mobile { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 0.6rem !important; padding: 0 !important; }
+           .service-grid-mobile > div { width: 100% !important; min-height: 120px !important; padding: 1.2rem 0.3rem !important; border-radius: 18px !important; border: 1.5px solid #f1f5f9 !important; }
+           .service-grid-mobile img { width: 48px !important; height: 48px !important; margin-bottom: 6px !important; }
            .service-grid-mobile span { font-size: 0.65rem !important; line-height: 1.1 !important; }
            
            .availability-tag { font-size: 6.5px !important; padding: 2px 4px !important; border-radius: 3px !important; margin-top: 3px !important; }
@@ -227,7 +227,6 @@ const Home = () => {
                   { label: 'Painting', img: '/icons/painter.png', cat: 'painter' },
                   { label: 'AC Tech', img: '/icons/ac_technician.png', cat: 'technician' },
                   { label: 'RO Tech', img: '/icons/ro_technician.png', cat: 'technician' },
-                  { label: 'Plumber', img: '/icons/plumber.png', cat: 'plumber' },
                   { label: 'Electrician', img: '/icons/electrician.png', cat: 'electrician' },
                   { label: 'Washing Mach.', img: '/icons/washing_machine.png', cat: 'technician' },
                   { label: 'Refrigerator', img: '/icons/refrigerator.png', cat: 'technician' }
