@@ -1,4 +1,5 @@
 const authModel = require("../models/auth.model");
+const { generateCustomToken } = require("../utils/firebaseAdmin");
 
 const sendOtpController = async (req, res) => {
   const digits = String(req.body.phone || '').replace(/\D/g, '').slice(-10);
@@ -49,7 +50,23 @@ const verifyOtpController = async (req, res) => {
   
   try {
     const user = await authModel.upsertUser(digits, name);
-    res.json({ success: true, user: { id: user.id, name: user.name, mobile: user.phone, role: user.role } });
+    
+    // Generate Firebase Custom Token using the user's phone/id as UID
+    let firebaseToken = null;
+    try {
+      firebaseToken = await generateCustomToken(`user_${user.id}`, { 
+        mobile: user.phone,
+        role: user.role 
+      });
+    } catch (e) {
+      console.warn('[Auth] Firebase token generation skipped (likely missing config).');
+    }
+
+    res.json({ 
+      success: true, 
+      user: { id: user.id, name: user.name, mobile: user.phone, role: user.role },
+      token: firebaseToken 
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

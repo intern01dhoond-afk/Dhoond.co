@@ -112,7 +112,7 @@ const Cart = () => {
         email: data.user?.email || '',
         role: data.user?.role || 'user',
         created_at: data.user?.created_at || new Date().toISOString(),
-      });
+      }, data.token);
       setShowLogin(false);
       if (pendingCategory) navigate(`/checkout?category=${encodeURIComponent(pendingCategory)}`);
     } catch (err) {

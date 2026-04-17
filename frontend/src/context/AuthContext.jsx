@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { auth } from '../utils/firebase';
+import { signInWithCustomToken, signOut } from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -15,8 +17,19 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Call after OTP verify — pass full user object from backend
-  const login = (name, mobileNumber, extras = {}) => {
+  const login = async (name, mobileNumber, extras = {}, token = null) => {
     const newUser = { name, mobile: mobileNumber, ...extras };
+    
+    // If a Firebase Custom Token is provided, sign in to Firebase
+    if (token) {
+      try {
+        await signInWithCustomToken(auth, token);
+        console.log('[Auth] Signed into Firebase with custom token');
+      } catch (err) {
+        console.error('[Auth] Firebase custom token login failed:', err.message);
+      }
+    }
+
     setUser(newUser);
     localStorage.setItem('dhoond_user', JSON.stringify(newUser));
   };
@@ -30,7 +43,8 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try { await signOut(auth); } catch {}
     setUser(null);
     localStorage.removeItem('dhoond_user');
   };

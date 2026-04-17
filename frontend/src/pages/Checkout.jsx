@@ -365,7 +365,7 @@ const Checkout = () => {
         email: data.user?.email || '',
         role: data.user?.role || 'user',
         created_at: data.user?.created_at || new Date().toISOString(),
-      });
+      }, data.token);
       setFormData(prev => ({ ...prev, phone: tempPhone }));
       setIsAuthModalOpen(false);
       setOtpError('');
