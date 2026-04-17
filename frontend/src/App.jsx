@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, ChevronDown, MapPin, Zap, LogOut, Package, LayoutDashboard } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, ChevronDown, MapPin, Zap, LogOut, Package, LayoutDashboard, ChevronLeft } from 'lucide-react';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Checkout from './pages/Checkout';
@@ -237,10 +237,16 @@ const Navbar = () => {
       }}>
         <nav style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 5%', height: '68px', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
 
-          {/* MOBILE: Hamburger */}
-          <button className="icon-btn mobile-only" onClick={() => setIsMenuOpen(true)} aria-label="Open menu">
-            <Menu size={24} />
-          </button>
+          {/* MOBILE: Hamburger / Back Button */}
+          {location.pathname !== '/' && !location.pathname.startsWith('/admin') ? (
+            <button className="icon-btn mobile-only" onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/')} aria-label="Go back">
+              <ChevronLeft size={26} color="#111" />
+            </button>
+          ) : (
+            <button className="icon-btn mobile-only" onClick={() => setIsMenuOpen(true)} aria-label="Open menu">
+              <Menu size={24} />
+            </button>
+          )}
 
           {/* LOGO */}
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
