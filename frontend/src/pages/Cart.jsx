@@ -268,9 +268,18 @@ const Cart = () => {
 
             {/* Global back link */}
             <div style={{ paddingBottom: '1rem' }}>
-              <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>
+              <button 
+                onClick={() => {
+                  if (window.history.state && window.history.state.idx > 0) {
+                    navigate(-1);
+                  } else {
+                    navigate('/painting');
+                  }
+                }} 
+                style={{ background: 'none', border: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', padding: 0 }}
+              >
                 <ChevronLeft size={16} /> Continue Shopping
-              </Link>
+              </button>
             </div>
 
           </div>

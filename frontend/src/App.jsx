@@ -239,7 +239,15 @@ const Navbar = () => {
 
           {/* MOBILE: Hamburger / Back Button */}
           {location.pathname !== '/' && !location.pathname.startsWith('/admin') ? (
-            <button className="icon-btn mobile-only" onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/')} aria-label="Go back">
+            <button className="icon-btn mobile-only" onClick={() => {
+              if (window.history.state && window.history.state.idx > 0) {
+                navigate(-1);
+              } else if (location.pathname.includes('/cart') || location.pathname.includes('/checkout')) {
+                navigate('/painting');
+              } else {
+                navigate('/');
+              }
+            }} aria-label="Go back">
               <ChevronLeft size={26} color="#111" />
             </button>
           ) : (
