@@ -23,6 +23,7 @@ const Admin = () => {
   const [error, setError] = useState(null);
 
   const [authStep, setAuthStep] = useState('none');
+  const [adminId, setAdminId] = useState('');
   const [pin, setPin] = useState('');
   const [authError, setAuthError] = useState('');
 
@@ -59,14 +60,14 @@ const Admin = () => {
     fetchStats();
   }, []);
 
-  const handleVerifyPin = () => {
-    if (pin === '1234') {
-      login('Admin', '0000000000', {
-        id: 1, role: 'admin'
+  const handleVerifyAdmin = () => {
+    if (adminId === 'AMEC01' && pin === '1369') {
+      login('AMEC Admin', '0000000000', {
+        id: 'AMEC01', role: 'admin'
       });
       window.location.reload(); 
     } else {
-      setAuthError('Incorrect PIN');
+      setAuthError('Invalid Admin ID or PIN');
     }
   };
 
@@ -81,13 +82,29 @@ const Admin = () => {
       <div style={{ background: '#fff', padding: '40px', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
         <div style={{ width: '64px', height: '64px', background: '#eff6ff', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: '#2563eb' }}><Lock size={32}/></div>
         <h2 style={{ margin: '0 0 8px', fontSize: '24px', fontWeight: 800, color: '#0f172a' }}>Admin Portal</h2>
-        <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '32px' }}>Enter the admin PIN to access</p>
+        <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '32px' }}>Enter your credentials to access</p>
         
         {authError && <div style={{ color: '#ef4444', background: '#fef2f2', padding: '12px', borderRadius: '8px', fontSize: '14px', marginBottom: '16px', fontWeight: 600 }}>{authError}</div>}
         
-        <input type="password" placeholder="Admin PIN" value={pin} onChange={e => setPin(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleVerifyPin()} autoFocus style={{ width: '100%', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '16px', boxSizing: 'border-box', marginBottom: '24px', outline: 'none', letterSpacing: '4px', textAlign: 'center' }}/>
+        <input 
+          type="text" 
+          placeholder="Admin ID" 
+          value={adminId} 
+          onChange={e => setAdminId(e.target.value)} 
+          autoFocus 
+          style={{ width: '100%', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '16px', boxSizing: 'border-box', marginBottom: '12px', outline: 'none', textAlign: 'center' }}
+        />
+
+        <input 
+          type="password" 
+          placeholder="Admin PIN" 
+          value={pin} 
+          onChange={e => setPin(e.target.value)} 
+          onKeyDown={e => e.key === 'Enter' && handleVerifyAdmin()} 
+          style={{ width: '100%', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '16px', boxSizing: 'border-box', marginBottom: '24px', outline: 'none', letterSpacing: '4px', textAlign: 'center' }}
+        />
         
-        <button onClick={handleVerifyPin} style={{ width: '100%', background: '#0f172a', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '16px', fontWeight: 700, cursor: 'pointer', transition: '0.2s' }}>
+        <button onClick={handleVerifyAdmin} style={{ width: '100%', background: '#0f172a', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontSize: '16px', fontWeight: 700, cursor: 'pointer', transition: '0.2s' }}>
           Access Admin Panel
         </button>
       </div>
@@ -98,7 +115,10 @@ const Admin = () => {
     <div style={{ padding: '4rem', textAlign: 'center' }}>
       <h2 style={{ color: '#ef4444' }}>Access Denied</h2>
       <p>{error}</p>
-      <button onClick={() => navigate('/')} style={{ marginTop: '1rem', padding: '0.5rem 2rem', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px' }}>Go Home</button>
+      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '1.5rem' }}>
+        <button onClick={() => navigate('/')} style={{ padding: '0.6rem 1.5rem', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Go Home</button>
+        <button onClick={() => { setError(null); setAuthStep('pin'); }} style={{ padding: '0.6rem 1.5rem', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Use Admin PIN</button>
+      </div>
     </div>
   );
 

