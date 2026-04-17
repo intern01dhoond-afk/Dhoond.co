@@ -15,7 +15,7 @@ const adminAuth = async (req, res, next) => {
     }
 
     // Bypass for Super Admin AMEC01
-    if (userId === 'AMEC01') {
+    if (userId && userId.toUpperCase() === 'AMEC01') {
       req.adminUser = { id: 'AMEC01', role: 'admin', name: 'Super Admin' };
       return next();
     }
