@@ -61,7 +61,7 @@ const Admin = () => {
   }, []);
 
   const handleVerifyAdmin = () => {
-    if (adminId === 'AMEC01' && pin === '1369') {
+    if (adminId.toUpperCase() === 'AMEC01' && pin === '1369') {
       login('AMEC Admin', '0000000000', {
         id: 'AMEC01', role: 'admin'
       });
