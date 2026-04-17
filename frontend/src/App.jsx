@@ -516,19 +516,21 @@ const Navbar = () => {
               </div>
             </div>
             <nav style={{ flex: 1, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', overflowY: 'auto' }}>
-              {isAuthenticated && (
                 <div style={{ padding: '0.5rem 0.5rem 1rem', borderBottom: '1px solid #f1f5f9', marginBottom: '0.75rem' }}>
-                  <Link to="/profile" onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', cursor: 'pointer' }}>
+                  <Link to={isAuthenticated ? "/profile" : "/painting"} onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', cursor: 'pointer' }}>
                     <div style={{ width: '40px', height: '40px', background: '#eff6ff', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb', flexShrink: 0 }}>
                       <User size={20} />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#111', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{userName}</div>
-                      <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>+91 {userMobile}</div>
+                      <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#111', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {isAuthenticated ? userName : 'Login / Register'}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                        {isAuthenticated ? `+91 ${userMobile}` : 'Login to view profile'}
+                      </div>
                     </div>
                   </Link>
                 </div>
-              )}
 
               <p style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', padding: '0.5rem 1rem 0.25rem' }}>Explore Dhoond</p>
 
