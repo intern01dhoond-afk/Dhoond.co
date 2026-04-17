@@ -518,7 +518,7 @@ const Navbar = () => {
             <nav style={{ flex: 1, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', overflowY: 'auto' }}>
               {isAuthenticated && (
                 <div style={{ padding: '0.5rem 0.5rem 1rem', borderBottom: '1px solid #f1f5f9', marginBottom: '0.75rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                  <Link to="/profile" onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', cursor: 'pointer' }}>
                     <div style={{ width: '40px', height: '40px', background: '#eff6ff', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb', flexShrink: 0 }}>
                       <User size={20} />
                     </div>
@@ -526,11 +526,7 @@ const Navbar = () => {
                       <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#111', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{userName}</div>
                       <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>+91 {userMobile}</div>
                     </div>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                    <Link to="/profile" onClick={() => setIsMenuOpen(false)} style={{ background: '#f8fafc', padding: '0.6rem', borderRadius: '8px', textAlign: 'center', textDecoration: 'none', color: '#2563eb', fontSize: '0.75rem', fontWeight: 700, border: '1px solid #e2e8f0' }}>Profile</Link>
-                    <button onClick={() => { logout(); setIsMenuOpen(false); navigate('/'); }} style={{ background: '#fef2f2', padding: '0.6rem', borderRadius: '8px', border: '1px solid #fee2e2', color: '#ef4444', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>Logout</button>
-                  </div>
+                  </Link>
                 </div>
               )}
 
