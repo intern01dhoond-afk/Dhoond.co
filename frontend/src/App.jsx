@@ -217,130 +217,114 @@ const Navbar = () => {
         .nav-link:hover { color: #2563eb; }
         .nav-link.highlight { color: #d97706; }
         .nav-link.highlight::after { background: #d97706; }
-        .icon-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; transition: background 0.2s; color: #374151; }
-        .icon-btn:hover { background: #f3f4f6; color: #111; }
+        .icon-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; transition: background 0.2s; color: #1e293b; }
+        .icon-btn:hover { background: #f1f5f9; color: #000; }
         .suggest-item:hover { background: #f0f9ff; }
         .loc-use-btn:hover { background: #f0f0ff; }
+        
         @media(max-width: 900px) { 
           .desktop-only { display: none !important; }
-          .dhoond-logo { height: 60px !important; margin: 5px 0; }
-          nav { height: auto !important; min-height: 80px; }
+          .dhoond-logo { height: 44px !important; }
+          .mobile-nav-container { padding: 0 1.25rem !important; height: 80px !important; }
         }
         @media(min-width: 901px) { .mobile-only { display: none !important; } }
       `}</style>
 
       <div style={{
         position: 'sticky', top: 0, zIndex: 1000, width: '100%',
-        background: '#fff', borderBottom: '1px solid #e5e7eb',
-        boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.06)' : 'none',
-        transition: 'box-shadow 0.3s ease',
+        background: '#fff', borderBottom: '1px solid #f1f5f9',
+        boxShadow: scrolled ? '0 8px 30px rgba(0,0,0,0.04)' : 'none',
+        transition: 'all 0.3s ease',
       }}>
-        <nav style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 5%', height: '68px', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+        <nav className="mobile-nav-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 5%', height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
-          {/* MOBILE: Hamburger / Back Button */}
-          {location.pathname !== '/' && !location.pathname.startsWith('/admin') ? (
-            <button className="icon-btn mobile-only" onClick={() => {
-              if ((location.pathname === '/painting' && !location.search) || location.pathname === '/shop') {
-                navigate('/');
-              } else if (window.history.state && window.history.state.idx > 0) {
-                navigate(-1);
-              } else if (location.pathname.includes('/cart') || location.pathname.includes('/checkout')) {
-                navigate('/painting');
-              } else {
-                navigate('/');
-              }
-            }} aria-label="Go back">
-              <ChevronLeft size={26} color="#111" />
-            </button>
-          ) : (
-            <button className="icon-btn mobile-only" onClick={() => setIsMenuOpen(true)} aria-label="Open menu">
-              <Menu size={24} />
-            </button>
-          )}
-
-          {/* LOGO */}
-          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-            <img src="/logo.png" alt="Dhoond" className="dhoond-logo" style={{ height: '50px', width: 'auto', objectFit: 'contain' }} />
-          </Link>
-
-          {/* DESKTOP: Nav Links */}
-          <div className="desktop-only" style={{ display: 'flex', gap: '1.75rem', alignItems: 'center' }}>
-            {NAV_LINKS.map(link => {
-              if (link.type === 'soon') {
-                return (
-                  <button key={link.label} onClick={openComingSoon} className="nav-link" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.4rem 0' }}>
-                    {link.label}
-                  </button>
-                );
-              }
-              return (
-                <Link key={link.label} to={link.to}
-                  className={`nav-link ${link.badge ? 'highlight' : ''} ${location.pathname === link.to ? 'active' : ''}`}
-                  style={link.badge ? { display: 'flex', alignItems: 'center', gap: '6px' } : {}}
-                >
-                  {link.label}
-                  {link.badge && (
-                    <span style={{ background: '#fef08a', color: '#854d0e', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '8px', textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1 }}>
-                      {link.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-
-          <div style={{ flex: 1 }} />
-
-          {/* DESKTOP: Location */}
-          <div className="desktop-only">
-            <LocationButton onClick={() => setShowLocationModal(true)} />
-          </div>
-
-          {/* DESKTOP: Search Bar */}
-          <div className="desktop-only" style={{ position: 'relative', width: '260px' }} ref={searchRef}>
-            <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '99px', padding: '0.55rem 1rem', border: showSuggestions ? '1.5px solid #2563eb' : '1.5px solid transparent', transition: 'border-color 0.2s' }}>
-              <Search size={16} color="#6b7280" style={{ flexShrink: 0 }} />
-              <input
-                type="text" placeholder="Search for services..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onFocus={() => setShowSuggestions(true)}
-                onKeyDown={e => e.key === 'Enter' && handleSearchSubmit()}
-                style={{ background: 'none', border: 'none', outline: 'none', marginLeft: '8px', fontSize: '14px', fontWeight: 500, color: '#111', width: '100%' }}
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex', padding: 0 }}>
-                  <X size={14} />
+          {/* LEFT: Menu (Mobile) / Logo + Links (Desktop) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
+            {/* Mobile Hamburger */}
+            <div className="mobile-only">
+              {location.pathname !== '/' && !location.pathname.startsWith('/admin') ? (
+                <button className="icon-btn" onClick={() => navigate(-1)} aria-label="Go back">
+                  <ChevronLeft size={28} />
+                </button>
+              ) : (
+                <button className="icon-btn" onClick={() => setIsMenuOpen(true)} aria-label="Open menu">
+                  <Menu size={28} />
                 </button>
               )}
             </div>
-            {showSuggestions && (
-              <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0, background: '#fff', border: '1px solid #e5e7eb', borderRadius: '16px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 200 }}>
-                <p style={{ fontSize: '11px', fontWeight: 700, color: '#9ca3af', padding: '0.75rem 1rem 0.25rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Suggestions</p>
-                {filteredSuggestions.map(s => (
-                  <div key={s} className="suggest-item" onClick={() => handleSearchSubmit(s)} style={{ padding: '0.65rem 1rem', cursor: 'pointer', fontSize: '14px', fontWeight: 500, color: '#374151', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <Search size={14} color="#9ca3af" /> {s}
-                  </div>
-                ))}
-              </div>
-            )}
+
+            {/* Desktop Logo */}
+            <Link to="/" className="desktop-only" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+              <img src="/logo.png" alt="Dhoond" style={{ height: '48px', width: 'auto', objectFit: 'contain' }} />
+            </Link>
+
+            {/* Desktop Nav Links */}
+            <div className="desktop-only" style={{ display: 'flex', gap: '1.75rem', alignItems: 'center', marginLeft: '1rem' }}>
+              {NAV_LINKS.map(link => (
+                <Link key={link.label} to={link.to || '#'} 
+                  onClick={link.type === 'soon' ? (e) => { e.preventDefault(); openComingSoon(); } : undefined}
+                  className={`nav-link ${link.badge ? 'highlight' : ''} ${location.pathname === link.to ? 'active' : ''}`}>
+                  {link.label}
+                  {link.badge && <span style={{ background: '#fef08a', color: '#854d0e', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '8px', marginLeft: '6px' }}>{link.badge}</span>}
+                </Link>
+              ))}
+            </div>
           </div>
 
-          {/* MOBILE: Search Icon */}
-          <button className="icon-btn mobile-only" onClick={() => setIsSearchOpen(true)} aria-label="Search">
-            <Search size={22} />
-          </button>
+          {/* CENTER: Logo (Mobile Only) */}
+          <div className="mobile-only" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center' }}>
+            <Link to="/" style={{ display: 'flex' }}>
+              <img src="/logo.png" alt="Dhoond" className="dhoond-logo" style={{ height: '44px', width: 'auto', objectFit: 'contain' }} />
+            </Link>
+          </div>
 
-          {/* Profile */}
-          <div style={{ position: 'relative' }}>
-            <button
-              className="icon-btn desktop-only"
-              onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : navigate('/painting')}
-              aria-label="Profile"
-              onMouseEnter={() => isAuthenticated && setIsProfileOpen(true)}
-            >
-              <User size={22} color={isAuthenticated ? '#2563eb' : 'currentColor'} />
+          {/* RIGHT: Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flex: 1, justifyContent: 'flex-end' }}>
+            {/* Desktop Location */}
+            <div className="desktop-only" style={{ marginRight: '1rem' }}>
+              <LocationButton onClick={() => setShowLocationModal(true)} />
+            </div>
+
+            {/* Desktop Search Bar */}
+            <div className="desktop-only" style={{ position: 'relative', width: '240px', marginRight: '1rem' }} ref={searchRef}>
+              <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '99px', padding: '0.55rem 1rem' }}>
+                <Search size={16} color="#64748b" />
+                <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onFocus={() => setShowSuggestions(true)} style={{ background: 'none', border: 'none', outline: 'none', marginLeft: '8px', fontSize: '14px', width: '100%' }} />
+              </div>
+            </div>
+
+            {/* Mobile Search Icon */}
+            <button className="icon-btn mobile-only" onClick={() => setIsSearchOpen(true)}>
+              <Search size={26} />
             </button>
+
+            {/* Profile (Desktop) */}
+            <div className="desktop-only" style={{ position: 'relative' }}>
+              <button className="icon-btn" onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : navigate('/painting')}>
+                <User size={24} color={isAuthenticated ? '#2563eb' : 'currentColor'} />
+              </button>
+              {/* Profile Dropdown ... (Existing logic below) */}
+            </div>
+
+            {/* Cart */}
+            <button className="icon-btn" onClick={() => navigate('/shop/cart')} style={{ position: 'relative' }}>
+              <ShoppingCart size={26} />
+              {totalItems > 0 && (
+                <span style={{ position: 'absolute', top: '2px', right: '2px', background: '#2563eb', color: '#fff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '10px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>
+                  {totalItems}
+                </span>
+              )}
+            </button>
+          </div>
+        </nav>
+
+        {/* MOBILE: Location Bar */}
+        <div className="mobile-only" onClick={() => setShowLocationModal(true)} style={{ padding: '0.65rem 1.25rem', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '0.65rem', background: '#fff', cursor: 'pointer' }}>
+          <MapPin size={15} color="#2563eb" />
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#334155', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{locationLabel}</span>
+          <ChevronDown size={14} color="#64748b" />
+        </div>
+      </div>
 
             {/* Profile Dropdown */}
             {isAuthenticated && isProfileOpen && (
