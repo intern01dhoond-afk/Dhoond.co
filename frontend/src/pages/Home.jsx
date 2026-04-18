@@ -263,7 +263,7 @@ const Home = () => {
                     <div 
                       key={item.label} 
                       onClick={() => {
-                        if (isAvailable) { handleGeneralBooking(); }
+                        if (isAvailable) { navigate('/painting'); }
                         else { 
                           setShakingId(item.label);
                           setTimeout(() => {
