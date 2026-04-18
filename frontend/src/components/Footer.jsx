@@ -63,20 +63,20 @@ const Footer = () => {
       </div>
 
       {/* Main links */}
-      <div className="mobile-stack mobile-text-center" style={{ maxWidth: '1280px', margin: '0 auto', padding: '5rem 5%', display: 'flex', flexWrap: 'wrap', gap: '4rem', justifyContent: 'space-between' }}>
-        <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', alignItems: 'inherit' }}>
-          <img src="/logo.png" alt="Dhoond.co" style={{ height: '80px', width: 'auto', objectFit: 'contain', marginBottom: '1.5rem' }} />
-          <p style={{ color: '#94a3b8', fontSize: '1rem', lineHeight: 1.8, maxWidth: '320px', fontWeight: 500 }}>
+      <div className="mobile-stack mobile-text-center" style={{ maxWidth: '1440px', margin: '0 auto', padding: '5rem 5%', display: 'flex', flexWrap: 'nowrap', gap: '3rem', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ flex: '0 0 300px', display: 'flex', flexDirection: 'column', alignItems: 'inherit' }}>
+          <img src="/logo.png" alt="Dhoond.co" style={{ height: '70px', width: 'auto', objectFit: 'contain', marginBottom: '1.5rem' }} />
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.7, maxWidth: '280px', fontWeight: 500 }}>
             India's fastest growing premium home services marketplace. Quality craftsmanship delivered to your doorstep.
           </p>
         </div>
         {[
           { title: 'Company', links: ['About Us', 'Careers', 'Blog', 'Press'] },
           { title: 'Services', links: ['Painting', 'AC Tech', 'Plumbing', 'Electrician', 'Deep Cleaning'] },
-          { title: 'Support', links: ['Help Center', 'Privacy Policy', 'Terms of Service', 'Refund Policy'] },
           { title: 'Partners', links: ['Join as Expert', 'Partner with Us', 'Training Center'] },
+          { title: 'Support', links: ['Help Center', 'Privacy Policy', 'Terms of Service', 'Refund Policy'] },
         ].map(col => (
-          <div key={col.title} style={{ flex: '1 1 150px' }}>
+          <div key={col.title} style={{ flex: '1 1 0px', minWidth: '130px' }}>
             <h4 style={{ fontWeight: 800, fontSize: '0.95rem', color: '#fff', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{col.title}</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {col.links.map(l => {
