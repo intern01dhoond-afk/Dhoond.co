@@ -291,7 +291,18 @@ const Home = () => {
                 return (
                   <div
                     key={s.id}
-                    onClick={() => navigate('/painting')}
+                    onClick={() => {
+                      addToCart({
+                        id: s.id,
+                        title: s.title,
+                        discountPrice: Number(discountPrice),
+                        originalPrice: Number(originalPrice),
+                        image: s.image,
+                        category: 'painter',
+                        quantity: 1
+                      });
+                      navigate('/cart');
+                    }}
                     style={{
                       flex: '0 0 auto', width: '260px',
                       background: '#fff',
