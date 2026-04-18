@@ -23,7 +23,8 @@ const getStats = async () => {
       COALESCE(p.payment_status, 'Unpaid') AS payment_status,
       COALESCE(p.payment_method, '')       AS payment_method,
       COALESCE(p.amount::numeric, 0)       AS paid_amount,
-      p.transaction_id
+      p.transaction_id,
+      o.daily_sequence
     FROM orders o
     LEFT JOIN users    u ON u.id = o.user_id
     LEFT JOIN payments p ON p.order_id = o.id
@@ -55,7 +56,8 @@ const getAllBookings = async () => {
       COALESCE(p.payment_status, 'Unpaid') AS payment_status,
       COALESCE(p.payment_method, '')       AS payment_method,
       COALESCE(p.amount::numeric, 0)       AS paid_amount,
-      p.transaction_id
+      p.transaction_id,
+      o.daily_sequence
     FROM orders o
     LEFT JOIN users    u ON u.id = o.user_id
     LEFT JOIN payments p ON p.order_id = o.id

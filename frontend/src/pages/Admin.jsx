@@ -251,7 +251,7 @@ const Admin = () => {
                      const sc = statusColors[b.status] || { bg: '#fff7ed', color: '#ea580c' };
                      return (
                        <tr key={b.id}>
-                         <td style={{ fontWeight: 800, color: '#1e40af' }}>{formatOrderId(b.id, b.created_at)}</td>
+                         <td style={{ fontWeight: 800, color: '#1e40af' }}>{formatOrderId(b.id, b.created_at, b.daily_sequence)}</td>
                          <td>
                            <div style={{ fontWeight: 600, color: '#0f172a' }}>{b.customer_name}</div>
                            <div style={{ fontSize: '12px', color: '#64748b' }}>{b.phone}</div>

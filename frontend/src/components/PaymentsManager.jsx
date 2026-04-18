@@ -160,7 +160,7 @@ const PaymentsManager = () => {
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                     <td style={{ padding: '14px 16px', fontWeight: 800, color: '#1e40af', fontSize: '14px' }}>#{p.id}</td>
                     <td style={{ padding: '14px 16px', fontWeight: 700, color: '#0f172a' }}>
-                      {p.order_id ? formatOrderId(p.order_id, p.created_at) : '—'}
+                      {p.order_id ? formatOrderId(p.order_id, p.created_at, p.daily_sequence) : '—'}
                     </td>
                     <td style={{ padding: '14px 16px', fontWeight: 800, fontSize: '15px', color: '#0f172a' }}>
                       ₹{Number(p.amount || 0).toLocaleString()}

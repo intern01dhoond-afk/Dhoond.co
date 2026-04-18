@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { MapPin, Clock, CreditCard, Tag, Percent, Phone, SquareCheck, Info, X, Calendar, Edit2, CheckCircle2, ShieldCheck, Lock, Smartphone, Building2, ChevronRight, CheckCircle, ChevronLeft } from 'lucide-react';
+import { formatOrderId } from '../utils/formatOrderId';
 
 const Checkout = () => {
   const { cartItems: allCartItems, clearCart, clearCategoryFromCart, updateQuantity } = useCart();
@@ -68,6 +69,7 @@ const Checkout = () => {
   const [avoidCalling, setAvoidCalling] = useState(true);
   const [paymentError, setPaymentError] = useState('');
   const [isInitializing, setIsInitializing] = useState(true);
+  const [confirmedOrder, setConfirmedOrder] = useState(null);
 
   useEffect(() => {
     // Small delay to allow AuthContext to potentially hydrate from localStorage
@@ -142,7 +144,9 @@ const Checkout = () => {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', maxWidth: '650px', margin: '0 auto 3rem' }}>
           <div style={{ background: '#fff', border: '1px solid #eaeaea', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
              <h3 style={{ fontSize: '0.85rem', color: '#666', margin: '0 0 0.5rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>Booking ID</h3>
-             <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#111', margin: 0, letterSpacing: '2px' }}>DHD-{Math.floor(Math.random() * 90000) + 10000}</p>
+             <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#111', margin: 0, letterSpacing: '2px' }}>
+               {formatOrderId(confirmedOrder?.id, confirmedOrder?.created_at, confirmedOrder?.daily_sequence)}
+             </p>
           </div>
           <div style={{ background: '#111', border: '1px solid #111', borderRadius: '16px', padding: '2rem', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', color: '#fff' }}>
              <h3 style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', margin: '0 0 0.5rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>Service Start OTP</h3>
@@ -290,6 +294,7 @@ const Checkout = () => {
         throw new Error(dhoondOrderData.message || 'Failed to initiate order in system');
       }
       const dhoondOrderId = dhoondOrderData.data.id;
+      setConfirmedOrder(dhoondOrderData.data);
       console.log("[Checkout] Dhoond Order Created (Pending):", dhoondOrderId);
 
       // 2. Create Razorpay Order

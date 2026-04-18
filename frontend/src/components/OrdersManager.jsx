@@ -112,7 +112,7 @@ const OrdersManager = () => {
   };
 
   const filtered = bookings.filter(b => {
-    const orderId = formatOrderId(b.id, b.created_at).toLowerCase();
+    const orderId = formatOrderId(b.id, b.created_at, b.daily_sequence).toLowerCase();
     const matchSearch = b.customer_name?.toLowerCase().includes(search.toLowerCase()) ||
       b.phone?.includes(search) ||
       String(b.id).includes(search) ||
@@ -201,7 +201,7 @@ const OrdersManager = () => {
                     onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                     <td style={{ padding: '14px 16px', fontWeight: 800, color: '#1e40af', fontSize: '14px' }}>
-                      {formatOrderId(b.id, b.created_at)}
+                      {formatOrderId(b.id, b.created_at, b.daily_sequence)}
                     </td>
                     <td style={{ padding: '14px 16px' }}>
                       <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '14px' }}>{b.customer_name || '—'}</div>
@@ -285,7 +285,7 @@ const OrdersManager = () => {
                   <UserCheck size={20} color="#2563eb" /> Assign Partner
                 </h3>
                 <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#64748b' }}>
-                  Order: <strong>{formatOrderId(assignModal.id, assignModal.created_at)}</strong> — {assignModal.customer_name}
+                  Order: <strong>{formatOrderId(assignModal.id, assignModal.created_at, assignModal.daily_sequence)}</strong> — {assignModal.customer_name}
                 </p>
               </div>
               <button onClick={() => setAssignModal(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: '4px' }}>

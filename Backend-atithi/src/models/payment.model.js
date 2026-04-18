@@ -12,9 +12,12 @@ const createPayment = async (order_id, amount, payment_method, payment_status, t
 };
 
 const getPayments = async () => {
-  const result = await pool.query(
-    "SELECT * FROM payments ORDER BY created_at DESC"
-  );
+  const result = await pool.query(`
+    SELECT p.*, o.daily_sequence 
+    FROM payments p
+    LEFT JOIN orders o ON o.id = p.order_id
+    ORDER BY p.created_at DESC
+  `);
   return result.rows;
 };
 
