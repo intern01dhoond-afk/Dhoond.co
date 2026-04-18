@@ -213,7 +213,7 @@ const Home = () => {
                 
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
                   <button 
-                    onClick={handleGeneralBooking}
+                    onClick={() => navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)}
                     style={{ background: '#facc15', color: '#111', padding: '1.1rem 2rem', borderRadius: '99px', fontWeight: 800, fontSize: '1.05rem', border: 'none', cursor: 'pointer' }} 
                     className="btn-hover cta-glow"
                   >
@@ -494,7 +494,7 @@ const Home = () => {
                 </div>
 
                 <button
-                  onClick={handleGeneralBooking}
+                  onClick={() => navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)}
                   style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#fff', border: 'none', padding: '1.1rem 2.5rem', borderRadius: '14px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 8px 32px rgba(99,102,241,0.35)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
                   className="btn-hover"
                 >
@@ -543,7 +543,7 @@ const Home = () => {
 
 
         <div className="mobile-only fade-up" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '1rem', background: '#fff', borderTop: '1px solid #e5e7eb', zIndex: 50 }}>
-          <button onClick={handleGeneralBooking} style={{ width: '100%', background: '#facc15', color: '#111', padding: '1.25rem 1.5rem', borderRadius: '16px', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="btn-hover cta-glow">
+          <button onClick={() => navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)} style={{ width: '100%', background: '#facc15', color: '#111', padding: '1.25rem 1.5rem', borderRadius: '16px', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="btn-hover cta-glow">
             <span style={{ fontWeight: 900, fontSize: '1.15rem' }}>Book a Service</span>
             <span style={{ fontSize: '1.1rem', fontWeight: 900 }}>₹99</span>
           </button>
