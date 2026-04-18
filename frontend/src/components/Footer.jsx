@@ -67,21 +67,21 @@ const Footer = () => {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem' }}>
           
           {/* Brand Column */}
-          <div style={{ flex: '1 1 400px', maxWidth: '450px' }} className="mobile-text-center">
-            <Link to="/" style={{ display: 'inline-block', marginBottom: '1.5rem' }}>
-              <img src="/logo.png" alt="Dhoond" style={{ height: '120px', width: 'auto', objectFit: 'contain' }} />
+          <div style={{ flex: '1 1 300px', maxWidth: '400px' }} className="mobile-text-center">
+            <Link to="/" style={{ display: 'inline-block', marginBottom: '1rem' }}>
+              <img src="/logo.png" alt="Dhoond" style={{ height: '70px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             </Link>
-            <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: 1.8, fontWeight: 500, marginBottom: '2rem' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.7, fontWeight: 500, marginBottom: '2rem' }}>
               India's fastest growing premium home services marketplace. Quality craftsmanship delivered to your doorstep.
             </p>
           </div>
 
           {/* Links Columns - Responsive Grid */}
           <div style={{ 
-            flex: '2 1 600px', 
+            flex: '2 1 500px', 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', 
-            gap: '3rem' 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
+            gap: '2.5rem' 
           }} className="mobile-text-center">
             {[
               { title: 'Company', links: ['About Us', 'Careers', 'Blog', 'Press'] },
@@ -90,10 +90,10 @@ const Footer = () => {
               { title: 'Support', links: ['Help Center', 'Privacy Policy', 'Terms of Service', 'Refund Policy'] },
             ].map(col => (
               <div key={col.title}>
-                <h4 style={{ fontWeight: 800, fontSize: '0.9rem', color: '#fff', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+                <h4 style={{ fontWeight: 800, fontSize: '0.85rem', color: '#fff', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                   {col.title}
                 </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
                   {col.links.map(l => {
                     const isPainting = l.toLowerCase() === 'painting' && col.title === 'Services';
                     const isOtherService = col.title === 'Services' && !isPainting;
@@ -104,14 +104,12 @@ const Footer = () => {
                         onClick={(e) => {
                           if (isOtherService) { e.preventDefault(); openComingSoon(); }
                         }}
-                        style={{ color: '#94a3b8', fontSize: '0.95rem', fontWeight: 500, transition: 'all 0.2s', textDecoration: 'none' }}
+                        style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.2s', textDecoration: 'none' }}
                         onMouseEnter={e => {
                           e.currentTarget.style.color = '#facc15';
-                          e.currentTarget.style.transform = 'translateX(4px)';
                         }}
                         onMouseLeave={e => {
                           e.currentTarget.style.color = '#94a3b8';
-                          e.currentTarget.style.transform = 'translateX(0)';
                         }}
                       >
                         {l}
