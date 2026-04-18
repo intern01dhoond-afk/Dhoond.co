@@ -65,7 +65,9 @@ const Footer = () => {
       {/* Main links */}
       <div className="mobile-stack mobile-text-center" style={{ maxWidth: '1440px', margin: '0 auto', padding: '5rem 5%', display: 'flex', flexWrap: 'nowrap', gap: '3rem', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ flex: '0 0 300px', display: 'flex', flexDirection: 'column', alignItems: 'inherit' }}>
-          <img src="/logo.png" alt="Dhoond.co" style={{ height: '70px', width: 'auto', objectFit: 'contain', marginBottom: '1.5rem' }} />
+          <Link to="/" style={{ display: 'inline-block', marginBottom: '1.5rem' }}>
+            <img src="/logo.png" alt="Dhoond" style={{ height: '45px', width: 'auto', objectFit: 'contain' }} />
+          </Link>
           <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.7, maxWidth: '280px', fontWeight: 500 }}>
             India's fastest growing premium home services marketplace. Quality craftsmanship delivered to your doorstep.
           </p>
