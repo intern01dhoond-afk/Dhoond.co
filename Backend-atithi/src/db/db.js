@@ -5,9 +5,10 @@ const pool = new Pool(
   process.env.DATABASE_URL
     ? {
         connectionString: process.env.DATABASE_URL,
-        // SSL is required for all managed cloud Postgres providers (Neon, Supabase, Railway…)
-        // rejectUnauthorized: false is safe for trusted providers; set to true if you have a CA cert
         ssl: { rejectUnauthorized: false },
+        max: 20,                          // Maximum connections in the pool
+        idleTimeoutMillis: 30000,         // Close idle clients after 30 sec
+        connectionTimeoutMillis: 2000,    // Wait 2 sec for a connection
       }
     : {
         // Local development — no SSL needed

@@ -1,7 +1,11 @@
-// Restart trigger for live payments
-const express = require("express");
-const cors    = require("cors");
-const app     = express();
+const express     = require("express");
+const cors        = require("cors");
+const helmet      = require("helmet");
+const compression = require("compression");
+const app         = express();
+
+app.use(helmet());      // Security headers
+app.use(compression()); // Gzip compression
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 // In production set ALLOWED_ORIGINS in your hosting env vars to your real domain
