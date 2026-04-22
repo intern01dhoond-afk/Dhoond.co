@@ -521,14 +521,13 @@ const Home = () => {
             <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', fontWeight: 900, textAlign: 'center', marginBottom: '2rem' }}>Loved by Thousands</h2>
             <div className="testi-scroll testi-grid fade-up" style={{ display: 'flex', gap: '2rem', overflowX: 'auto', paddingBottom: '3.5rem' }}>
                {[
-                  { name: 'Priya Sharma', role: 'Homeowner', text: 'The AC technician arrived exactly on time. Fixed the issue in 30 minutes.', img: 'https://i.pravatar.cc/150?u=a042581f4e29026704d' },
-                  { name: 'Rahul Mehta', role: 'Business Owner', text: 'I booked a full house painting. The team was clean and fast.', img: 'https://i.pravatar.cc/150?u=a04258a2462d826712d' },
-                  { name: 'Sunita Kapoor', role: 'Resident', text: 'Plumbing leak was driving me crazy. Dhoond guy came in 15 mins.', img: 'https://i.pravatar.cc/150?u=a042581f4e29026024d' },
+                  { name: 'Hemanth', role: 'Resident of Bengaluru', text: 'The AC technician arrived exactly on time. Fixed the issue in 30 minutes.' },
+                  { name: 'Rahul Mehta', role: 'Business Owner', text: 'I booked a full house painting. The team was clean and fast.' },
+                  { name: 'Sunita Kapoor', role: 'House Owner', text: 'Plumbing leak was driving me crazy. Dhoond guy came in 15 mins.' },
                ].map(r => (
                   <div key={r.name} style={{ flex: '0 0 320px', background: '#fff', padding: '2.5rem', borderRadius: '24px', border: '1px solid #f1f5f9' }} className="card-hover-lift stagger-card">
                     <p style={{ color: '#4b5563', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '2rem', fontStyle: 'italic' }}>"{r.text}"</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <img loading="lazy" src={r.img} alt={r.name} style={{ width: '56px', height: '56px', borderRadius: '50%' }} />
                       <div>
                         <h4 style={{ fontWeight: 800, color: '#111', margin: 0 }}>{r.name}</h4>
                         <p style={{ color: '#6b7280', margin: 0, fontSize: '0.9rem' }}>{r.role}</p>

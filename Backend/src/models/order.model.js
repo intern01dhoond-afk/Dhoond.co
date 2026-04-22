@@ -1,4 +1,4 @@
-const pool = require("../db/db");
+const pool = require("../db/db"); 
 
 const createOrder = async (user_id, partner_id, category_id, address, price, platform_fee, items = []) => {
   const result = await pool.query(
@@ -13,14 +13,14 @@ const createOrder = async (user_id, partner_id, category_id, address, price, pla
 
 const getOrders = async () => {
   const result = await pool.query(
-    "SELECT * FROM orders ORDER BY created_at DESC"
+    "SELECT *, ROW_NUMBER() OVER (PARTITION BY created_at::date ORDER BY created_at ASC) as daily_sequence FROM orders ORDER BY created_at DESC"
   );
   return result.rows;
 };
 
 const getOrdersByUserId = async (user_id) => {
   const result = await pool.query(
-    "SELECT * FROM orders WHERE user_id = $1::int ORDER BY created_at DESC",
+    "SELECT *, ROW_NUMBER() OVER (PARTITION BY created_at::date ORDER BY created_at ASC) as daily_sequence FROM orders WHERE user_id = $1::int ORDER BY created_at DESC",
     [user_id]
   );
   return result.rows;

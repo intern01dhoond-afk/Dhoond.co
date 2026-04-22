@@ -790,17 +790,14 @@ export default function Painting() {
           </div>
           <div className="p-tgrid">
             {[
-              { initials: 'PS', color: '#2563eb', name: 'Priya Sharma', role: 'Homeowner, Nagpur', text: 'The painting team arrived exactly on time, covered all furniture, and the finish is just flawless. Our living room looks like a magazine spread now!', featured: true },
-              { initials: 'RM', color: '#1e3a8a', name: 'Rahul Mehta', role: 'Business Owner', text: 'Booked a full house painting. The team was clean, fast, and the finish is premium quality.' },
-              { initials: 'SK', color: '#64748b', name: 'Sunita Kapoor', role: 'Resident, Bengaluru', text: 'A waterproofing issue that\'d lingered for 2 years — Dhoond fixed it instantly.' },
+              { name: 'Hemanth', role: 'Resident of Bengaluru', text: 'The painting team arrived exactly on time, covered all furniture, and the finish is just flawless. Our living room looks like a magazine spread now!', featured: true },
+              { name: 'Rahul Mehta', role: 'Business Owner', text: 'Booked a full house painting. The team was clean, fast, and the finish is premium quality.' },
+              { name: 'Sunita Kapoor', role: 'House Owner', text: 'A waterproofing issue that\'d lingered for 2 years — Dhoond fixed it instantly.' },
             ].map(t => (
               <div key={t.name} className={`p-tcard${t.featured ? ' p-tcard-featured' : ''}`}>
                 <div className="p-tstars">★★★★★</div>
                 <p className="p-ttext">"{t.text}"</p>
                 <div className="p-tauthor">
-                  <div className="p-tavatar">
-                    <div style={{ background: t.color, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '13px' }}>{t.initials}</div>
-                  </div>
                   <div>
                     <div className="p-tname">{t.name}</div>
                     <div className="p-trole">{t.role}</div>

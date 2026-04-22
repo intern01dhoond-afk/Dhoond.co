@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 // Friendly display names per category
 const CATEGORY_LABELS = {
   painting: '🎨 Painting Services',
+  painter: '🎨 Painting Services',
   ac: '❄️ AC Services',
   cleaning: '🧹 Cleaning Services',
   plumbing: '🔧 Plumbing Services',

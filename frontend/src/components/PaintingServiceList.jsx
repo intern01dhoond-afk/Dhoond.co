@@ -166,8 +166,23 @@ const PaintingServiceList = ({ service, onClose }) => {
   const handleBookConsultation = async () => {
     try {
       const res = await fetch(`${API_URL}/api/services?category=painter`);
-      const data = await res.json();
-      const consult = data.find(s => s.title.toLowerCase().includes('painting expert'));
+      if (!res.ok) throw new Error('Fetch failed');
+      const result = await res.json();
+      
+      // Handle the same response structures as fetchServices
+      const data = Array.isArray(result) ? result : (result.services || result.data || []);
+      
+      // If we are in commercial category, look for commercial consultation first
+      const isCommercial = service?.filter === 'commercial';
+      const targetTerm = isCommercial ? 'commercial painting' : 'painting expert';
+      
+      let consult = data.find(s => s.title.toLowerCase().includes(targetTerm));
+      
+      // Final fallback search
+      if (!consult) {
+        consult = data.find(s => s.title.toLowerCase().includes('consultation'));
+      }
+
       if (consult) {
         addToCart({
           id: consult.id,
@@ -180,7 +195,8 @@ const PaintingServiceList = ({ service, onClose }) => {
         });
       }
       navigate('/cart');
-    } catch {
+    } catch (err) {
+      console.error('Manual consultation add error:', err);
       navigate('/cart');
     }
   };
@@ -357,7 +373,7 @@ const PaintingServiceList = ({ service, onClose }) => {
                       key={svc.id}
                       style={{
                         background: '#fff', borderRadius: '16px',
-                        border: qty > 0 && isConsultation ? '2px solid #2563eb' : '1px solid #e2e8f0',
+                        border: qty > 0 && isConsultation && group.key === 'consultation' ? '2px solid #2563eb' : '1px solid #e2e8f0',
                         padding: '1rem 1.25rem',
                         display: 'flex', alignItems: 'center', gap: '1rem',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -392,15 +408,15 @@ const PaintingServiceList = ({ service, onClose }) => {
                               </span>
                             </>
                           )}
-                          {!isConsultation && (
-                            <span style={{ background: '#fef9c3', color: '#854d0e', fontSize: '0.7rem', fontWeight: 800, padding: '2px 7px', borderRadius: '100px' }}>
-                              Final price after consultation
-                            </span>
-                          )}
+                          {(!isConsultation || group.key !== 'consultation') && (
+    <span style={{ background: '#fef9c3', color: '#854d0e', fontSize: '0.7rem', fontWeight: 800, padding: '2px 7px', borderRadius: '100px' }}>
+      Final price after consultation
+    </span>
+  )}
                         </div>
                       </div>
 
-                      {isConsultation && (
+                      {isConsultation && group.key === 'consultation' && (
                         <div style={{ flexShrink: 0 }}>
                           {qty > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
