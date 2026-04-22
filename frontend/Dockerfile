@@ -9,6 +9,9 @@ ARG VITE_API_URL
 ARG VITE_RAZORPAY_KEY_ID
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_RAZORPAY_KEY_ID=$VITE_RAZORPAY_KEY_ID
+# Remove local .env if it exists to ensure build args take precedence
+RUN rm -f .env
+
 RUN npm run build
 
 # Step 2: Serve the static files with Nginx

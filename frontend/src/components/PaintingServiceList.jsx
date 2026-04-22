@@ -110,7 +110,7 @@ const PaintingServiceList = ({ service, onClose }) => {
     const fetchServices = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${API_URL}/api/services?category=painter`);
+        const res = await fetch(`${API_URL}/api/V1/services?category=painter`);
         if (!res.ok) throw new Error('Failed to fetch services');
         const result = await res.json();
         
@@ -165,7 +165,7 @@ const PaintingServiceList = ({ service, onClose }) => {
   // For non-consult categories: find & add the base consultation service
   const handleBookConsultation = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/services?category=painter`);
+      const res = await fetch(`${API_URL}/api/V1/services?category=painter`);
       if (!res.ok) throw new Error('Fetch failed');
       const result = await res.json();
       

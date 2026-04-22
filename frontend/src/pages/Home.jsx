@@ -28,7 +28,7 @@ const Home = () => {
   const handleGeneralBooking = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || '';
-      const res = await fetch(`${apiUrl}/api/services?category=painter`);
+      const res = await fetch(`${apiUrl}/api/V1/services?category=painter`);
       const data = await res.json();
       const services = Array.isArray(data) ? data : (data.services || data.data || []);
       const consult = services.find(s => s.title.toLowerCase().includes('painting expert'));
@@ -62,7 +62,7 @@ const Home = () => {
     }
 
     const apiUrl = import.meta.env.VITE_API_URL || '';
-    fetch(`${apiUrl}/api/services`)
+    fetch(`${apiUrl}/api/V1/services`)
       .then(res => res.json())
       .then(result => {
         // Handle wrapped vs direct response

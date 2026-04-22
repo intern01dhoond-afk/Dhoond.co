@@ -105,7 +105,7 @@ const Shop = () => {
     // Don't fetch from API when in a painting sub-view
     if (category === 'painter') return;
     const apiUrl = import.meta.env.VITE_API_URL || '';
-    fetch(`${apiUrl}/api/services?category=${category}&search=${search}`)
+    fetch(`${apiUrl}/api/V1/services?category=${category}&search=${search}`)
       .then(res => res.json())
       .then(data => {
         setAllServices(data);

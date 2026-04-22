@@ -13,7 +13,7 @@ const ServiceDetail = () => {
 
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL || '';
-    fetch(`${apiUrl}/api/services/${id}`)
+    fetch(`${apiUrl}/api/V1/services/${id}`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch');
         return res.json();
