@@ -3,6 +3,7 @@ import { ArrowUpRight, Clock, ShieldCheck, Star, ChevronRight, ChevronLeft } fro
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useUI } from '../context/UIContext';
+import { detectCurrentLocation } from '../utils/location';
 import ComingSoonModal from '../components/ComingSoonModal';
 
 const Home = () => {
@@ -50,16 +51,13 @@ const Home = () => {
   };
   useEffect(() => {
     // Detect Location for Service Availability
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (pos) => {
-        try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
-          const data = await res.json();
-          const city = data.address.city || data.address.town || data.address.village || 'your area';
-          setCurrentCity(city);
-        } catch(e) {}
+    detectCurrentLocation()
+      .then(loc => {
+        setCurrentCity(loc.city || 'your area');
+      })
+      .catch(err => {
+        console.error("Location detection error:", err);
       });
-    }
 
     const apiUrl = import.meta.env.VITE_API_URL || '';
     fetch(`${apiUrl}/api/V1/services`)

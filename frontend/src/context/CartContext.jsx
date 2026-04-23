@@ -18,13 +18,15 @@ export const CartProvider = ({ children }) => {
   }, [cartItems]);
 
   const addToCart = (service) => {
+    const isConsultation = service.title?.toLowerCase().includes('consultation');
     const qtyToAdd = service.quantity ? Number(service.quantity) : 1;
     setCartItems(prev => {
       const existing = prev.find(item => item.id === service.id);
       if (existing) {
+        if (isConsultation) return prev; // Don't add more for consultations
         return prev.map(item => item.id === service.id ? { ...item, quantity: item.quantity + qtyToAdd } : item);
       }
-      return [...prev, { ...service, quantity: qtyToAdd }];
+      return [...prev, { ...service, quantity: isConsultation ? 1 : qtyToAdd }];
     });
     setIsCartOpen(true);
   };
@@ -36,6 +38,8 @@ export const CartProvider = ({ children }) => {
   const updateQuantity = (id, delta) => {
     setCartItems(prev => prev.map(item => {
       if (item.id === id) {
+        const isConsultation = item.title?.toLowerCase().includes('consultation');
+        if (isConsultation && delta > 0) return item; // Block increment
         const newQ = item.quantity + delta;
         return newQ > 0 ? { ...item, quantity: newQ } : item;
       }

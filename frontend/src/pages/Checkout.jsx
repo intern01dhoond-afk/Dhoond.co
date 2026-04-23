@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { MapPin, Clock, CreditCard, Tag, Percent, Phone, SquareCheck, Info, X, Calendar, Edit2, CheckCircle2, ShieldCheck, Lock, Smartphone, Building2, ChevronRight, CheckCircle, ChevronLeft } from 'lucide-react';
 import { formatOrderId } from '../utils/formatOrderId';
+import { detectCurrentLocation } from '../utils/location';
 
 const Checkout = () => {
   const { cartItems: allCartItems, clearCart, clearCategoryFromCart, updateQuantity } = useCart();
@@ -70,6 +71,19 @@ const Checkout = () => {
   const [paymentError, setPaymentError] = useState('');
   const [isInitializing, setIsInitializing] = useState(true);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
+  const [locating, setLocating] = useState(false);
+
+  const handleFetchLocation = async () => {
+    setLocating(true);
+    try {
+      const loc = await detectCurrentLocation();
+      setFormData(prev => ({ ...prev, address: loc.label }));
+    } catch (err) {
+      alert("Could not fetch location: " + err.message);
+    } finally {
+      setLocating(false);
+    }
+  };
 
   useEffect(() => {
     if (authLoading) return;
@@ -538,7 +552,16 @@ const Checkout = () => {
                        <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.15rem' }}>
                           <button style={{ background: 'transparent', border: 'none', width: '24px', height: '24px', cursor: 'pointer', color: '#6e42e5', fontSize: '1rem', fontWeight: 700 }} onClick={() => updateQuantity(item.id, -1)}>-</button>
                           <span style={{ width: '20px', textAlign: 'center', fontSize: '0.9rem', fontWeight: 700, color: '#6e42e5' }}>{item.quantity}</span>
-                          <button style={{ background: 'transparent', border: 'none', width: '24px', height: '24px', cursor: 'pointer', color: '#6e42e5', fontSize: '1rem', fontWeight: 700 }} onClick={() => updateQuantity(item.id, 1)}>+</button>
+                          <button 
+                            style={{ 
+                              background: 'transparent', border: 'none', width: '24px', height: '24px', 
+                              cursor: item.title?.toLowerCase().includes('consultation') ? 'not-allowed' : 'pointer', 
+                              color: item.title?.toLowerCase().includes('consultation') ? '#cbd5e1' : '#6e42e5', 
+                              fontSize: '1rem', fontWeight: 700 
+                            }} 
+                            onClick={() => updateQuantity(item.id, 1)}
+                            disabled={item.title?.toLowerCase().includes('consultation')}
+                          >+</button>
                        </div>
                        
                        {/* Price */}
@@ -684,9 +707,16 @@ const Checkout = () => {
                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                           <MapPin size={40} color="#6e42e5" fill="#6e42e533" />
                        </div>
-                       <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', background: '#fff', padding: '0.6rem 1rem', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 800, border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
-                          📍 Current Location
-                       </div>
+                       <div 
+                          onClick={handleFetchLocation}
+                          style={{ 
+                            position: 'absolute', bottom: '1rem', left: '1rem', background: '#fff', 
+                            padding: '0.6rem 1rem', borderRadius: '10px', fontSize: '0.8rem', 
+                            fontWeight: 800, border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                            cursor: locating ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem'
+                          }}>
+                           {locating ? '📍 Locating...' : '📍 Use Current Location'}
+                        </div>
                     </div>
   
                     <textarea value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} rows={2} style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '0.95rem', marginBottom: '1.25rem', resize: 'none', outline: 'none' }} placeholder="Door No, Street name..." autoFocus />

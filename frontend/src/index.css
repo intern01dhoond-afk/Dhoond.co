@@ -358,3 +358,22 @@ input::placeholder { color: var(--text-dim); }
   .grid-2nd-mobile { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
+/* ─── Google Maps Autocomplete Fix ────────────────────────────── */
+.pac-container {
+  z-index: 3000 !important;
+  border-radius: 12px;
+  margin-top: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important;
+  font-family: inherit;
+}
+.pac-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pac-item:hover { background: #f8fafc; }
+.pac-item-query { font-size: 14px; color: #111; font-weight: 600; }
+.pac-matched { color: #2563eb; }

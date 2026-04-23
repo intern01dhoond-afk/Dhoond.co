@@ -15,6 +15,7 @@ import { CartProvider, useCart } from './context/CartContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UIProvider, useUI } from './context/UIContext';
 import ComingSoonModal from './components/ComingSoonModal';
+import { detectCurrentLocation, waitForGoogleMaps } from './utils/location';
 import './index.css';
 
 const SUGGESTIONS = ['Painting Service', 'AC Repair', 'RO Technician', 'Plumber', 'Electrician', 'Washing Machine Repair', 'Refrigerator Repair'];
@@ -52,60 +53,22 @@ const Navbar = () => {
       detectLocation();
     }
   }, []);
-
-  const waitForGoogleMaps = (cb, retries = 20) => {
-    if (window.google && window.google.maps && window.google.maps.Geocoder) {
-      cb();
-    } else if (retries > 0) {
-      setTimeout(() => waitForGoogleMaps(cb, retries - 1), 300);
-    }
-  };
-
-  const detectLocation = () => {
+  const detectLocation = async () => {
     setLocating(true);
     setLocationLabel('Detecting…');
-    if (!navigator.geolocation) {
+    try {
+      const loc = await detectCurrentLocation();
+      setLocationLabel(loc.label);
+      setLocationSubtext(loc.sub);
+      localStorage.setItem('dhoond_location', loc.label);
+      localStorage.setItem('dhoond_location_sub', loc.sub);
+    } catch (err) {
       setLocationLabel('Enable location');
+      console.error("Location detection failed:", err);
+    } finally {
       setLocating(false);
-      return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        const latLng = { lat: latitude, lng: longitude };
-
-        waitForGoogleMaps(() => {
-          const geocoder = new window.google.maps.Geocoder();
-          geocoder.geocode({ location: latLng }, (results, status) => {
-            if (status === 'OK' && results && results.length > 0) {
-              const result = results[0];
-              const comps = result.address_components || [];
-              const find = (types) => {
-                const c = comps.find(c => types.some(t => c.types.includes(t)));
-                return c ? c.long_name : null;
-              };
-              const label = result.formatted_address || 'My Location';
-              const city = find(['locality', 'administrative_area_level_2']) || '';
-              const state = find(['administrative_area_level_1']) || '';
-              const sub = [city, state].filter(Boolean).join(', ');
-              setLocationLabel(label);
-              setLocationSubtext(sub);
-              localStorage.setItem('dhoond_location', label);
-              localStorage.setItem('dhoond_location_sub', sub);
-            } else {
-              setLocationLabel('Location found');
-            }
-            setLocating(false);
-          });
-        });
-      },
-      () => {
-        setLocationLabel('Enable location');
-        setLocating(false);
-      },
-      { timeout: 10000, enableHighAccuracy: true }
-    );
-  };
+  };  };
 
   React.useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);

@@ -59,7 +59,16 @@ const CartDrawer = () => {
                         <Minus size={16} />
                       </button>
                       <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>{item.quantity}</span>
-                      <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', display: 'flex' }} onClick={() => updateQuantity(item.id, 1)}>
+                      <button 
+                        style={{ 
+                          background: 'none', border: 'none', 
+                          cursor: item.title?.toLowerCase().includes('consultation') ? 'not-allowed' : 'pointer', 
+                          color: item.title?.toLowerCase().includes('consultation') ? 'var(--text-muted)' : 'var(--text-main)', 
+                          display: 'flex', opacity: item.title?.toLowerCase().includes('consultation') ? 0.5 : 1
+                        }} 
+                        onClick={() => updateQuantity(item.id, 1)}
+                        disabled={item.title?.toLowerCase().includes('consultation')}
+                      >
                         <Plus size={16} />
                       </button>
                     </div>
