@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { X, MapPin, Bell, Globe, CheckCircle2 } from 'lucide-react';
+import { detectCurrentLocation } from '../utils/location';
 
 const ComingSoonModal = ({ onClose }) => {
   const [location, setLocation] = useState('Detecting...');
@@ -7,23 +7,9 @@ const ComingSoonModal = ({ onClose }) => {
 
   useEffect(() => {
     const defaultCity = 'your current area';
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`);
-            const data = await res.json();
-            const city = data.address.city || data.address.town || data.address.village || defaultCity;
-            setLocation(city);
-          } catch (err) {
-            setLocation(defaultCity);
-          }
-        },
-        () => setLocation(defaultCity)
-      );
-    } else {
-      setLocation(defaultCity);
-    }
+    detectCurrentLocation()
+      .then(loc => setLocation(loc.city || defaultCity))
+      .catch(() => setLocation(defaultCity));
   }, []);
 
   const handleNotifyMe = () => {
