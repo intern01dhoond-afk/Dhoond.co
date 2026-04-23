@@ -7,8 +7,10 @@ COPY . .
 # The API URL should be passed during build time or set via env
 ARG VITE_API_URL
 ARG VITE_RAZORPAY_KEY_ID
+ARG VITE_GOOGLE_MAPS_API_KEY
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_RAZORPAY_KEY_ID=$VITE_RAZORPAY_KEY_ID
+ENV VITE_GOOGLE_MAPS_API_KEY=$VITE_GOOGLE_MAPS_API_KEY
 # Remove local .env if it exists to ensure build args take precedence
 RUN rm -f .env
 
