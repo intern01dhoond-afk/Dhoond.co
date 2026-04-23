@@ -68,7 +68,7 @@ const Navbar = () => {
     } finally {
       setLocating(false);
     }
-  };  };
+  };
 
   React.useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);

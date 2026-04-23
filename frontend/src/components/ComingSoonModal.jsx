@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { X, MapPin, Bell, Globe, CheckCircle2 } from 'lucide-react';
 import { detectCurrentLocation } from '../utils/location';
 
