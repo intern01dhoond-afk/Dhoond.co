@@ -43,10 +43,16 @@ const Navbar = () => {
   const [showLocationModal, setShowLocationModal] = React.useState(false);
   const [locationSearchQuery, setLocationSearchQuery] = React.useState('');
   const [locating, setLocating] = React.useState(false);
+  const [showMap, setShowMap] = React.useState(false);
+  const [mapSelectedLabel, setMapSelectedLabel] = React.useState('');
   const { openComingSoon } = useUI();
 
   const searchRef = React.useRef(null);
   const locationInputRef = React.useRef(null);
+  const mapContainerRef = React.useRef(null);
+  const mapInstanceRef = React.useRef(null);
+  const markerRef = React.useRef(null);
+  const mapSearchRef = React.useRef(null);
 
   React.useEffect(() => {
     if (!localStorage.getItem('dhoond_location')) {
@@ -87,7 +93,7 @@ const Navbar = () => {
   }, []);
 
   React.useEffect(() => {
-    if (!showLocationModal) return;
+    if (!showLocationModal) { setShowMap(false); setMapSelectedLabel(''); return; }
     setTimeout(() => {
       locationInputRef.current?.focus();
       waitForGoogleMaps(() => {
@@ -118,6 +124,80 @@ const Navbar = () => {
     }, 150);
   }, [showLocationModal]);
 
+  // Init Google Map when showMap becomes true
+  React.useEffect(() => {
+    if (!showMap || !mapContainerRef.current) return;
+
+    const initMap = (startPos) => {
+      waitForGoogleMaps(() => {
+        const map = new window.google.maps.Map(mapContainerRef.current, {
+          center: startPos,
+          zoom: 16,
+          disableDefaultUI: true,
+          zoomControl: true,
+          gestureHandling: 'greedy',
+          styles: [{ featureType: 'poi', stylers: [{ visibility: 'off' }] }],
+        });
+        const marker = new window.google.maps.Marker({
+          position: startPos,
+          map,
+          draggable: true,
+          animation: window.google.maps.Animation.DROP,
+        });
+        mapInstanceRef.current = map;
+        markerRef.current = marker;
+
+        const geocoder = new window.google.maps.Geocoder();
+        const reverseGeocode = (latLng) => {
+          geocoder.geocode({ location: latLng }, (results, status) => {
+            if (status === 'OK' && results[0]) {
+              setMapSelectedLabel(results[0].formatted_address);
+            }
+          });
+        };
+
+        reverseGeocode(startPos);
+
+        marker.addListener('dragend', () => {
+          const pos = marker.getPosition();
+          reverseGeocode({ lat: pos.lat(), lng: pos.lng() });
+        });
+        map.addListener('click', (e) => {
+          marker.setPosition(e.latLng);
+          reverseGeocode({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+        });
+
+        // Search bar autocomplete inside map view
+        if (mapSearchRef.current) {
+          const mapAC = new window.google.maps.places.Autocomplete(mapSearchRef.current, {
+            types: ['geocode', 'establishment'],
+            componentRestrictions: { country: 'in' },
+          });
+          mapAC.addListener('place_changed', () => {
+            const place = mapAC.getPlace();
+            if (!place.geometry) return;
+            const loc = place.geometry.location;
+            map.panTo(loc);
+            map.setZoom(17);
+            marker.setPosition(loc);
+            reverseGeocode({ lat: loc.lat(), lng: loc.lng() });
+          });
+        }
+      });
+    };
+
+    // Try GPS first, fall back to Bengaluru
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => initMap({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        ()    => initMap({ lat: 12.9716, lng: 77.5946 }),
+        { timeout: 5000 }
+      );
+    } else {
+      initMap({ lat: 12.9716, lng: 77.5946 });
+    }
+  }, [showMap]);
+
   const filteredSuggestions = searchQuery.length > 0
     ? SUGGESTIONS.filter(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
     : SUGGESTIONS;
@@ -137,8 +217,9 @@ const Navbar = () => {
     { label: 'Home', to: '/' },
     { label: 'Painting', to: '/painting', badge: 'New' },
     { label: 'Other Services', type: 'soon' },
-    { label: 'Contact', to: '/painting' },
   ];
+
+  const PHONE_NUMBER = '+919102740274';
 
   const LocationButton = ({ onClick, style = {} }) => (
     <button
@@ -233,14 +314,27 @@ const Navbar = () => {
             </Link>
 
             <div className="desktop-only" style={{ display: 'flex', gap: '1.75rem', alignItems: 'center', marginLeft: '1rem' }}>
-              {NAV_LINKS.map(link => (
-                <Link key={link.label} to={link.to || '#'}
-                  onClick={link.type === 'soon' ? (e) => { e.preventDefault(); openComingSoon(); } : undefined}
-                  className={`nav-link ${link.badge ? 'highlight' : ''} ${location.pathname === link.to ? 'active' : ''}`}>
-                  {link.label}
-                  {link.badge && <span style={{ background: '#fef08a', color: '#854d0e', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '8px', marginLeft: '6px' }}>{link.badge}</span>}
-                </Link>
-              ))}
+              {NAV_LINKS.map(link => {
+                const isSoon = link.type === 'soon';
+                const isActive = link.to && location.pathname === link.to;
+                return (
+                  <Link key={link.label} to={link.to || '#'}
+                    onClick={isSoon ? (e) => { e.preventDefault(); openComingSoon(); } : undefined}
+                    className={`nav-link ${link.badge ? 'highlight' : ''} ${isActive ? 'active' : ''}`}>
+                    {link.label}
+                    {link.badge && <span style={{ background: '#fef08a', color: '#854d0e', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '8px', marginLeft: '6px' }}>{link.badge}</span>}
+                  </Link>
+                );
+              })}
+              {/* Contact — visually separated CTA */}
+              <span style={{ width: '1px', height: '18px', background: '#e2e8f0', flexShrink: 0 }} />
+              <a href={`tel:${PHONE_NUMBER}`}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#eff6ff', color: '#2563eb', padding: '0.4rem 1rem', borderRadius: '99px', fontSize: '13px', fontWeight: 700, textDecoration: 'none', border: '1px solid #bfdbfe', transition: 'all 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#2563eb'; e.currentTarget.style.color = '#fff'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#eff6ff'; e.currentTarget.style.color = '#2563eb'; }}
+              >
+                Contact
+              </a>
             </div>
           </div>
 
@@ -271,7 +365,7 @@ const Navbar = () => {
             </button>
 
             <div style={{ position: 'relative' }}>
-              <button className="icon-btn" onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : navigate('/painting')}>
+              <button className="icon-btn" onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : navigate('/profile')}>
                 <User size={isAuthenticated ? 26 : 24} color={isAuthenticated ? '#2563eb' : 'currentColor'} />
               </button>
 
@@ -314,23 +408,158 @@ const Navbar = () => {
       {/* LOCATION MODAL */}
       {showLocationModal && (
         <>
-          <div onClick={() => setShowLocationModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 2000, backdropFilter: 'blur(3px)' }} />
-          <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#fff', borderRadius: '20px', width: '92%', maxWidth: '520px', zIndex: 2100, overflow: 'hidden', boxShadow: '0 24px 80px rgba(0,0,0,0.18)' }}>
-            <button onClick={() => setShowLocationModal(false)} style={{ position: 'absolute', top: '14px', right: '14px', background: '#f3f4f6', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}><X size={18} color="#374151" /></button>
-            <div style={{ padding: '1.5rem 1.5rem 1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#fff', border: '1.5px solid #d1d5db', borderRadius: '12px', padding: '0.85rem 1.25rem' }}>
-                <button onClick={() => setShowLocationModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', color: '#6b7280', padding: 0, flexShrink: 0 }}><ChevronLeft size={20} /></button>
-                <input ref={locationInputRef} type="text" placeholder="Search for location..." value={locationSearchQuery} onChange={e => setLocationSearchQuery(e.target.value)} style={{ background: 'none', border: 'none', outline: 'none', fontSize: '15px', fontWeight: 500, color: '#111', width: '100%' }} />
-              </div>
-            </div>
-            <div style={{ padding: '0 1.5rem 1rem' }}>
-              <button className="loc-use-btn" onClick={() => { setShowLocationModal(false); detectLocation(); }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', padding: '0.75rem', borderRadius: '12px', width: '100%' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#ede9fe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><MapPin size={20} color="#6d28d9" /></div>
-                <div style={{ textAlign: 'left' }}><p style={{ fontWeight: 700, fontSize: '15px', color: '#4c1d95', margin: 0 }}>Use current location</p>{locating && <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0' }}>Detecting…</p>}</div>
-              </button>
-            </div>
-            <div style={{ height: '1px', background: '#f3f4f6', margin: '0 1.5rem' }} />
-            <div style={{ padding: '1rem 1.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px' }}><span style={{ fontSize: '13px', color: '#9ca3af', fontWeight: 500 }}>powered by</span><span style={{ fontWeight: 700, fontSize: '14px' }}><span style={{ color: '#4285F4' }}>G</span><span style={{ color: '#EA4335' }}>o</span><span style={{ color: '#FBBC05' }}>o</span><span style={{ color: '#4285F4' }}>g</span><span style={{ color: '#34A853' }}>l</span><span style={{ color: '#EA4335' }}>e</span></span></div>
+          <div onClick={() => setShowLocationModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, backdropFilter: 'blur(4px)' }} />
+          <div style={{
+            position: 'fixed', top: '50%', left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: '#fff', borderRadius: '24px',
+            width: '92%', maxWidth: '480px',
+            zIndex: 2100, overflow: 'hidden',
+            boxShadow: '0 32px 80px rgba(0,0,0,0.22)',
+            transition: 'all 0.3s ease',
+          }}>
+
+            {showMap ? (
+              /* ── MAP VIEW ── */
+              <>
+                {/* Map header */}
+                <div style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem', borderBottom: '1px solid #f1f5f9' }}>
+                  <button onClick={() => setShowMap(false)} style={{ background: '#f3f4f6', border: 'none', borderRadius: '50%', width: '34px', height: '34px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <ChevronLeft size={18} color="#374151" />
+                  </button>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>Select on map</p>
+                    <p style={{ margin: 0, fontSize: '0.72rem', color: '#94a3b8', fontWeight: 500 }}>Tap or drag the pin to your exact location</p>
+                  </div>
+                </div>
+
+                {/* Search bar on map */}
+                <div style={{ padding: '0.75rem 1rem 0' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: '#f3f4f6', borderRadius: '12px', padding: '0.65rem 1rem' }}>
+                    <Search size={15} color="#64748b" style={{ flexShrink: 0 }} />
+                    <input
+                      ref={mapSearchRef}
+                      type="text"
+                      placeholder="Search a location on map..."
+                      className="no-input-style"
+                      style={{ fontSize: '13.5px', fontWeight: 500, color: '#111', width: '100%' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Map canvas */}
+                <div ref={mapContainerRef} style={{ width: '100%', height: '260px', marginTop: '0.75rem' }} />
+
+                {/* Selected address preview + confirm */}
+                <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid #f1f5f9' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.85rem' }}>
+                    <MapPin size={16} color="#2563eb" style={{ marginTop: '2px', flexShrink: 0 }} />
+                    <p style={{ margin: 0, fontSize: '0.83rem', color: '#374151', fontWeight: 600, lineHeight: 1.4 }}>
+                      {mapSelectedLabel || 'Drag the pin to set your location…'}
+                    </p>
+                  </div>
+                  <button
+                    disabled={!mapSelectedLabel}
+                    onClick={() => {
+                      if (!mapSelectedLabel) return;
+                      setLocationLabel(mapSelectedLabel);
+                      setLocationSubtext('');
+                      localStorage.setItem('dhoond_location', mapSelectedLabel);
+                      localStorage.setItem('dhoond_location_sub', '');
+                      setShowLocationModal(false);
+                      setShowMap(false);
+                    }}
+                    style={{
+                      width: '100%', padding: '0.85rem',
+                      background: mapSelectedLabel ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : '#e2e8f0',
+                      color: mapSelectedLabel ? '#fff' : '#94a3b8',
+                      border: 'none', borderRadius: '14px',
+                      fontWeight: 800, fontSize: '0.9rem',
+                      cursor: mapSelectedLabel ? 'pointer' : 'not-allowed',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    Confirm this Location
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* ── DEFAULT VIEW ── */
+              <>
+                {/* Header */}
+                <div style={{ padding: '1.25rem 1.5rem 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <p style={{ margin: 0, fontWeight: 900, fontSize: '1.05rem', color: '#0f172a', letterSpacing: '-0.01em' }}>Set your location</p>
+                    <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#94a3b8', fontWeight: 500 }}>Find services near you</p>
+                  </div>
+                  <button onClick={() => setShowLocationModal(false)} style={{ background: '#f3f4f6', border: 'none', borderRadius: '50%', width: '34px', height: '34px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <X size={16} color="#374151" />
+                  </button>
+                </div>
+
+                {/* Search pill */}
+                <div style={{ padding: '1rem 1.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: '#f3f4f6', borderRadius: '12px', padding: '0.75rem 1rem' }}>
+                    <Search size={16} color="#64748b" style={{ flexShrink: 0 }} />
+                    <input
+                      ref={locationInputRef}
+                      type="text"
+                      placeholder="Search city, area or landmark..."
+                      value={locationSearchQuery}
+                      onChange={e => setLocationSearchQuery(e.target.value)}
+                      className="no-input-style"
+                      style={{ fontSize: '14px', fontWeight: 500, color: '#111', width: '100%' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div style={{ height: '1px', background: '#f1f5f9', margin: '0 1.5rem' }} />
+
+                {/* Use current location */}
+                <div style={{ padding: '0.5rem 1rem 0' }}>
+                  <button className="loc-use-btn" onClick={() => { setShowLocationModal(false); detectLocation(); }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'none', border: 'none', cursor: 'pointer', padding: '0.85rem 0.75rem', borderRadius: '14px', width: '100%', textAlign: 'left' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #ede9fe, #dbeafe)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <MapPin size={20} color="#6d28d9" />
+                    </div>
+                    <div>
+                      <p style={{ fontWeight: 800, fontSize: '0.9rem', color: '#1e1b4b', margin: 0 }}>Use current location</p>
+                      <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '2px 0 0', fontWeight: 500 }}>
+                        {locating ? 'Detecting your location…' : 'Automatically detect via GPS'}
+                      </p>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Select on Map */}
+                <div style={{ padding: '0 1rem 0.5rem' }}>
+                  <button onClick={() => setShowMap(true)}
+                    style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'none', border: 'none', cursor: 'pointer', padding: '0.85rem 0.75rem', borderRadius: '14px', width: '100%', textAlign: 'left' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #dcfce7, #d1fae5)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="2">
+                        <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+                        <line x1="9" y1="3" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="21" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p style={{ fontWeight: 800, fontSize: '0.9rem', color: '#14532d', margin: 0 }}>Select on map</p>
+                      <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '2px 0 0', fontWeight: 500 }}>Pin your exact location on the map</p>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Footer */}
+                <div style={{ padding: '0.6rem 1.5rem 1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '5px' }}>
+                  <span style={{ fontSize: '11px', color: '#cbd5e1', fontWeight: 500 }}>powered by</span>
+                  <span style={{ fontWeight: 800, fontSize: '12px' }}>
+                    <span style={{ color: '#4285F4' }}>G</span><span style={{ color: '#EA4335' }}>o</span>
+                    <span style={{ color: '#FBBC05' }}>o</span><span style={{ color: '#4285F4' }}>g</span>
+                    <span style={{ color: '#34A853' }}>l</span><span style={{ color: '#EA4335' }}>e</span>
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         </>
       )}

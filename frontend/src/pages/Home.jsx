@@ -59,36 +59,63 @@ const Home = () => {
         console.error("Location detection error:", err);
       });
 
+    // Map service titles to distinct local images by keyword
+    const pickImage = (title = '') => {
+      const t = title.toLowerCase();
+      if (t.includes('consultation') || t.includes('expert'))       return '/painting_banner.png';
+      if (t.includes('exterior') || t.includes('weather'))          return '/exterior.jpg';
+      if (t.includes('texture') || t.includes('stencil'))           return '/texture.png';
+      if (t.includes('commercial') || t.includes('office') || t.includes('school')) return '/paint.webp';
+      if (t.includes('kitchen') || t.includes('bathroom'))          return '/wall2.jpg';
+      if (t.includes('1bhk') || t.includes('1 bhk'))                return '/wall2.jpg';
+      if (t.includes('2bhk') || t.includes('2 bhk'))                return '/wall1.jpg';
+      if (t.includes('3bhk') || t.includes('3 bhk'))                return '/interior.jpg';
+      if (t.includes('4bhk') || t.includes('4 bhk') || t.includes('villa')) return '/wall3.jpg';
+      if (t.includes('primer') || t.includes('priming'))            return '/priming_specialist_painter.png';
+      if (t.includes('ceiling'))                                     return '/interior.jpg';
+      if (t.includes('touch') || t.includes('repair'))              return '/touch_up_painter.png';
+      if (t.includes('spray'))                                       return '/spray_painter.png';
+      if (t.includes('full') || t.includes('home'))                  return '/wall1.jpg';
+      return '/exterior.jpg'; // generic fallback — a real painting photo
+    };
+
     const apiUrl = import.meta.env.VITE_API_URL || '';
     fetch(`${apiUrl}/api/V1/services`)
       .then(res => res.json())
       .then(result => {
         // Handle wrapped vs direct response
         const data = Array.isArray(result) ? result : (result.services || result.data || []);
-        
+
         // Filter for painting services only, or use a curated list if none found
         const paintingServices = data.filter(s => s.title && s.title.toLowerCase().includes('paint'));
-        
+
         if (paintingServices.length > 0) {
-          setFeaturedServices(paintingServices.slice(0, 6));
+          // Assign distinct images based on title keywords
+          setFeaturedServices(
+            paintingServices.slice(0, 6).map(s => ({ ...s, image: pickImage(s.title) }))
+          );
         } else {
           // Fallback curated list of painting services for the launch
           setFeaturedServices([
-            { id: 'f1', title: 'Full Home Painting (1BHK)', discountPrice: 5999, originalPrice: 8999, image: '/bedroom_painting.png' },
-            { id: 'f2', title: 'Kitchen & Bathroom Painting', discountPrice: 1999, originalPrice: 2999, image: '/wall2.jpg' },
+            { id: 'f1', title: 'Full Home Painting (2BHK)', discountPrice: 5999, originalPrice: 8999,   image: '/wall1.jpg' },
+            { id: 'f2', title: 'Full Home Painting (3BHK)', discountPrice: 7999, originalPrice: 11999,  image: '/interior.jpg' },
             { id: 'f3', title: 'Exterior Weatherproof Coating', discountPrice: 12999, originalPrice: 18999, image: '/exterior.jpg' },
-            { id: 'f4', title: 'Specialty Texture Wall', discountPrice: 2499, originalPrice: 3999, image: '/interior.jpg' }
+            { id: 'f4', title: 'Specialty Texture Wall',    discountPrice: 2499, originalPrice: 3999,   image: '/texture.png' },
+            { id: 'f5', title: 'Kitchen & Bathroom Painting', discountPrice: 1999, originalPrice: 2999, image: '/wall2.jpg' },
+            { id: 'f6', title: 'Commercial Office Painting', discountPrice: 9999, originalPrice: 14999, image: '/exterior_painter.png' },
           ]);
         }
       })
       .catch(() => {
-         // Fallback on error
-         setFeaturedServices([
-            { id: 'f1', title: 'Full Home Painting (1BHK)', discountPrice: 5999, originalPrice: 8999, image: '/bedroom_painting.png' },
-            { id: 'f2', title: 'Kitchen & Bathroom Painting', discountPrice: 1999, originalPrice: 2999, image: '/wall2.jpg' },
-            { id: 'f3', title: 'Exterior Weatherproof Coating', discountPrice: 12999, originalPrice: 18999, image: '/exterior.jpg' },
-            { id: 'f4', title: 'Specialty Texture Wall', discountPrice: 2499, originalPrice: 3999, image: '/interior.jpg' }
-          ]);
+        // Fallback on error
+        setFeaturedServices([
+          { id: 'f1', title: 'Full Home Painting (2BHK)', discountPrice: 5999, originalPrice: 8999,   image: '/wall1.jpg' },
+          { id: 'f2', title: 'Full Home Painting (3BHK)', discountPrice: 7999, originalPrice: 11999,  image: '/interior.jpg' },
+          { id: 'f3', title: 'Exterior Weatherproof Coating', discountPrice: 12999, originalPrice: 18999, image: '/exterior.jpg' },
+          { id: 'f4', title: 'Specialty Texture Wall',    discountPrice: 2499, originalPrice: 3999,   image: '/texture.png' },
+          { id: 'f5', title: 'Kitchen & Bathroom Painting', discountPrice: 1999, originalPrice: 2999, image: '/wall2.jpg' },
+          { id: 'f6', title: 'Commercial Office Painting', discountPrice: 9999, originalPrice: 14999, image: '/exterior_painter.png' },
+        ]);
       });
 
     const observer = new IntersectionObserver((entries) => {
@@ -99,7 +126,7 @@ const Home = () => {
         }
       });
     }, { threshold: 0.1 });
-    
+
     setTimeout(() => {
       document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     }, 100);
@@ -109,7 +136,7 @@ const Home = () => {
 
   return (
     <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', background: '#f9fafb', fontFamily: 'Inter, sans-serif', color: '#1a1a1a' }}>
-      
+
       <style>{`
         .card-hover-lift { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, margin 0.3s ease; }
         .card-hover-lift:hover { transform: translateY(-10px); box-shadow: 0 16px 40px rgba(0,0,0,0.12) !important; }
@@ -144,11 +171,14 @@ const Home = () => {
            .desktop-flex { flex-direction: column; gap: 1rem !important; }
            .mobile-only { display: block; }
            .desktop-only { display: none !important; }
-           .hero-text { order: 2; flex: none; width: 100%; text-align: center; padding: 0 1rem; }
+           .hero-text { order: 1; flex: none; width: 100%; text-align: center; padding: 0 1.25rem; }
            .hero-text p { margin-left: auto; margin-right: auto; }
-           .hero-video { order: 1; flex: none; width: 100vw !important; margin-left: calc(-50vw + 50%) !important; position: relative; display: block; overflow: visible !important; }
-           .video-container { border-radius: 0 !important; box-shadow: none !important; margin-bottom: 2rem; }
-           .floating-rating { bottom: -10px !important; left: 50% !important; transform: translateX(-50%) !important; width: 85% !important; padding: 0.75rem 1rem !important; border-radius: 16px !important; box-shadow: 0 12px 36px rgba(0,0,0,0.15) !important; border: 1px solid rgba(255,255,255,0.2); }
+           .hero-video { order: 2; flex: none; width: 100vw !important; margin-left: calc(-50vw + 50%) !important; position: relative; display: block; overflow: visible !important; margin-top: 1.5rem !important; }
+           .video-container { border-radius: 0 !important; box-shadow: none !important; margin-bottom: 0 !important; }
+           .floating-rating { display: none !important; }
+           .hero-cta-row { flex-direction: column !important; }
+           .hero-cta-row button { width: 100% !important; justify-content: center !important; }
+           .hero-trust { justify-content: center !important; width: 100%; }
            
            .service-grid-mobile { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 0.6rem !important; padding: 0 !important; }
            .service-grid-mobile > div { width: 100% !important; min-height: 120px !important; padding: 1.2rem 0.3rem !important; border-radius: 18px !important; border: 1.5px solid #f1f5f9 !important; }
@@ -192,61 +222,64 @@ const Home = () => {
         .painting-highlight { border: 2px solid #facc15 !important; box-shadow: 0 0 20px rgba(250, 204, 21, 0.2) !important; transform: scale(1.03); z-index: 5; }
         .painting-highlight:hover { transform: scale(1.08) translateY(-5px) !important; }
       `}</style>
-      
+
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <section className="hero-section" style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)', borderBottom: '1px solid #f1f5f9', padding: '1.5rem 5% 1.5rem' }}>
+        <section className="hero-section" style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)', borderBottom: '1px solid #f1f5f9', padding: '2rem 5% 1.5rem' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
             <div className="desktop-flex">
               <div className="hero-text">
                 <span style={{ display: 'inline-block', padding: '0.4rem 1rem', background: '#fef3c7', color: '#d97706', borderRadius: '99px', fontWeight: 800, fontSize: '0.8rem', marginBottom: '1rem' }}>
                   #1 Rated Commercial & Home Services
                 </span>
-                <h1 style={{ fontSize: 'clamp(2rem, 6vw, 4.2rem)', fontWeight: 900, color: '#1a1a1a', lineHeight: 1.1, marginBottom: '1rem' }}>
-                  Commercial & Home Services<br/>
-                  <span style={{ color: '#2563eb' }}>At Your Doorstep</span>
+                <h1 style={{ fontSize: 'clamp(1.9rem, 5vw, 3.6rem)', fontWeight: 900, color: '#1a1a1a', lineHeight: 1.08, marginBottom: '1rem', letterSpacing: '-0.03em' }}>
+                  Home &amp; Commercial<br />
+                  <span style={{ color: '#2563eb' }}>Services At Your Doorstep</span>
                 </h1>
-                <p style={{ fontSize: '1rem', color: '#4b5563', marginBottom: '1.5rem', lineHeight: 1.6, maxWidth: '500px', fontWeight: 500 }}>
-                  Get trusted professionals for all your commercial & household needs — delivered instantly to your space, from routine fixes to major updates.
+                <p style={{ fontSize: '1.05rem', color: '#374151', marginBottom: '1.5rem', lineHeight: 1.65, maxWidth: '500px', fontWeight: 600 }}>
+                  Get trusted professionals for all your commercial &amp; household needs — delivered instantly to your space, from routine fixes to major updates.
                 </p>
-                
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                  <button 
+
+                <div className="hero-cta-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                  <button
                     onClick={() => navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)}
-                    style={{ background: '#facc15', color: '#111', padding: '1.1rem 2rem', borderRadius: '99px', fontWeight: 800, fontSize: '1.05rem', border: 'none', cursor: 'pointer' }} 
+                    style={{ background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', color: '#fff', padding: '1.1rem 2rem', borderRadius: '14px', fontWeight: 800, fontSize: '1.05rem', border: 'none', cursor: 'pointer', boxShadow: '0 6px 24px rgba(37,99,235,0.35)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     className="btn-hover cta-glow"
                   >
                     Book a Service <ArrowUpRight size={20} strokeWidth={3} />
                   </button>
-                  <button onClick={() => navigate('/painting')} style={{ background: '#fff', color: '#111', padding: '1.1rem 2rem', borderRadius: '99px', fontWeight: 700, fontSize: '1.05rem', border: '2px solid #e5e7eb', cursor: 'pointer' }} className="btn-hover">
+                  <button onClick={() => navigate('/painting')} style={{ background: '#fff', color: '#2563eb', padding: '1.1rem 2rem', borderRadius: '14px', fontWeight: 700, fontSize: '1.05rem', border: '2px solid #bfdbfe', cursor: 'pointer' }} className="btn-hover">
                     Explore Painting
                   </button>
                 </div>
 
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: '#f8fafc', borderRadius: '16px' }}>
+                <div className="hero-trust" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
                   <div style={{ display: 'flex', gap: '2px' }}>
-                    {[1, 2, 3, 4, 5].map(i => <div key={i} style={{ background: '#00b67a', color: '#fff', padding: '4px', borderRadius: '4px' }}><Star size={16} fill="currentColor" /></div>)}
+                    {[1, 2, 3, 4, 5].map(i => <div key={i} style={{ background: '#00b67a', color: '#fff', padding: '4px', borderRadius: '4px' }}><Star size={14} fill="currentColor" /></div>)}
                   </div>
-                  <span style={{ fontWeight: 600, fontSize: '0.9rem', color: '#4b5563' }}>100+ Verified Reviews on <strong>Trustpilot</strong></span>
+                  <span style={{ fontWeight: 600, fontSize: '0.85rem', color: '#4b5563' }}>100+ Verified Reviews on <strong>Trustpilot</strong></span>
                 </div>
               </div>
 
               <div className="hero-video fade-up" style={{ position: 'relative' }}>
-                 <div className="video-container">
-                    <video autoPlay loop muted playsInline style={{ width: '100%', display: 'block' }}>
-                      <source src="/hero_video.mp4" type="video/mp4" />
-                    </video>
-                 </div>
-                 <div className="floating-rating" style={{ position: 'absolute', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.18)', display: 'flex', flexDirection: 'column', zIndex: 10 }}>
-                    <div className="rating-row" style={{ display: 'flex', alignItems: 'center', fontWeight: 900, color: '#111' }}>
-                      <Star size={24} fill="#facc15" color="#facc15" /> 4.9 Rating
-                    </div>
-                    <span className="rating-text" style={{ color: '#4b5563', fontWeight: 600 }}>1 Lakh+ active bookings</span>
-                 </div>
+                <div className="video-container">
+                  <video autoPlay loop muted playsInline style={{ width: '100%', display: 'block' }}>
+                    <source src="/hero_video.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div className="floating-rating" style={{ position: 'absolute', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.18)', display: 'flex', flexDirection: 'column', zIndex: 10 }}>
+                  <div className="rating-row" style={{ display: 'flex', alignItems: 'center', fontWeight: 900, color: '#111' }}>
+                    <Star size={24} fill="#facc15" color="#facc15" /> 4.9 Rating
+                  </div>
+                  <span className="rating-text" style={{ color: '#4b5563', fontWeight: 600 }}>1 Lakh+ active bookings</span>
+                </div>
               </div>
             </div>
-            
+
             <div style={{ marginTop: '2rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '1rem' }}>Trusted Commercial & Home Care Services</h3>
+              <div style={{ marginBottom: '1.25rem' }}>
+                <span style={{ display: 'inline-block', background: '#eff6ff', color: '#2563eb', fontSize: '0.7rem', fontWeight: 800, padding: '3px 10px', borderRadius: '99px', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Our Services</span>
+                <h3 style={{ fontSize: 'clamp(1.15rem, 2.5vw, 1.4rem)', fontWeight: 900, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>Trusted Commercial &amp; Home Services</h3>
+              </div>
               <div className="service-scroll service-grid service-grid-mobile" style={{ display: 'flex', gap: '1.25rem', overflowX: 'auto', paddingBottom: '1rem' }}>
                 {[
                   { label: 'Painting', img: '/icons/painter_new.jpg', cat: 'painter' },
@@ -258,11 +291,11 @@ const Home = () => {
                 ].map((item) => {
                   const isAvailable = item.label === 'Painting';
                   return (
-                    <div 
-                      key={item.label} 
+                    <div
+                      key={item.label}
                       onClick={() => {
                         if (isAvailable) { navigate('/painting'); }
-                        else { 
+                        else {
                           setShakingId(item.label);
                           setTimeout(() => {
                             setShakingId(null);
@@ -270,19 +303,30 @@ const Home = () => {
                           }, 400);
                         }
                       }}
-                      style={{ 
-                        flex: '0 0 auto', width: '120px', background: '#fff', padding: '1.25rem 0.5rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', border: '1px solid #f1f5f9',
-                        position: 'relative', transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
-                      }} 
-                      className={`card-hover-lift ${!isAvailable ? 'service-card-unavailable' : 'painting-highlight'} ${shakingId === item.label ? 'shake-anim' : ''}`}
+                      style={{
+                        flex: '0 0 auto', width: '120px', background: '#fff', padding: '1.25rem 0.5rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', cursor: 'pointer',
+                        border: isAvailable ? '2px solid #facc15' : '1px solid #f1f5f9',
+                        boxShadow: isAvailable ? '0 0 20px rgba(250,204,21,0.2)' : '0 2px 8px rgba(0,0,0,0.04)',
+                        position: 'relative', transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        transform: isAvailable ? 'scale(1.03)' : 'scale(1)',
+                        zIndex: isAvailable ? 5 : 1,
+                        opacity: 1,
+                        filter: isAvailable ? 'none' : 'none',
+                      }}
+                      className={`card-hover-lift ${shakingId === item.label ? 'shake-anim' : ''}`}
                     >
-                      <img src={item.img} alt={item.label} style={{ width: '50px', height: '50px', objectFit: 'contain', filter: isAvailable ? 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))' : 'none' }} />
+                      <div style={{ position: 'relative', width: '50px', height: '50px' }}>
+                        <img src={item.img} alt={item.label} style={{ width: '50px', height: '50px', objectFit: 'contain', filter: isAvailable ? 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))' : 'grayscale(0.7) opacity(0.6)' }} />
+                        {!isAvailable && (
+                          <div style={{ position: 'absolute', bottom: -4, right: -4, width: '18px', height: '18px', background: '#f1f5f9', border: '1.5px solid #e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px' }}>🔒</div>
+                        )}
+                      </div>
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: '1px' }}>
-                        <span style={{ fontSize: '0.8rem', fontWeight: 800, color: isAvailable ? '#1a1a1a' : '#64748b', textAlign: 'center', lineHeight: 1.2 }}>{item.label}</span>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 800, color: isAvailable ? '#1a1a1a' : '#94a3b8', textAlign: 'center', lineHeight: 1.2 }}>{item.label}</span>
                         {isAvailable ? (
                           <div className="availability-tag tag-available">🔥 Available</div>
                         ) : (
-                          <div className="availability-tag tag-unavailable" style={{ fontSize: '7px' }}>Not in {currentCity}</div>
+                          <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 700, marginTop: '3px', textAlign: 'center', letterSpacing: '0.04em', textTransform: 'uppercase' }}>Coming Soon</div>
                         )}
                       </div>
                     </div>
@@ -339,13 +383,16 @@ const Home = () => {
                     className="card-hover-lift"
                   >
                     {/* Image */}
-                    <div style={{ position: 'relative', width: '100%', height: '175px', overflow: 'hidden', background: '#e2e8f0' }}>
+                    <div style={{ position: 'relative', width: '100%', height: '175px', overflow: 'hidden', background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)' }}>
                       <img
                         loading="lazy"
                         src={s.image}
                         alt={s.title}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        onError={e => { e.target.style.display = 'none'; }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', display: 'block' }}
+                        onError={e => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.style.background = 'linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%)';
+                        }}
                       />
                       {/* Star badge */}
                       <div style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(6px)', padding: '4px 10px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}>
@@ -383,7 +430,7 @@ const Home = () => {
                         ) : (
                           <>
                             <span style={{ fontWeight: 900, color: '#0f172a', fontSize: '1rem' }}>Starting {'₹'}{Number(discountPrice).toLocaleString('en-IN')}</span>
-                            <span style={{ background: '#fef9c3', color: '#854d0e', fontSize: '0.65rem', fontWeight: 800, padding: '2px 7px', borderRadius: '99px' }}>After Consultation</span>
+                            <span style={{ background: '#f1f5f9', color: '#64748b', fontSize: '0.65rem', fontWeight: 700, padding: '2px 7px', borderRadius: '6px', border: '1px solid #e2e8f0', whiteSpace: 'nowrap' }}>After Consult</span>
                           </>
                         )}
                       </div>
@@ -397,18 +444,18 @@ const Home = () => {
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
                         transition: 'opacity 0.2s',
                       }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const title = s.title?.toLowerCase() || '';
-                        if (title.includes('commercial') || title.includes('office') || title.includes('school') || title.includes('warehouse')) {
-                          navigate(`/painting?service=${encodeURIComponent('Commercial Painting')}&sub=${encodeURIComponent('Offices, Colleges/Schools & warehouses')}&filter=commercial`);
-                        } else if (title.includes('exterior') || title.includes('weather')) {
-                          navigate(`/painting?service=${encodeURIComponent('Exterior Painting')}&sub=${encodeURIComponent('Weather-resistant finishes')}&filter=exterior`);
-                        } else {
-                          navigate(`/painting?service=${encodeURIComponent('Interior Painting')}&sub=${encodeURIComponent('Walls, ceilings & trims')}&filter=interior`);
-                        }
-                      }}
-                    >
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const title = s.title?.toLowerCase() || '';
+                          if (title.includes('commercial') || title.includes('office') || title.includes('school') || title.includes('warehouse')) {
+                            navigate(`/painting?service=${encodeURIComponent('Commercial Painting')}&sub=${encodeURIComponent('Offices, Colleges/Schools & warehouses')}&filter=commercial`);
+                          } else if (title.includes('exterior') || title.includes('weather')) {
+                            navigate(`/painting?service=${encodeURIComponent('Exterior Painting')}&sub=${encodeURIComponent('Weather-resistant finishes')}&filter=exterior`);
+                          } else {
+                            navigate(`/painting?service=${encodeURIComponent('Interior Painting')}&sub=${encodeURIComponent('Walls, ceilings & trims')}&filter=interior`);
+                          }
+                        }}
+                      >
                         Book Consultation now
                         <ChevronRight size={15} />
                       </button>
@@ -450,65 +497,52 @@ const Home = () => {
             {/* Stats strip */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', borderTop: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)', marginBottom: '5rem' }}>
               {[
-                { number: '1L+',   label: 'Happy Customers', color: '#818cf8' },
-                { number: '4.9★',  label: 'Average Rating',  color: '#fbbf24' },
-                { number: '500+',  label: 'Verified Experts', color: '#34d399' },
+                { number: '1L+',  label: 'Happy Customers' },
+                { number: '4.9',  label: 'Avg. Star Rating' },
+                { number: '500+', label: 'Verified Experts' },
               ].map((stat, i) => (
                 <div key={i} style={{ padding: '2.5rem 1rem', textAlign: 'center', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
-                  <div className="stat-number" style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 900, color: stat.color, lineHeight: 1, marginBottom: '0.5rem' }}>{stat.number}</div>
-                  <div className="stat-label" style={{ fontSize: '0.82rem', fontWeight: 700, color: '#64748b', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{stat.label}</div>
+                  <div className="stat-number" style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 900, color: '#facc15', lineHeight: 1, marginBottom: '0.4rem', letterSpacing: '-0.02em' }}>{stat.number}</div>
+                  <div className="stat-label" style={{ fontSize: '0.82rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{stat.label}</div>
                 </div>
               ))}
             </div>
 
-            {/* Two-col content */}
-            <div className="desktop-flex" style={{ gap: '5rem', alignItems: 'center' }}>
-              {/* Left: features */}
-              <div style={{ flex: '1 1 440px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', marginBottom: '2.5rem' }}>
-                  {[
-                    { icon: <Clock size={22}/>, title: '15 Min Response Time', desc: 'Experts assigned instantly after booking — no waiting, no delays.', color: '#818cf8' },
-                    { icon: <ShieldCheck size={22}/>, title: 'Verified & Insured Experts', desc: 'Every pro is background-checked, trained, and insured.', color: '#38bdf8' },
-                    { icon: <Star size={22}/>, title: '4.9/5 Consistent Rating', desc: 'Quality guaranteed — or we redo the job, free of charge.', color: '#fbbf24' },
-                  ].map((item, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem' }}>
-                      <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: `rgba(${item.color === '#818cf8' ? '99,102,241' : item.color === '#38bdf8' ? '56,189,248' : '251,191,36'},0.15)`, color: item.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
-                        {item.icon}
-                      </div>
-                      <div>
-                        <div className="feature-title" style={{ fontWeight: 800, fontSize: '1.05rem', color: '#f1f5f9', marginBottom: '0.3rem' }}>{item.title}</div>
-                        <div className="feature-desc" style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.6 }}>{item.desc}</div>
-                      </div>
-                    </div>
-                  ))}
+            {/* Features */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', marginBottom: '2.5rem', maxWidth: '700px', margin: '0 auto 2.5rem' }}>
+              {[
+                { icon: <Clock size={22} />, title: '15 Min Response Time', desc: 'Experts assigned instantly after booking — no waiting, no delays.', color: '#818cf8' },
+                { icon: <ShieldCheck size={22} />, title: 'Verified & Insured Experts', desc: 'Every pro is background-checked, trained, and insured.', color: '#38bdf8' },
+                { icon: <Star size={22} />, title: '4.9/5 Consistent Rating', desc: 'Quality guaranteed — or we redo the job, free of charge.', color: '#fbbf24' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: `rgba(${item.color === '#818cf8' ? '99,102,241' : item.color === '#38bdf8' ? '56,189,248' : '251,191,36'},0.15)`, color: item.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+                    {item.icon}
+                  </div>
+                  <div>
+                    <div className="feature-title" style={{ fontWeight: 800, fontSize: '1.05rem', color: '#f1f5f9', marginBottom: '0.3rem', letterSpacing: '-0.01em' }}>{item.title}</div>
+                    <div className="feature-desc" style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.6 }}>{item.desc}</div>
+                  </div>
                 </div>
+              ))}
+            </div>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '2rem' }}>
-                  {['No Hidden Charges', 'On-Time Guarantee', 'Easy Rescheduling', 'Post-Service Support'].map(b => (
-                    <span key={b} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.25)', color: '#6ee7b7', fontSize: '0.78rem', fontWeight: 700, padding: '5px 13px', borderRadius: '99px' }}>
-                      <span style={{ fontSize: '0.7rem' }}>✓</span> {b}
-                    </span>
-                  ))}
-                </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '2.5rem', justifyContent: 'center', padding: '0 1rem' }}>
+              {['No Hidden Charges', 'On-Time Guarantee', 'Easy Rescheduling', 'Post-Service Support'].map(b => (
+                <span key={b} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)', color: '#e2e8f0', fontSize: '0.8rem', fontWeight: 700, padding: '6px 13px', borderRadius: '99px', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontSize: '0.7rem', color: '#4ade80' }}>✓</span> {b}
+                </span>
+              ))}
+            </div>
 
-                <button
-                  onClick={() => navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)}
-                  style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#fff', border: 'none', padding: '1.1rem 2.5rem', borderRadius: '14px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 8px 32px rgba(99,102,241,0.35)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
-                  className="btn-hover"
-                >
-                  Book a Service Now <ChevronRight size={18} />
-                </button>
-              </div>
-
-              {/* Right: image */}
-              <div style={{ flex: '1 1 360px', textAlign: 'center' }}>
-                <img
-                  loading="lazy"
-                  src="/website_ui.webp"
-                  alt="Dhoond App"
-                  style={{ width: '100%', maxWidth: '380px', filter: 'drop-shadow(0 32px 64px rgba(0,0,0,0.6))' }}
-                />
-              </div>
+            <div style={{ textAlign: 'center' }}>
+              <button
+                onClick={() => navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)}
+                style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#fff', border: 'none', padding: '1.1rem 2.5rem', borderRadius: '14px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 8px 32px rgba(99,102,241,0.35)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
+                className="btn-hover"
+              >
+                Book a Service Now <ChevronRight size={18} />
+              </button>
             </div>
           </div>
         </section>
@@ -516,23 +550,37 @@ const Home = () => {
 
         <section className="section-pad fade-up" style={{ background: '#f9fafb', padding: '5rem 5%' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', fontWeight: 900, textAlign: 'center', marginBottom: '2rem' }}>Loved by Thousands</h2>
-            <div className="testi-scroll testi-grid fade-up" style={{ display: 'flex', gap: '2rem', overflowX: 'auto', paddingBottom: '3.5rem' }}>
-               {[
-                  { name: 'Hemanth', role: 'Resident of Bengaluru', text: 'The AC technician arrived exactly on time. Fixed the issue in 30 minutes.' },
-                  { name: 'Rahul Mehta', role: 'Business Owner', text: 'I booked a full house painting. The team was clean and fast.' },
-                  { name: 'Sunita Kapoor', role: 'House Owner', text: 'Plumbing leak was driving me crazy. Dhoond guy came in 15 mins.' },
-               ].map(r => (
-                  <div key={r.name} style={{ flex: '0 0 320px', background: '#fff', padding: '2.5rem', borderRadius: '24px', border: '1px solid #f1f5f9' }} className="card-hover-lift stagger-card">
-                    <p style={{ color: '#4b5563', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '2rem', fontStyle: 'italic' }}>"{r.text}"</p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <div>
-                        <h4 style={{ fontWeight: 800, color: '#111', margin: 0 }}>{r.name}</h4>
-                        <p style={{ color: '#6b7280', margin: 0, fontSize: '0.9rem' }}>{r.role}</p>
-                      </div>
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <span style={{ display: 'inline-block', background: '#fef3c7', color: '#d97706', fontSize: '0.7rem', fontWeight: 800, padding: '3px 12px', borderRadius: '99px', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.6rem' }}>Reviews</span>
+              <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', fontWeight: 900, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>Loved by Thousands</h2>
+              <p style={{ color: '#64748b', fontWeight: 500, fontSize: '0.95rem', marginTop: '0.5rem', marginBottom: 0 }}>Real feedback from real customers across India</p>
+            </div>
+            <div className="testi-scroll testi-grid fade-up" style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', paddingBottom: '3.5rem', WebkitOverflowScrolling: 'touch' }}>
+              {[
+                { name: 'Hemanth',      role: 'Resident of Bengaluru', stars: 5, text: 'Absolutely brilliant service! The technician arrived on time, diagnosed the issue within minutes, and was done in under 30 mins. Will definitely book again.' },
+                { name: 'Rahul Mehta',  role: 'Business Owner',        stars: 4, text: 'Good experience overall. The painting team was professional and the work quality was solid. Took a bit longer than expected, but the result was worth it.' },
+                { name: 'Sunita Kapoor',role: 'House Owner',           stars: 3, text: 'Service was okay. The plumber did fix the leak but left without cleaning up. Could improve on punctuality and communication.' },
+              ].map(r => (
+                <div key={r.name} style={{ flex: '0 0 300px', minWidth: '260px', background: '#fff', padding: '2rem', borderRadius: '20px', border: '1px solid #f1f5f9', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }} className="card-hover-lift stagger-card">
+                  <div style={{ display: 'flex', gap: '3px', marginBottom: '0.85rem' }}>
+                    {[1,2,3,4,5].map(i => (
+                      <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill={i <= r.stars ? '#f59e0b' : 'none'} stroke={i <= r.stars ? '#f59e0b' : '#d1d5db'} strokeWidth="2">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p style={{ color: '#374151', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '1.5rem', fontStyle: 'italic', fontWeight: 500 }}>"{r.text}"</p>
+                  <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #dbeafe, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.9rem', color: '#2563eb', flexShrink: 0 }}>
+                      {r.name[0]}
+                    </div>
+                    <div>
+                      <h4 style={{ fontWeight: 800, color: '#111', margin: 0, fontSize: '0.9rem' }}>{r.name}</h4>
+                      <p style={{ color: '#9ca3af', margin: 0, fontSize: '0.78rem', fontWeight: 600 }}>{r.role}</p>
                     </div>
                   </div>
-               ))}
+                </div>
+              ))}
             </div>
           </div>
         </section>

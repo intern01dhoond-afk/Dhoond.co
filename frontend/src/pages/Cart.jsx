@@ -126,269 +126,117 @@ const Cart = () => {
   };
 
   return (
-    <div style={{ background: '#f8fafc', minHeight: 'calc(100vh - 72px)', paddingBottom: '5rem' }}>
-
-      {/* Header Banner */}
-      <div style={{ background: 'linear-gradient(to right, #1c6bbb, #2a85db)', padding: '2.5rem 5%', color: '#fff' }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto', width: '100%' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', opacity: 0.8, marginBottom: '0.5rem' }}>
-            <Link to="/" style={{ color: '#fff', textDecoration: 'none' }}>Home</Link>
-            {' / '}
-            <span style={{ fontWeight: 600 }}>Cart</span>
+    <div style={{ background: 'linear-gradient(160deg,#f0f4ff 0%,#f8fafc 60%)', minHeight: '100vh', paddingBottom: '5rem', fontFamily: "'Inter',sans-serif" }}>
+      {/* Header */}
+      <div style={{ background: 'linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#2563eb 100%)', padding: '2.5rem 5% 4rem', color: '#fff', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '260px', height: '260px', borderRadius: '50%', background: 'rgba(96,165,250,0.10)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: '860px', margin: '0 auto', position: 'relative' }}>
+          <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600, marginBottom: '1rem' }}>
+            <Link to="/" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Home</Link> <span style={{ opacity: 0.4 }}>/</span> <span style={{ color: '#fff' }}>Cart</span>
           </div>
-          <h1 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.5rem)', margin: 0, fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <ShoppingBag size={32} /> My Cart
-          </h1>
-          {cartItems.length > 0 && (
-            <p style={{ margin: '0.5rem 0 0', opacity: 0.85, fontWeight: 600, fontSize: '0.95rem' }}>
-              {cartItems.length} item{cartItems.length !== 1 ? 's' : ''} · {categoryKeys.length} service categor{categoryKeys.length !== 1 ? 'ies' : 'y'}
-            </p>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+            <div style={{ width: '52px', height: '52px', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(12px)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <ShoppingBag size={26} color="#fff" />
+            </div>
+            <h1 style={{ fontSize: 'clamp(1.8rem,5vw,2.6rem)', margin: 0, fontWeight: 900, letterSpacing: '-0.03em' }}>My Cart</h1>
+          </div>
+          {cartItems.length > 0 && <p style={{ margin: 0, color: 'rgba(255,255,255,0.6)', fontWeight: 600, fontSize: '0.9rem' }}>{cartItems.length} item{cartItems.length !== 1 ? 's' : ''} · {categoryKeys.length} service categor{categoryKeys.length !== 1 ? 'ies' : 'y'}</p>}
         </div>
       </div>
 
-      <div style={{ maxWidth: '900px', margin: '-1.5rem auto 0', padding: '0 5%', position: 'relative', zIndex: 10 }}>
-
-        {/* Empty State */}
+      <div style={{ maxWidth: '860px', margin: '-2rem auto 0', padding: '0 5%', position: 'relative', zIndex: 10 }}>
         {cartItems.length === 0 ? (
-          <div style={{ background: '#fff', borderRadius: '24px', padding: '5rem 2rem', textAlign: 'center', boxShadow: '0 10px 40px rgba(0,0,0,0.04)', marginTop: '2rem' }}>
-            <div style={{ width: '80px', height: '80px', background: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-              <ShoppingBag size={40} color="#94a3b8" />
+          <div style={{ textAlign: 'center', padding: '4rem 1rem', background: '#fff', borderRadius: '24px', border: '1px solid #e2e8f0' }}>
+            <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
+              <ShoppingBag size={32} color="#94a3b8" />
             </div>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem' }}>Your cart is empty</h3>
-            <p style={{ color: '#64748b', marginBottom: '2rem' }}>Browse our services and add something to get started.</p>
-            <button onClick={() => navigate('/')} style={{ background: '#1c6bbb', color: '#fff', border: 'none', padding: '1rem 2rem', borderRadius: '99px', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 14px rgba(28,107,187,0.3)' }}>
-              Explore Services
-            </button>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a' }}>Your cart is empty</h2>
+            <p style={{ color: '#64748b', margin: '0.5rem 0 2rem' }}>Looks like you haven't added any services yet.</p>
+            <button onClick={() => navigate('/')} style={{ background: 'linear-gradient(135deg, #1e3a8a, #2563eb)', color: '#fff', padding: '0.85rem 2.25rem', borderRadius: '14px', fontWeight: 700, border: 'none', cursor: 'pointer', boxShadow: '0 6px 20px rgba(37,99,235,0.35)', fontSize: '0.95rem' }}>Browse Services</button>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingTop: '1rem' }}>
-
-            {/* Multi-category info banner */}
-            {categoryKeys.length > 1 && (
-              <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '14px', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Package size={18} color="#d97706" />
-                <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#92400e' }}>
-                  You have {categoryKeys.length} different service types. Each requires a separate checkout & booking.
-                </span>
-              </div>
-            )}
-
-            {/* One card per category */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {categoryKeys.map((cat) => {
               const items = groups[cat];
-              const catSubtotal = items.reduce((s, i) => s + (Number(i.discountPrice || 0) * (i.quantity || 1)), 0);
-              const catOriginal = items.reduce((s, i) => s + (Number(i.originalPrice || i.discountPrice || 0) * (i.quantity || 1)), 0);
-              const catSaving = catOriginal - catSubtotal;
-
+              const subtotal = items.reduce((acc, item) => acc + (item.discountPrice * item.quantity), 0);
+              
               return (
-                <div key={cat} style={{ background: '#fff', borderRadius: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.05)', overflow: 'hidden', border: '1px solid #f1f5f9' }}>
-
-                  {/* Category Header */}
-                  <div style={{ padding: '1.25rem 1.75rem', background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
-                      <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1.1rem', color: '#0f172a' }}>
-                        {getCategoryLabel(cat)}
-                      </h3>
-                      <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>
-                        {items.length} item{items.length !== 1 ? 's' : ''}
-                      </span>
-                    </div>
-                    {catSaving > 0 && (
-                      <span style={{ background: '#dcfce7', color: '#15803d', fontWeight: 800, fontSize: '0.78rem', padding: '0.3rem 0.75rem', borderRadius: '99px' }}>
-                        Save ₹{catSaving.toFixed(0)}
-                      </span>
-                    )}
+                <div key={cat} style={{ background: '#fff', borderRadius: '24px', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                  <div style={{ padding: '1.25rem 1.5rem', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>{getCategoryLabel(cat)}</h3>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#64748b' }}>{items.length} items</span>
                   </div>
-
-                  {/* Items */}
-                  <div style={{ padding: '1.25rem 1.75rem' }}>
+                  
+                  <div style={{ padding: '0 1.5rem' }}>
                     {items.map((item, idx) => (
-                      <div key={item.id} style={{
-                        display: 'flex', alignItems: 'center', gap: '1rem',
-                        paddingBottom: idx < items.length - 1 ? '1.25rem' : 0,
-                        marginBottom: idx < items.length - 1 ? '1.25rem' : 0,
-                        borderBottom: idx < items.length - 1 ? '1px solid #f1f5f9' : 'none'
-                      }}>
-                        {/* Thumbnail */}
-                        <div style={{ width: '64px', height: '64px', borderRadius: '14px', overflow: 'hidden', flexShrink: 0, background: '#f1f5f9' }}>
-                          <img src={item.image || '/ac_tech.png'} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1.5rem 0', borderBottom: idx === items.length - 1 ? 'none' : '1px solid #f1f5f9' }}>
+                        <div style={{ width: '60px', height: '60px', borderRadius: '12px', background: '#f1f5f9', overflow: 'hidden' }}>
+                          <img src={item.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
-
-                        {/* Info */}
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0f172a', marginBottom: '0.25rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                            <span style={{ fontWeight: 900, fontSize: '1rem', color: '#111' }}>₹{Number(item.discountPrice || 0).toFixed(0)}</span>
-                            {item.originalPrice > item.discountPrice && (
-                              <span style={{ fontSize: '0.82rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>₹{Number(item.originalPrice).toFixed(0)}</span>
-                            )}
-                          </div>
+                        <div style={{ flex: 1 }}>
+                          <h4 style={{ margin: '0 0 0.25rem', fontSize: '1rem', fontWeight: 600 }}>{item.title}</h4>
+                          <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#0f172a' }}>₹{item.discountPrice}</p>
                         </div>
-
-                        {/* Qty Controls */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', border: '1.5px solid #e2e8f0', borderRadius: '99px', padding: '0.2rem' }}>
-                            <button style={{ width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer', color: '#0f172a', fontWeight: 800, fontSize: '1.2rem' }} onClick={() => updateQuantity(item.id, -1)}>−</button>
-                            <span style={{ width: '28px', textAlign: 'center', fontSize: '0.95rem', fontWeight: 800, color: '#1c6bbb' }}>{item.quantity}</span>
-                            <button style={{ width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1c6bbb', color: '#fff', border: 'none', borderRadius: '50%', cursor: 'pointer', fontWeight: 800, fontSize: '1.2rem' }} onClick={() => updateQuantity(item.id, 1)}>+</button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.25rem' }}>
+                            <button onClick={() => updateQuantity(item.id, -1)} style={{ background: 'none', border: 'none', padding: '0.5rem', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 700, lineHeight: 1 }}>−</button>
+                            <span style={{ width: '24px', textAlign: 'center', fontSize: '0.9rem', fontWeight: 700 }}>{item.quantity}</span>
+                            <button onClick={() => updateQuantity(item.id, 1)} style={{ background: '#1e3a8a', color: '#fff', border: 'none', padding: '0.35rem 0.55rem', cursor: 'pointer', fontSize: '1rem', fontWeight: 700, borderRadius: '6px', lineHeight: 1 }}>+</button>
                           </div>
-                          <button onClick={() => removeFromCart(item.id)} style={{ background: '#fef2f2', border: 'none', width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#ef4444', transition: 'all 0.2s' }}
-                            onMouseEnter={e => e.currentTarget.style.background = '#fee2e2'}
-                            onMouseLeave={e => e.currentTarget.style.background = '#fef2f2'}
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          <button onClick={() => removeFromCart(item.id)} style={{ background: '#fef2f2', border: 'none', padding: '0.6rem', borderRadius: '8px', color: '#ef4444', cursor: 'pointer' }}><Trash2 size={16} /></button>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Per-category Checkout Footer */}
-                  <div style={{ padding: '1.25rem 1.75rem', background: '#fafbfc', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                  <div style={{ padding: '1.25rem 1.75rem', background: 'linear-gradient(135deg,#f8faff,#f1f5f9)', borderTop: '1px solid #e8edf5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                     <div>
-                      <div style={{ fontSize: '0.82rem', color: '#64748b', fontWeight: 600 }}>Subtotal</div>
-                      <div style={{ fontWeight: 900, fontSize: '1.25rem', color: '#0f172a' }}>₹{catSubtotal.toFixed(0)}</div>
+                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Subtotal</div>
+                      <div style={{ fontWeight: 900, fontSize: '1.4rem', color: '#0f172a', letterSpacing: '-0.02em' }}>₹{subtotal}</div>
                     </div>
-                    <button
-                      onClick={() => handleProceed(cat)}
-                      style={{
-                        background: 'linear-gradient(135deg, #1c6bbb 0%, #2a85db 100%)',
-                        color: '#fff', border: 'none', padding: '0.85rem 1.75rem',
-                        borderRadius: '14px', fontWeight: 800, fontSize: '0.95rem',
-                        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem',
-                        boxShadow: '0 4px 16px rgba(28,107,187,0.3)', transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                      onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
-                    >
-                      Checkout this order <ArrowRight size={18} />
-                    </button>
+                    <button onClick={() => handleProceed(cat)}
+                      style={{ background: 'linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%)', color: '#fff', border: 'none', padding: '0.9rem 2rem', borderRadius: '16px', fontWeight: 800, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem', boxShadow: '0 6px 20px rgba(37,99,235,0.35)', transition: 'all 0.25s' }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(37,99,235,0.45)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(37,99,235,0.35)'; }}
+                    >Checkout this order <ArrowRight size={18} /></button>
                   </div>
                 </div>
               );
             })}
 
-            {/* Global back link */}
-            <div style={{ paddingBottom: '1rem' }}>
-              <button 
-                onClick={() => {
-                  if (window.history.state && window.history.state.idx > 0) {
-                    navigate(-1);
-                  } else {
-                    navigate('/painting');
-                  }
-                }} 
-                style={{ background: 'none', border: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', padding: 0 }}
-              >
-                <ChevronLeft size={16} /> Continue Shopping
-              </button>
+            {/* Trust badges */}
+            <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap', padding: '0.5rem 0' }}>
+              {[{ icon: <ShieldCheck size={14} />, text: 'Secure Payment' }, { icon: <Sparkles size={14} />, text: 'Quality Guaranteed' }, { icon: <Phone size={14} />, text: '24/7 Support' }].map(b => (
+                <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#64748b', fontSize: '0.78rem', fontWeight: 600 }}>
+                  <span style={{ color: '#2563eb' }}>{b.icon}</span>{b.text}
+                </div>
+              ))}
             </div>
 
+            <div style={{ textAlign: 'center', paddingBottom: '1rem' }}>
+              <button onClick={() => { if (window.history.state && window.history.state.idx > 0) navigate(-1); else navigate('/painting'); }}
+                style={{ background: 'none', border: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#94a3b8', fontWeight: 600, fontSize: '0.88rem', cursor: 'pointer' }}
+              ><ChevronLeft size={15} /> Continue Shopping</button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* LOGIN MODAL */}
       {showLogin && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(8px)' }} onClick={() => !isLoading && setShowLogin(false)} />
-          <div style={{ position: 'relative', width: '100%', maxWidth: '420px', background: '#fff', borderRadius: '28px', padding: '2.5rem', boxShadow: '0 30px 60px rgba(0,0,0,0.25)', animation: 'modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
-            <button onClick={() => setShowLogin(false)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: '#f8fafc', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <X size={18} color="#64748b" />
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', padding: '1rem' }}>
+          <div style={{ width: '100%', maxWidth: '400px', background: '#fff', padding: '2rem', borderRadius: '24px', position: 'relative' }}>
+            <button onClick={() => setShowLogin(false)} style={{ position: 'absolute', top: '1rem', right: '1rem', border: 'none', background: 'none', cursor: 'pointer' }}><X size={20} /></button>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '1.5rem' }}>{authStep === 'mobile' ? 'Verify your number' : 'Enter OTP'}</h2>
+            {authError && <div style={{ color: '#ef4444', marginBottom: '1rem', fontSize: '0.9rem' }}>{authError}</div>}
+            {authStep === 'mobile' ? (
+              <input type="tel" value={authData.mobile} onChange={e => setAuthData({...authData, mobile: e.target.value.replace(/\D/g, '')})} placeholder="Enter 10-digit number" style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '1rem', fontSize: '1rem' }} />
+            ) : (
+              <input type="text" value={authData.otp} onChange={e => setAuthData({...authData, otp: e.target.value})} placeholder="Enter 4-digit OTP" style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '1rem', fontSize: '1rem' }} />
+            )}
+            <button onClick={authStep === 'mobile' ? handleSendOtp : handleVerifyOtp} style={{ width: '100%', padding: '1rem', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+              {isLoading ? 'Processing...' : (authStep === 'mobile' ? 'Send OTP' : 'Verify')}
             </button>
-
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <div style={{ width: '64px', height: '64px', background: '#eff6ff', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', color: '#1c6bbb' }}>
-                {authStep === 'mobile' ? <Phone size={30} /> : <Lock size={30} />}
-              </div>
-              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a', marginBottom: '0.4rem' }}>
-                {authStep === 'mobile' ? 'Phone Verification' : 'Enter OTP'}
-              </h2>
-              <p style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>
-                {authStep === 'mobile' ? 'Enter your mobile number to continue' : `Enter the 4-digit code sent to +91 ${authData.mobile}`}
-              </p>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-
-              {/* Error Banner */}
-              {authError && (
-                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '10px', padding: '0.75rem 1rem', color: '#991b1b', fontSize: '0.85rem', fontWeight: 600 }}>
-                  {authError}
-                </div>
-              )}
-
-              {authStep === 'mobile' && (
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '1.1rem', top: '50%', transform: 'translateY(-50%)', fontWeight: 800, fontSize: '1rem', color: '#0f172a' }}>+91</span>
-                  <input type="tel" placeholder="Mobile Number" maxLength={10} value={authData.mobile}
-                    onChange={e => { setAuthData({ ...authData, mobile: e.target.value.replace(/\D/g, '') }); setAuthError(''); }}
-                    onKeyDown={e => e.key === 'Enter' && handleSendOtp()}
-                    style={{ width: '100%', padding: '1rem 1rem 1rem 3.75rem', borderRadius: '14px', border: '2px solid #f1f5f9', fontSize: '1.1rem', fontWeight: 800, outline: 'none', letterSpacing: '2px', boxSizing: 'border-box' }}
-                    autoFocus
-                  />
-                </div>
-              )}
-
-              {authStep === 'otp' && (
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem' }}>
-                  {[0, 1, 2, 3].map((i) => (
-                    <input key={i} id={`cart-otp-${i}`} type="text" maxLength={1}
-                      value={authData.otp[i] || ''}
-                      onChange={e => {
-                        const val = e.target.value.replace(/\D/g, '');
-                        const newOtp = authData.otp.split('');
-                        newOtp[i] = val;
-                        setAuthData({ ...authData, otp: newOtp.join('') });
-                        setAuthError('');
-                        if (val && i < 3) document.getElementById(`cart-otp-${i+1}`)?.focus();
-                      }}
-                      onKeyDown={e => {
-                        if (e.key === 'Backspace') {
-                          const newOtp = authData.otp.split('');
-                          newOtp[i] = '';
-                          setAuthData({ ...authData, otp: newOtp.join('') });
-                          if (i > 0) document.getElementById(`cart-otp-${i-1}`)?.focus();
-                        }
-                      }}
-                      style={{ width: '58px', height: '62px', textAlign: 'center', fontSize: '1.5rem', fontWeight: 900, borderRadius: '14px', border: '2px solid #1c6bbb', background: '#f8fafc', color: '#111', outline: 'none' }}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Main CTA Button */}
-              <button
-                onClick={authStep === 'mobile' ? handleSendOtp : handleVerifyOtp}
-                disabled={isLoading}
-                style={{ width: '100%', background: isLoading ? '#94a3b8' : '#0f172a', color: '#fff', border: 'none', padding: '1rem', borderRadius: '14px', fontWeight: 800, fontSize: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.6rem', transition: 'background 0.2s' }}
-              >
-                {isLoading
-                  ? (authStep === 'mobile' ? 'Sending...' : 'Verifying...')
-                  : (authStep === 'mobile' ? 'Send OTP' : 'Verify & Continue')}
-                {!isLoading && <ArrowRight size={18} />}
-              </button>
-
-              {/* Resend / Change number */}
-              {authStep === 'otp' && (
-                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  {resendTimer > 0
-                    ? <span style={{ color: '#94a3b8', fontSize: '0.85rem', fontWeight: 600 }}>Resend OTP in {resendTimer}s</span>
-                    : <button onClick={handleSendOtp} disabled={isLoading} style={{ background: 'none', border: 'none', color: '#1c6bbb', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>Resend OTP</button>
-                  }
-                  <button onClick={() => { setAuthStep('mobile'); setAuthError(''); setAuthData(prev => ({ ...prev, otp: '' })); }} style={{ background: 'none', border: 'none', color: '#94a3b8', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>Change Number</button>
-                </div>
-              )}
-            </div>
           </div>
-
-          <style>{`
-            @keyframes modalSlideUp {
-              from { opacity: 0; transform: translateY(40px) scale(0.96); }
-              to { opacity: 1; transform: translateY(0) scale(1); }
-            }
-          `}</style>
         </div>
       )}
     </div>

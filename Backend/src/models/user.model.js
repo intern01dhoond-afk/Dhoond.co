@@ -25,9 +25,23 @@ const getUserByPhone = async (phone) => {
 };
 
 const updateUserById = async (id, { name, email }) => {
+  // Build query dynamically — only update fields that are actually provided
+  const fields = [];
+  const values = [];
+  let idx = 1;
+
+  if (name !== undefined && name !== null) { fields.push(`name = $${idx++}`); values.push(name); }
+  if (email !== undefined && email !== null) { fields.push(`email = $${idx++}`); values.push(email); }
+
+  if (fields.length === 0) {
+    // Nothing to update — just return current user
+    return getUserById(id);
+  }
+
+  values.push(id);
   const result = await pool.query(
-    "UPDATE users SET name = $1, email = $2 WHERE id = $3::int RETURNING *",
-    [name, email, id]
+    `UPDATE users SET ${fields.join(', ')} WHERE id = $${idx}::int RETURNING *`,
+    values
   );
   return result.rows[0];
 };

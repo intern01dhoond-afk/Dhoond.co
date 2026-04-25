@@ -84,16 +84,21 @@ const Profile = () => {
 
   const handleEditSave = async () => {
     if (!user?.id) return;
+    if (!editForm.name?.trim()) {
+      setSaveError('Name cannot be empty.');
+      return;
+    }
     setSaving(true);
     setSaveError('');
     try {
       const res = await fetch(`${API_URL}/api/user/profile/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify({ name: editForm.name.trim(), email: editForm.email.trim() }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save');
+      if (!res.ok) throw new Error(data.error || data.message || 'Failed to save');
+      if (!data.user) throw new Error('No user data returned from server');
       setProfileData(data.user);
       updateUser({ name: data.user.name, email: data.user.email });
       setEditMode(false);

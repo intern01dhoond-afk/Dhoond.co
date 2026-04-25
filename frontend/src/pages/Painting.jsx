@@ -350,26 +350,28 @@ export default function Painting() {
         }
 
         /* ── MARQUEE ── */
-        .p-marquee-wrap { overflow: hidden; background: #1a1a1a; padding: 16px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+        .p-marquee-wrap { overflow: hidden; background: linear-gradient(to bottom, #1a1a1a 0%, #111827 100%); padding: 14px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.04); }
         .p-marquee-track { display: flex; white-space: nowrap; will-change: transform; }
         .p-marquee-item { display: inline-flex; align-items: center; gap: 12px; padding: 0 24px; font-size: 11px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 2.5px; flex-shrink: 0; }
         .p-mdot { width: 4px; height: 4px; border-radius: 50%; background: #2563eb; flex-shrink: 0; }
 
         /* ── SERVICES STRIP ── */
-        .p-services-strip { padding: 0 5vw; background: #fff; display: flex; flex-direction: column; position: relative; z-index: 2; }
+        .p-services-strip { padding: 32px 5vw; background: #fff; display: flex; flex-direction: column; position: relative; z-index: 2; max-width: 720px; margin: 0 auto; }
         .p-services-strip::-webkit-scrollbar { display: none; }
-        .p-service-item { flex-shrink: 0; padding: 20px 0; border-bottom: 1.5px solid #f1f5f9; display: flex; align-items: center; gap: 18px; opacity: 0; transform: translateY(22px); cursor: pointer; transition: all .35s ease; width: 100%; justify-content: space-between; }
-        .p-service-item:last-child { border-bottom: none; }
-        .p-service-item:hover { transform: translateX(4px); }
-        .p-si-img { width: 90px; height: 90px; border-radius: 12px; overflow: hidden; flex-shrink: 0; border: 1px solid #f1f5f9; }
-        .p-si-img img { width: 100%; height: 100%; object-fit: cover; }
+        .p-service-item { flex-shrink: 0; padding: 16px; margin-bottom: 12px; border-radius: 18px; border: 1.5px solid #f1f5f9; display: flex; align-items: center; gap: 16px; opacity: 0; transform: translateY(22px); cursor: pointer; transition: all .3s ease; width: 100%; justify-content: space-between; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .p-service-item:last-child { margin-bottom: 0; }
+        .p-service-item:hover { border-color: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,99,235,0.12); }
+        .p-si-img { width: 88px; height: 88px; border-radius: 14px; overflow: hidden; flex-shrink: 0; }
+        .p-si-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+        .p-service-item:hover .p-si-img img { transform: scale(1.06); }
         .p-service-info { flex: 1; }
-        .p-service-info h3 { font-size: 1.15rem; font-weight: 800; color: #111; margin-bottom: 6px; letter-spacing: -0.01em; }
-        .p-service-info p { font-size: 0.95rem; color: #64748b; margin: 0; line-height: 1.5; font-weight: 500; }
-        .p-si-chevron { color: #94a3b8; transition: transform 0.2s; }
-        .p-service-item:hover .p-si-chevron { transform: translateX(4px); color: #2563eb; }
+        .p-service-info h3 { font-size: 1.1rem; font-weight: 800; color: #111; margin-bottom: 5px; letter-spacing: -0.01em; }
+        .p-service-info p { font-size: 0.88rem; color: #64748b; margin: 0; line-height: 1.5; font-weight: 400; }
+        .p-si-chevron { color: #cbd5e1; transition: all 0.25s; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #f8fafc; flex-shrink: 0; }
+        .p-service-item:hover .p-si-chevron { background: #2563eb; color: #fff; transform: translateX(2px); }
         @media (min-width: 900px) {
-          .p-services-strip { padding: 0 15vw; }
+          .p-services-strip { padding: 40px 2rem; }
+          .p-services-strip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         }
 
         /* ── EYEBROW & SHARED ── */
@@ -401,14 +403,14 @@ export default function Painting() {
         }
 
         /* ── STATS ── */
-        .p-stats { padding: 80px 5vw; background: linear-gradient(135deg, #e0f2fe 0%, #1e3a8a 100%); display: grid; grid-template-columns: 1fr 1fr; position: relative; }
+        .p-stats { padding: 80px 5vw; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1d4ed8 100%); display: grid; grid-template-columns: 1fr 1fr; position: relative; overflow: hidden; }
         .p-stats > :nth-child(3) { grid-column: span 2; border-top: 1px solid rgba(255,255,255,0.08); border-right: none; }
-        .p-stats-glow { position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(143,168,130,0.12), transparent); pointer-events: none; }
-        .p-stat { padding: 36px 28px; border-right: 1px solid rgba(255,255,255,0.08); text-align: center; opacity: 0; transform: translateY(22px); position: relative; will-change: transform; }
+        .p-stats-glow { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(96,165,250,0.18), transparent 70%); pointer-events: none; }
+        .p-stat { padding: 44px 28px; border-right: 1px solid rgba(255,255,255,0.10); text-align: center; opacity: 0; transform: translateY(22px); position: relative; will-change: transform; }
         .p-stat:nth-child(2) { border-right: none; }
-        .p-stat .num { font-family: 'Inter', sans-serif; font-size: clamp(40px, 9vw, 80px); font-weight: 900; color: #fff; line-height: 1; margin-bottom: 10px; }
+        .p-stat .num { font-family: 'Inter', sans-serif; font-size: clamp(44px, 10vw, 88px); font-weight: 900; color: #fff; line-height: 1; margin-bottom: 12px; letter-spacing: -2px; }
         .p-stat .num .plus { color: #facc15; }
-        .p-stat .slabel { font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+        .p-stat .slabel { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
         @media (min-width: 700px) {
           .p-stats { grid-template-columns: repeat(3, 1fr); }
           .p-stats > :nth-child(3) { grid-column: span 1; border-top: none; border-right: none; }
@@ -442,24 +444,25 @@ export default function Painting() {
         }
 
         /* ── GALLERY ── */
-        .p-gallery { padding: 80px 5vw; background: #fff; }
-        .p-gallery-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 48px; }
-        .gitem { border-radius: 20px; overflow: hidden; position: relative; opacity: 0; cursor: pointer; height: 260px; }
-        .p-gbg { position: absolute; inset: 0; height: 110%; top: -5%; transition: transform 1.2s cubic-bezier(.16,1,.3,1), filter .5s; background-size: cover !important; background-position: center !important; }
-        .gitem:hover .p-gbg { transform: scale(1.06); }
-        .p-goverlay { position: absolute; inset: 0; background: rgba(20,12,8,0.35); opacity: 0; transition: opacity .5s; }
-        .gitem:hover .p-goverlay { opacity: 1; }
-        .p-glabel { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px; background: linear-gradient(transparent, rgba(20,12,8,0.88)); transform: translateY(20px); opacity: 0; transition: all .45s cubic-bezier(.16,1,.3,1); }
+        .p-gallery { padding: 80px 5vw; background: #f1f5f9; }
+        .p-gallery-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 48px; }
+        .gitem { border-radius: 24px; overflow: hidden; position: relative; opacity: 0; cursor: pointer; height: 280px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); transition: box-shadow .4s, transform .4s; }
+        .gitem:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.18); }
+        .p-gbg { position: absolute; inset: 0; height: 115%; top: -7%; transition: transform 1.3s cubic-bezier(.16,1,.3,1), filter .5s; background-size: cover !important; background-position: center !important; }
+        .gitem:hover .p-gbg { transform: scale(1.08); }
+        .p-goverlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.55) 100%); transition: opacity .4s; }
+        .p-glabel { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 24px 22px; background: linear-gradient(transparent, rgba(10,10,20,0.92)); transform: translateY(8px); opacity: 0; transition: all .4s cubic-bezier(.16,1,.3,1); }
         .gitem:hover .p-glabel, .gitem:focus .p-glabel { transform: translateY(0); opacity: 1; }
-        .p-glabel span { color: #fff; font-size: 15px; font-weight: 600; display: block; }
-        .p-glabel p { color: rgba(255,255,255,0.65); font-size: 12px; margin-top: 3px; margin-bottom: 0; }
-        .p-g-badge { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.95); color: #2B2B2B; padding: 5px 12px; border-radius: 100px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+        .p-glabel span { color: #fff; font-size: 16px; font-weight: 700; display: block; letter-spacing: -.01em; }
+        .p-glabel p { color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 4px; margin-bottom: 0; display: flex; align-items: center; gap: 4px; }
+        .p-g-badge { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); color: #1a1a1a; padding: 4px 12px; border-radius: 100px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; border: 1px solid rgba(255,255,255,0.5); }
+        .p-g-loc-icon { width: 10px; height: 10px; }
         @media (min-width: 640px) {
-          .p-gallery-grid { grid-template-columns: repeat(2, 1fr); }
-          .gitem:nth-child(1) { grid-column: span 2; height: 340px; }
+          .p-gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+          .gitem:nth-child(1) { grid-column: span 2; height: 360px; }
         }
         @media (min-width: 960px) {
-          .p-gallery-grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 300px); }
+          .p-gallery-grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: 360px 300px; gap: 18px; }
           .gitem { height: auto; }
           .gitem:nth-child(1) { grid-column: span 2; }
           .gitem:nth-child(4) { grid-column: span 2; }
@@ -624,7 +627,6 @@ export default function Painting() {
               <button onClick={() => navigate(`?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)} className="p-btn-primary">
                 <span className="p-btn-fill" />
                 <span>Book a consultant</span>
-                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" width="15" height="15" strokeWidth="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" /></svg>
               </button>
               <a href="#p-gallery" className="p-btn-outline">View Our Work</a>
             </div>
@@ -653,29 +655,34 @@ export default function Painting() {
         </div>
 
         {/* ── SERVICES STRIP ── */}
-        <div className="p-services-strip" id="p-sstrip" role="list">
-          {[
-            { img: '/consultation.png',       title: 'Book your Consultation', sub: 'Talk to an expert',                                    filter: 'consultation' },
-            { img: '/commercial_painting.jpg', title: 'Commercial Painting',    sub: 'Offices, Colleges/Schools & warehouses',                filter: 'commercial'   },
-            { img: '/interior.jpg',            title: 'Interior Painting',      sub: 'Walls, ceilings & trims',                              filter: 'interior'     },
-            { img: '/exterior_painting.webp',  title: 'Exterior Painting',      sub: 'Weather-resistant finishes',                           filter: 'exterior'     },
-            { img: '/grill_gate.png',          title: 'Specialty Coatings',     sub: 'Epoxy & protective finishes for Grills, Gates & Doors', filter: 'coatings'     },
-          ].map(s => (
-            <div key={s.title} className="p-service-item" role="listitem" style={{ cursor: 'pointer' }} onClick={() => {
-              navigate(`?service=${encodeURIComponent(s.title)}&sub=${encodeURIComponent(s.sub)}&filter=${s.filter}`);
-            }}>
-              <div className="p-si-img">
-                <img src={s.img} alt={s.title} />
+        <div style={{ background: '#fff', paddingTop: '12px', paddingBottom: '8px' }}>
+          <div className="p-services-strip" id="p-sstrip" role="list">
+            {[
+              { img: '/consultation.png',       title: 'Book Consultation',  sub: 'Talk to an expert — ₹99',                               filter: 'consultation', badge: 'Popular' },
+              { img: '/commercial_painting.jpg', title: 'Commercial Painting', sub: 'Offices, Schools & warehouses',                         filter: 'commercial',   badge: null },
+              { img: '/interior.jpg',            title: 'Interior Painting',   sub: 'Walls, ceilings & trims',                               filter: 'interior',     badge: null },
+              { img: '/exterior_painting.webp',  title: 'Exterior Painting',   sub: 'Weather-resistant finishes',                            filter: 'exterior',     badge: null },
+              { img: '/grill_gate.png',          title: 'Specialty Coatings',  sub: 'Epoxy for Grills, Gates & Doors',                       filter: 'coatings',     badge: null },
+            ].map(s => (
+              <div key={s.title} className="p-service-item" role="listitem" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => {
+                navigate(`?service=${encodeURIComponent(s.title)}&sub=${encodeURIComponent(s.sub)}&filter=${s.filter}`);
+              }}>
+                <div className="p-si-img">
+                  <img src={s.img} alt={s.title} loading="lazy" />
+                </div>
+                <div className="p-service-info">
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {s.title}
+                    {s.badge && <span style={{ background: '#facc15', color: '#111', fontSize: '9px', fontWeight: 800, padding: '2px 8px', borderRadius: '99px', textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0 }}>{s.badge}</span>}
+                  </h3>
+                  <p>{s.sub}</p>
+                </div>
+                <div className="p-si-chevron">
+                  <ChevronRight size={18} />
+                </div>
               </div>
-              <div className="p-service-info">
-                <h3>{s.title}</h3>
-                <p>{s.sub}</p>
-              </div>
-              <div className="p-si-chevron">
-                <ChevronRight size={22} />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* ── INTRO ── */}
@@ -694,11 +701,7 @@ export default function Painting() {
               <h2>We Make Every Wall Tell A <em>Beautiful</em> Story</h2>
               <p>At Dhoond, we believe your home deserves more than just paint — it deserves craftsmanship. Founded in Nagpur, we've grown into India's fastest-growing home services network.</p>
               <p>Every project is handled by background-checked, trained professionals using premium paints and proven techniques that last for years.</p>
-              <button onClick={() => navigate('/shop')} className="p-btn-primary" style={{ width: 'fit-content', marginTop: '8px', color: '#2B2B2B' }}>
-                <span className="p-btn-fill" />
-                <span>Explore Services</span>
-                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" width="15" height="15" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
-              </button>
+
             </div>
           </div>
         </section>
@@ -750,32 +753,39 @@ export default function Painting() {
             <span className="p-eyebrow">Our Portfolio</span>
             <h2>Spaces We've Transformed</h2>
             <div className="p-brush-line" />
+            <p style={{ color: '#888', fontSize: '14px', marginTop: '8px' }}>Tap any photo to explore the transformation</p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '20px' }}>
               {['Before', 'After'].map(v => (
                 <button
                   key={v}
                   onClick={() => setGalleryActive(v.toLowerCase())}
                   className={`p-sel-btn${galleryActive === v.toLowerCase() ? ' active' : ''}`}
-                  style={{ padding: '10px 20px', minHeight: '42px' }}
+                  style={{ padding: '10px 24px', minHeight: '42px', fontSize: '13px', fontWeight: 700 }}
                   aria-pressed={galleryActive === v.toLowerCase()}
                 >
-                  {v}
+                  {galleryActive === v.toLowerCase() ? '● ' : ''}{v}
                 </button>
               ))}
             </div>
           </div>
           <div className="p-gallery-grid">
             {[
-              { bg: 'url(/space.jpg)', title: 'Living Room Makeover', loc: 'Nagpur', tag: 'Luxury' },
-              { bg: galleryActive === 'before' ? 'url(/wall2.jpg)' : 'url(/bedroom_painting.png)', title: 'Bedroom Retreat', loc: 'Hyderabad', tag: galleryActive === 'before' ? 'Before' : 'After' },
-              { bg: 'url(/interior.jpg)', title: 'Full Home Painting', loc: 'Bengaluru', tag: 'Elite' },
-              { bg: 'url(/exterior.jpg)', title: 'Exterior Excellence', loc: 'Mumbai', tag: 'Premium' },
+              { bg: 'url(/space.jpg)', title: 'Living Room Makeover', loc: 'Nagpur', tag: 'Luxury', price: '₹18,000' },
+              { bg: galleryActive === 'before' ? 'url(/wall2.jpg)' : 'url(/bedroom_painting.png)', title: 'Bedroom Retreat', loc: 'Hyderabad', tag: galleryActive === 'before' ? 'Before' : 'After', price: '₹12,000' },
+              { bg: 'url(/interior.jpg)', title: 'Full Home Painting', loc: 'Bengaluru', tag: 'Elite', price: '₹45,000' },
+              { bg: 'url(/exterior.jpg)', title: 'Exterior Excellence', loc: 'Mumbai', tag: 'Premium', price: '₹32,000' },
             ].map(g => (
               <div key={g.title} className="gitem" tabIndex={0} role="img" aria-label={`${g.title}, ${g.loc}`}>
-                <div className="p-gbg" style={{ background: `${g.bg} center/cover no-repeat`, filter: galleryActive === 'before' ? 'grayscale(0.25) contrast(1.1)' : 'none' }} />
+                <div className="p-gbg" style={{ background: `${g.bg} center/cover no-repeat`, filter: galleryActive === 'before' ? 'grayscale(0.4) contrast(1.05)' : 'none', transition: 'filter .6s' }} />
                 <div className="p-goverlay" />
                 <div className="p-g-badge">{g.tag}</div>
-                <div className="p-glabel"><span>{g.title}</span><p>{g.loc}</p></div>
+                <div className="p-glabel">
+                  <span>{g.title}</span>
+                  <p>
+                    <svg className="p-g-loc-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2"><path d="M12 21s-8-5.5-8-11a8 8 0 1 1 16 0c0 5.5-8 11-8 11z"/><circle cx="12" cy="10" r="2"/></svg>
+                    {g.loc} &nbsp;·&nbsp; {g.price}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
