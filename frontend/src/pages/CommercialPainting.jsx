@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Building2, School, Home as House, Sparkles, ShieldCheck, ArrowRight, Palette } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useUI } from '../context/UIContext';
 
 const CommercialPainting = () => {
   const navigate = useNavigate();
@@ -18,9 +19,22 @@ const CommercialPainting = () => {
 
   const isAdded = cartItems.some(item => item.id === consultationItem.id);
 
+  const { openComingSoon, locationLabel, locationSubtext } = useUI();
+  
   useEffect(() => {
+    const isBengaluru = (locationLabel || '').toLowerCase().includes('bengaluru') || 
+                         (locationLabel || '').toLowerCase().includes('bangalore') ||
+                         (locationSubtext || '').toLowerCase().includes('bengaluru') ||
+                         (locationSubtext || '').toLowerCase().includes('bangalore');
+    
+    if (locationLabel && locationLabel !== 'Fetching location…' && locationLabel !== 'Detecting…' && !isBengaluru) {
+      openComingSoon();
+      navigate('/');
+      return;
+    }
+
     window.scrollTo(0, 0);
-  }, []);
+  }, [navigate, openComingSoon, locationLabel, locationSubtext]);
 
   const handleBooking = () => {
     if (!isAdded) {

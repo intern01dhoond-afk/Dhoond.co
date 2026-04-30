@@ -5,7 +5,6 @@ import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Checkout from './pages/Checkout';
 import Cart from './pages/Cart';
-import ServiceDetail from './pages/ServiceDetail';
 import Painting from './pages/Painting';
 import CommercialPainting from './pages/CommercialPainting';
 import Profile from './pages/Profile';
@@ -15,7 +14,8 @@ import { CartProvider, useCart } from './context/CartContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UIProvider, useUI } from './context/UIContext';
 import ComingSoonModal from './components/ComingSoonModal';
-import { detectCurrentLocation, waitForGoogleMaps } from './utils/location';
+import AuthModal from './components/AuthModal';
+import { detectCurrentLocation, waitForGoogleMaps, isInsideGeofence } from './utils/location';
 import './index.css';
 
 const SUGGESTIONS = ['Painting Service', 'AC Repair', 'RO Technician', 'Plumber', 'Electrician', 'Washing Machine Repair', 'Refrigerator Repair'];
@@ -30,6 +30,7 @@ const Navbar = () => {
   const userMobile = user?.mobile || '';
 
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const [isAuthOpen, setIsAuthOpen] = React.useState(false);
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -38,14 +39,11 @@ const Navbar = () => {
   const [showSuggestions, setShowSuggestions] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
 
-  const [locationLabel, setLocationLabel] = React.useState(() => localStorage.getItem('dhoond_location') || 'Fetching location…');
-  const [locationSubtext, setLocationSubtext] = React.useState(() => localStorage.getItem('dhoond_location_sub') || '');
-  const [showLocationModal, setShowLocationModal] = React.useState(false);
-  const [locationSearchQuery, setLocationSearchQuery] = React.useState('');
   const [locating, setLocating] = React.useState(false);
   const [showMap, setShowMap] = React.useState(false);
+  const [locationSearchQuery, setLocationSearchQuery] = React.useState('');
   const [mapSelectedLabel, setMapSelectedLabel] = React.useState('');
-  const { openComingSoon } = useUI();
+  const { openComingSoon, showLocationModal, openLocation, closeLocation, locationLabel, locationSubtext, updateLocation, userLat, userLng } = useUI();
 
   const searchRef = React.useRef(null);
   const locationInputRef = React.useRef(null);
@@ -61,16 +59,13 @@ const Navbar = () => {
   }, []);
   const detectLocation = async () => {
     setLocating(true);
-    setLocationLabel('Detecting…');
+    updateLocation('Detecting…', '');
     try {
       const loc = await detectCurrentLocation();
-      setLocationLabel(loc.label);
-      setLocationSubtext(loc.sub);
-      localStorage.setItem('dhoond_location', loc.label);
-      localStorage.setItem('dhoond_location_sub', loc.sub);
+      updateLocation(loc.label, loc.sub, loc.lat, loc.lng);
     } catch (err) {
-      setLocationLabel('Enable location');
       console.error("Location detection failed:", err);
+      updateLocation('Location not found', 'Please enter manually');
     } finally {
       setLocating(false);
     }
@@ -114,11 +109,10 @@ const Navbar = () => {
           const city = find(['locality', 'administrative_area_level_2']) || '';
           const state = find(['administrative_area_level_1']) || '';
           const sub = [city, state].filter(Boolean).join(', ');
-          setLocationLabel(label);
-          setLocationSubtext(sub);
-          localStorage.setItem('dhoond_location', label);
-          localStorage.setItem('dhoond_location_sub', sub);
-          setShowLocationModal(false);
+          const lat = place.geometry.location.lat();
+          const lng = place.geometry.location.lng();
+          updateLocation(label, sub, lat, lng);
+          closeLocation();
         });
       });
     }, 150);
@@ -190,13 +184,22 @@ const Navbar = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => initMap({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        ()    => initMap({ lat: 12.9716, lng: 77.5946 }),
+        () => initMap({ lat: 12.9716, lng: 77.5946 }),
         { timeout: 5000 }
       );
     } else {
       initMap({ lat: 12.9716, lng: 77.5946 });
     }
   }, [showMap]);
+
+  const isBengaluru = (locationLabel || '').toLowerCase().includes('bengaluru') ||
+    (locationLabel || '').toLowerCase().includes('bangalore') ||
+    (locationSubtext || '').toLowerCase().includes('bengaluru') ||
+    (locationSubtext || '').toLowerCase().includes('bangalore');
+
+  const isNagpur = isInsideGeofence(userLat, userLng, 21.1497877, 79.0806859, 8000) ||
+    (locationLabel || '').toLowerCase().includes('nagpur') ||
+    (locationSubtext || '').toLowerCase().includes('nagpur');
 
   const filteredSuggestions = searchQuery.length > 0
     ? SUGGESTIONS.filter(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -207,19 +210,26 @@ const Navbar = () => {
     setShowSuggestions(false);
     setIsSearchOpen(false);
     if (q.includes('paint')) {
-      navigate('/painting');
+      if (isBengaluru) {
+        navigate('/painting');
+      } else {
+        openComingSoon();
+      }
     } else {
-      openComingSoon();
+      if (isNagpur) {
+        navigate('/shop');
+      } else {
+        openComingSoon();
+      }
     }
   };
 
+  const PHONE_NUMBER = '+919102740274';
   const NAV_LINKS = [
     { label: 'Home', to: '/' },
     { label: 'Painting', to: '/painting', badge: 'New' },
-    { label: 'Other Services', type: 'soon' },
+    { label: 'Contact', href: `tel:${PHONE_NUMBER}` },
   ];
-
-  const PHONE_NUMBER = '+919102740274';
 
   const LocationButton = ({ onClick, style = {} }) => (
     <button
@@ -317,24 +327,30 @@ const Navbar = () => {
               {NAV_LINKS.map(link => {
                 const isSoon = link.type === 'soon';
                 const isActive = link.to && location.pathname === link.to;
+                
+                if (link.href) {
+                  return (
+                    <a key={link.label} href={link.href} className="nav-link">
+                      {link.label}
+                    </a>
+                  );
+                }
+
                 return (
                   <Link key={link.label} to={link.to || '#'}
-                    onClick={isSoon ? (e) => { e.preventDefault(); openComingSoon(); } : undefined}
+                    onClick={(e) => {
+                      const isPaintingRestricted = link.label === 'Painting' && !isBengaluru;
+                      if (isSoon || isPaintingRestricted) {
+                        e.preventDefault();
+                        openComingSoon();
+                      }
+                    }}
                     className={`nav-link ${link.badge ? 'highlight' : ''} ${isActive ? 'active' : ''}`}>
                     {link.label}
                     {link.badge && <span style={{ background: '#fef08a', color: '#854d0e', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '8px', marginLeft: '6px' }}>{link.badge}</span>}
                   </Link>
                 );
               })}
-              {/* Contact — visually separated CTA */}
-              <span style={{ width: '1px', height: '18px', background: '#e2e8f0', flexShrink: 0 }} />
-              <a href={`tel:${PHONE_NUMBER}`}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#eff6ff', color: '#2563eb', padding: '0.4rem 1rem', borderRadius: '99px', fontSize: '13px', fontWeight: 700, textDecoration: 'none', border: '1px solid #bfdbfe', transition: 'all 0.2s' }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#2563eb'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = '#eff6ff'; e.currentTarget.style.color = '#2563eb'; }}
-              >
-                Contact
-              </a>
             </div>
           </div>
 
@@ -350,7 +366,7 @@ const Navbar = () => {
           {/* RIGHT: Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flex: 1, justifyContent: 'flex-end' }}>
             <div className="desktop-only" style={{ marginRight: '1rem' }}>
-              <LocationButton onClick={() => setShowLocationModal(true)} />
+              <LocationButton onClick={openLocation} />
             </div>
 
             <div className="desktop-only" style={{ position: 'relative', width: '240px', marginRight: '1rem' }} ref={searchRef}>
@@ -365,7 +381,7 @@ const Navbar = () => {
             </button>
 
             <div style={{ position: 'relative' }}>
-              <button className="icon-btn" onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : navigate('/profile')}>
+              <button className="icon-btn" onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : setIsAuthOpen(true)}>
                 <User size={isAuthenticated ? 26 : 24} color={isAuthenticated ? '#2563eb' : 'currentColor'} />
               </button>
 
@@ -397,8 +413,11 @@ const Navbar = () => {
           </div>
         </nav>
 
+        {/* Auth Modal */}
+        <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+
         {/* MOBILE: Location Bar */}
-        <div className="mobile-only" onClick={() => setShowLocationModal(true)} style={{ padding: '0.65rem 1.25rem', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '0.65rem', background: '#fff', cursor: 'pointer' }}>
+        <div className="mobile-only" onClick={openLocation} style={{ padding: '0.65rem 1.25rem', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '0.65rem', background: '#fff', cursor: 'pointer' }}>
           <MapPin size={15} color="#2563eb" />
           <span style={{ fontSize: '13px', fontWeight: 600, color: '#334155', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{locationLabel}</span>
           <ChevronDown size={14} color="#64748b" />
@@ -408,7 +427,7 @@ const Navbar = () => {
       {/* LOCATION MODAL */}
       {showLocationModal && (
         <>
-          <div onClick={() => setShowLocationModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, backdropFilter: 'blur(4px)' }} />
+          <div onClick={closeLocation} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, backdropFilter: 'blur(4px)' }} />
           <div style={{
             position: 'fixed', top: '50%', left: '50%',
             transform: 'translate(-50%, -50%)',
@@ -462,11 +481,9 @@ const Navbar = () => {
                     disabled={!mapSelectedLabel}
                     onClick={() => {
                       if (!mapSelectedLabel) return;
-                      setLocationLabel(mapSelectedLabel);
-                      setLocationSubtext('');
-                      localStorage.setItem('dhoond_location', mapSelectedLabel);
-                      localStorage.setItem('dhoond_location_sub', '');
-                      setShowLocationModal(false);
+                      const pos = markerRef.current.getPosition();
+                      updateLocation(mapSelectedLabel, '', pos.lat(), pos.lng());
+                      closeLocation();
                       setShowMap(false);
                     }}
                     style={{
@@ -492,7 +509,7 @@ const Navbar = () => {
                     <p style={{ margin: 0, fontWeight: 900, fontSize: '1.05rem', color: '#0f172a', letterSpacing: '-0.01em' }}>Set your location</p>
                     <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#94a3b8', fontWeight: 500 }}>Find services near you</p>
                   </div>
-                  <button onClick={() => setShowLocationModal(false)} style={{ background: '#f3f4f6', border: 'none', borderRadius: '50%', width: '34px', height: '34px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <button onClick={closeLocation} style={{ background: '#f3f4f6', border: 'none', borderRadius: '50%', width: '34px', height: '34px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <X size={16} color="#374151" />
                   </button>
                 </div>
@@ -518,7 +535,7 @@ const Navbar = () => {
 
                 {/* Use current location */}
                 <div style={{ padding: '0.5rem 1rem 0' }}>
-                  <button className="loc-use-btn" onClick={() => { setShowLocationModal(false); detectLocation(); }}
+                  <button className="loc-use-btn" onClick={() => { closeLocation(); detectLocation(); }}
                     style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'none', border: 'none', cursor: 'pointer', padding: '0.85rem 0.75rem', borderRadius: '14px', width: '100%', textAlign: 'left' }}>
                     <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #ede9fe, #dbeafe)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <MapPin size={20} color="#6d28d9" />
@@ -574,13 +591,46 @@ const Navbar = () => {
               <button className="icon-btn" onClick={() => setIsMenuOpen(false)}><X size={22} /></button>
             </div>
             <nav style={{ flex: 1, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', overflowY: 'auto' }}>
-              <Link to={isAuthenticated ? "/profile" : "/painting"} onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', textDecoration: 'none' }}>
+              <div onClick={() => {
+                setIsMenuOpen(false);
+                if (isAuthenticated) { navigate('/profile'); }
+                else { setIsAuthOpen(true); }
+              }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', cursor: 'pointer' }}>
                 <div style={{ width: '40px', height: '40px', background: '#eff6ff', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb' }}><User size={20} /></div>
                 <div><div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#111' }}>{isAuthenticated ? userName : 'Login / Register'}</div><div style={{ fontSize: '0.75rem', color: '#64748b' }}>{isAuthenticated ? `+91 ${userMobile}` : 'View Profile'}</div></div>
-              </Link>
-              {NAV_LINKS.map(link => (
-                <Link key={link.label} to={link.to || '#'} onClick={() => { setIsMenuOpen(false); if (link.type === 'soon') openComingSoon(); }} style={{ textDecoration: 'none', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, color: '#111' }}>{link.label}</Link>
-              ))}
+              </div>
+              {NAV_LINKS.map(link => {
+                const isPaintingRestricted = link.label === 'Painting' && !isBengaluru;
+                
+                if (link.href) {
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      style={{ textDecoration: 'none', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, color: '#111' }}
+                    >
+                      {link.label}
+                    </a>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={link.label}
+                    to={link.to || '#'}
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      const isPaintingRestricted = link.label === 'Painting' && !isBengaluru;
+                      if (link.type === 'soon' || isPaintingRestricted) {
+                        openComingSoon();
+                      }
+                    }}
+                    style={{ textDecoration: 'none', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, color: '#111' }}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
         </>
@@ -630,7 +680,6 @@ function App() {
               <Route element={<MainLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/shop" element={<Shop />} />
-                <Route path="/service/:id" element={<ServiceDetail />} />
                 <Route path="/shop/cart" element={<Cart />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />

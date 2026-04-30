@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { X, MapPin, Bell, CheckCircle2 } from 'lucide-react';
 import { detectCurrentLocation } from '../utils/location';
+import { useUI } from '../context/UIContext';
 
 const ComingSoonModal = ({ onClose }) => {
   const [location, setLocation] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const { openLocation } = useUI();
 
   useEffect(() => {
     detectCurrentLocation()
@@ -15,6 +18,11 @@ const ComingSoonModal = ({ onClose }) => {
   const handleNotifyMe = () => {
     setIsSubmitted(true);
     setTimeout(onClose, 2200);
+  };
+
+  const handleChangeLocation = () => {
+    onClose();
+    openLocation();
   };
 
   return (
@@ -142,7 +150,7 @@ const ComingSoonModal = ({ onClose }) => {
                   <Bell size={15} strokeWidth={2.5} /> Notify me when available
                 </button>
                 <button
-                  onClick={onClose}
+                  onClick={handleChangeLocation}
                   style={{
                     width: '100%', background: 'transparent',
                     color: '#94a3b8', border: 'none',

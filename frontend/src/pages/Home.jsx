@@ -3,15 +3,14 @@ import { ArrowUpRight, Clock, ShieldCheck, Star, ChevronRight, ChevronLeft } fro
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useUI } from '../context/UIContext';
-import { detectCurrentLocation } from '../utils/location';
+import { detectCurrentLocation, isInsideGeofence } from '../utils/location';
 import ComingSoonModal from '../components/ComingSoonModal';
 
 const Home = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [featuredServices, setFeaturedServices] = useState([]);
-  const { openComingSoon, closeComingSoon, showComingSoon } = useUI();
-  const [currentCity, setCurrentCity] = useState('your area');
+  const { openComingSoon, closeComingSoon, showComingSoon, locationLabel, locationSubtext, userLat, userLng } = useUI();
   const [shakingId, setShakingId] = useState(null);
   const scrollContainerRef = useRef(null);
 
@@ -50,15 +49,6 @@ const Home = () => {
     }
   };
   useEffect(() => {
-    // Detect Location for Service Availability
-    detectCurrentLocation()
-      .then(loc => {
-        setCurrentCity(loc.city || 'your area');
-      })
-      .catch(err => {
-        console.error("Location detection error:", err);
-      });
-
     // Map service titles to distinct local images by keyword
     const pickImage = (title = '') => {
       const t = title.toLowerCase();
@@ -136,6 +126,15 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
+  const isBengaluru = (locationLabel || '').toLowerCase().includes('bengaluru') || 
+                       (locationLabel || '').toLowerCase().includes('bangalore') ||
+                       (locationSubtext || '').toLowerCase().includes('bengaluru') ||
+                       (locationSubtext || '').toLowerCase().includes('bangalore');
+
+  const isNagpur = isInsideGeofence(userLat, userLng, 21.1497877, 79.0806859, 8000) || 
+                    (locationLabel || '').toLowerCase().includes('nagpur') ||
+                    (locationSubtext || '').toLowerCase().includes('nagpur');
+
   return (
     <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', background: '#f9fafb', fontFamily: 'Inter, sans-serif', color: '#1a1a1a' }}>
 
@@ -200,7 +199,18 @@ const Home = () => {
            .stat-label { font-size: 0.65rem !important; }
            .feature-title { font-size: 0.95rem !important; }
            .feature-desc { font-size: 0.8rem !important; }
+
+           .phone-mockup-col { margin-top: 2rem !important; }
+           
+           .why-dhoond-content h2 { margin-bottom: 0.75rem !important; }
+           .why-dhoond-content .description { margin-bottom: 1.5rem !important; }
+           .why-dhoond-content .features-list { margin-bottom: 1.5rem !important; gap: 1.25rem !important; }
+           .why-dhoond-content .pills-list { margin-bottom: 1.5rem !important; }
         }
+
+        .phone-mockup-col { transition: transform 0.3s ease; }
+        .phone-mockup-col:hover { transform: translateY(-5px); }
+
         @media(min-width: 769px) {
            .service-grid { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important; }
            .pop-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; }
@@ -223,33 +233,54 @@ const Home = () => {
         
         .painting-highlight { border: 2px solid #facc15 !important; box-shadow: 0 0 20px rgba(250, 204, 21, 0.2) !important; transform: scale(1.03); z-index: 5; }
         .painting-highlight:hover { transform: scale(1.08) translateY(-5px) !important; }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+        }
       `}</style>
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <section className="hero-section" style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)', borderBottom: '1px solid #f1f5f9', padding: '2rem 5% 1.5rem' }}>
+        <section className="hero-section" style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)', borderBottom: '1px solid #f1f5f9', padding: '2.5rem 5% 3rem' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
             <div className="desktop-flex">
               <div className="hero-text">
-                <span style={{ display: 'inline-block', padding: '0.4rem 1rem', background: '#fef3c7', color: '#d97706', borderRadius: '99px', fontWeight: 800, fontSize: '0.8rem', marginBottom: '1rem' }}>
-                  #1 Rated Commercial & Home Services
+                <span style={{ display: 'inline-block', padding: '0.45rem 1.1rem', background: '#fef3c7', color: '#b45309', borderRadius: '99px', fontWeight: 700, fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
+                  #1 Rated Commercial &amp; Home Services
                 </span>
-                <h1 style={{ fontSize: 'clamp(1.9rem, 5vw, 3.6rem)', fontWeight: 900, color: '#1a1a1a', lineHeight: 1.08, marginBottom: '1rem', letterSpacing: '-0.03em' }}>
+                <h1 style={{ fontSize: 'clamp(2.8rem, 6vw, 5rem)', fontWeight: 900, color: '#0f172a', lineHeight: 1.04, marginBottom: '1.5rem', letterSpacing: '-0.04em', maxWidth: '580px' }}>
                   Home &amp; Commercial<br />
-                  <span style={{ color: '#2563eb' }}>Services At Your Doorstep</span>
+                  <span style={{ color: '#2563eb', fontStyle: 'italic', fontWeight: 800 }}>Services At Your Doorstep</span>
                 </h1>
-                <p style={{ fontSize: '1.05rem', color: '#374151', marginBottom: '1.5rem', lineHeight: 1.65, maxWidth: '500px', fontWeight: 600 }}>
+                <p style={{ fontSize: '1.15rem', fontWeight: 300, color: '#64748b', marginBottom: '2.5rem', lineHeight: 1.75, maxWidth: '460px', letterSpacing: '0.01em' }}>
                   Get trusted professionals for all your commercial &amp; household needs — delivered instantly to your space, from routine fixes to major updates.
                 </p>
 
                 <div className="hero-cta-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
                   <button
-                    onClick={() => navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)}
+                    onClick={() => {
+                      if (isBengaluru) {
+                        navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`);
+                      } else {
+                        openComingSoon();
+                      }
+                    }}
                     style={{ background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', color: '#fff', padding: '1.1rem 2rem', borderRadius: '14px', fontWeight: 800, fontSize: '1.05rem', border: 'none', cursor: 'pointer', boxShadow: '0 6px 24px rgba(37,99,235,0.35)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     className="btn-hover cta-glow"
                   >
                     Book a Service <ArrowUpRight size={20} strokeWidth={3} />
                   </button>
-                  <button onClick={() => navigate('/painting')} style={{ background: '#fff', color: '#2563eb', padding: '1.1rem 2rem', borderRadius: '14px', fontWeight: 700, fontSize: '1.05rem', border: '2px solid #bfdbfe', cursor: 'pointer' }} className="btn-hover">
+                  <button 
+                    onClick={() => {
+                      if (isBengaluru) {
+                        navigate('/painting');
+                      } else {
+                        openComingSoon();
+                      }
+                    }} 
+                    style={{ background: '#fff', color: '#2563eb', padding: '1.1rem 2rem', borderRadius: '14px', fontWeight: 700, fontSize: '1.05rem', border: '2px solid #bfdbfe', cursor: 'pointer' }} 
+                    className="btn-hover"
+                  >
                     Explore Painting
                   </button>
                 </div>
@@ -284,20 +315,30 @@ const Home = () => {
               </div>
               <div className="service-scroll service-grid service-grid-mobile" style={{ display: 'flex', gap: '1.25rem', overflowX: 'auto', paddingBottom: '1rem' }}>
                 {[
-                  { label: 'Painting', img: '/icons/painter_new.jpg', cat: 'painter' },
-                  { label: 'AC Tech', img: '/icons/ac_technician.png', cat: 'technician' },
-                  { label: 'RO Tech', img: '/icons/ro_technician.png', cat: 'technician' },
-                  { label: 'Electrician', img: '/icons/electrician.png', cat: 'electrician' },
-                  { label: 'Washing Mach.', img: '/icons/washing_machine.png', cat: 'technician' },
-                  { label: 'Refrigerator', img: '/icons/refrigerator.png', cat: 'technician' }
+                  { label: 'Painting',     img: '/icons/painter_new.jpg',    cat: 'painter' },
+                  { label: 'AC Tech',      img: '/icons/ac_technician.png',  cat: 'technician', subcat: 'ac' },
+                  { label: 'RO Tech',      img: '/icons/ro_technician.png',  cat: 'technician', subcat: 'ro' },
+                  { label: 'Electrician',  img: '/icons/electrician.png',    cat: 'electrician' },
+                  { label: 'Washing Mach.', img: '/icons/washing_machine.png', cat: 'technician', subcat: 'washing' },
+                  { label: 'Refrigerator', img: '/icons/refrigerator.png',   cat: 'technician', subcat: 'fridge' }
                 ].map((item) => {
-                  const isAvailable = item.label === 'Painting';
+                  const isAvailable = (item.label === 'Painting' && isBengaluru) || 
+                                      (item.label !== 'Painting' && item.label !== 'Refrigerator' && isNagpur);
+                  const isHighlight = item.label === 'Painting' && isAvailable;
                   return (
                     <div
                       key={item.label}
                       onClick={() => {
-                        if (isAvailable) { navigate('/painting'); }
-                        else {
+                        if (isAvailable) { 
+                          if (item.label === 'Painting') {
+                            navigate('/painting');
+                          } else {
+                            const url = item.subcat
+                              ? `/shop?cat=${item.cat}&subcat=${item.subcat}`
+                              : `/shop?cat=${item.cat}`;
+                            navigate(url);
+                          }
+                        } else {
                           setShakingId(item.label);
                           setTimeout(() => {
                             setShakingId(null);
@@ -307,13 +348,13 @@ const Home = () => {
                       }}
                       style={{
                         flex: '0 0 auto', width: '120px', background: '#fff', padding: '1.25rem 0.5rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', cursor: 'pointer',
-                        border: isAvailable ? '2px solid #facc15' : '1px solid #f1f5f9',
-                        boxShadow: isAvailable ? '0 0 20px rgba(250,204,21,0.2)' : '0 2px 8px rgba(0,0,0,0.04)',
+                        border: isHighlight ? '2px solid #facc15' : (isAvailable ? '1px solid #e2e8f0' : '1px solid #f1f5f9'),
+                        boxShadow: isHighlight ? '0 0 20px rgba(250,204,21,0.2)' : '0 2px 8px rgba(0,0,0,0.04)',
                         position: 'relative', transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                        transform: isAvailable ? 'scale(1.03)' : 'scale(1)',
-                        zIndex: isAvailable ? 5 : 1,
+                        transform: isHighlight ? 'scale(1.03)' : 'scale(1)',
+                        zIndex: isHighlight ? 5 : 1,
                         opacity: 1,
-                        filter: isAvailable ? 'none' : 'none',
+                        filter: 'none',
                       }}
                       className={`card-hover-lift ${shakingId === item.label ? 'shake-anim' : ''}`}
                     >
@@ -339,13 +380,13 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="section-pad fade-up parallax-bg" style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #fff 100%)', padding: '3rem 5%' }}>
+        <section className="section-pad fade-up parallax-bg" style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #fff 100%)', padding: '5rem 5% 6rem' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem' }}>
               <div>
-                <span style={{ display: 'inline-block', background: '#dbeafe', color: '#2563eb', fontSize: '0.75rem', fontWeight: 800, padding: '4px 12px', borderRadius: '99px', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Popular Choices</span>
-                <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 900, color: '#0f172a', margin: 0, lineHeight: 1.15 }}>Top Demanding Services</h2>
-                <p style={{ color: '#64748b', fontWeight: 500, fontSize: '0.95rem', margin: '0.5rem 0 0' }}>Book a consultation — our expert visits and gives exact pricing</p>
+                <span style={{ display: 'inline-block', background: '#dbeafe', color: '#1d4ed8', fontSize: '0.65rem', fontWeight: 800, padding: '4px 14px', borderRadius: '99px', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1rem' }}>Popular Choices</span>
+                <h2 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.5rem)', fontWeight: 900, color: '#0f172a', margin: '0 0 0.75rem', lineHeight: 1.08, letterSpacing: '-0.03em' }}>Top Demanding Services</h2>
+                <p style={{ color: '#94a3b8', fontWeight: 300, fontSize: '1.05rem', margin: 0, letterSpacing: '0.01em', lineHeight: 1.65 }}>Book a consultation — our expert visits and gives exact pricing</p>
               </div>
               <div className="desktop-only" style={{ display: 'flex', gap: '0.5rem' }}>
                 <button onClick={scrollLeft} style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#fff', border: '1.5px solid #e2e8f0', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}><ChevronLeft size={22} /></button>
@@ -363,6 +404,10 @@ const Home = () => {
                   <div
                     key={s.id}
                     onClick={() => {
+                      if (!isBengaluru) {
+                        openComingSoon();
+                        return;
+                      }
                       const title = s.title?.toLowerCase() || '';
                       if (title.includes('commercial') || title.includes('office') || title.includes('school') || title.includes('warehouse')) {
                         navigate(`/painting?service=${encodeURIComponent('Commercial Painting')}&sub=${encodeURIComponent('Offices, Colleges/Schools & warehouses')}&filter=commercial`);
@@ -448,6 +493,10 @@ const Home = () => {
                       }}
                         onClick={(e) => {
                           e.stopPropagation();
+                          if (!isBengaluru) {
+                            openComingSoon();
+                            return;
+                          }
                           const title = s.title?.toLowerCase() || '';
                           if (title.includes('commercial') || title.includes('office') || title.includes('school') || title.includes('warehouse')) {
                             navigate(`/painting?service=${encodeURIComponent('Commercial Painting')}&sub=${encodeURIComponent('Offices, Colleges/Schools & warehouses')}&filter=commercial`);
@@ -469,82 +518,98 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="fade-up" style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)',
-          padding: '6rem 5%', position: 'relative', overflow: 'hidden',
+        <section className="section-pad fade-up" style={{
+          background: '#0f172a',
+          position: 'relative', overflow: 'hidden',
         }}>
           {/* Decorative glow orbs */}
           <div style={{ position: 'absolute', top: '-120px', left: '-80px', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 65%)', pointerEvents: 'none' }} />
           <div style={{ position: 'absolute', bottom: '-120px', right: '-80px', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 65%)', pointerEvents: 'none' }} />
           {/* Grid texture */}
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', inset: 0, background: '#0f172a', pointerEvents: 'none' }} />
 
           <div style={{ maxWidth: '1280px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
-            {/* Header */}
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <span style={{ display: 'inline-block', background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.35)', color: '#a5b4fc', fontSize: '0.72rem', fontWeight: 800, padding: '5px 16px', borderRadius: '99px', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
-                Why Dhoond?
-              </span>
-              <h2 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.5rem)', fontWeight: 900, color: '#fff', margin: '0 0 1rem', lineHeight: 1.1 }}>
-                Join{' '}
-                <span style={{ background: 'linear-gradient(90deg, #818cf8 0%, #38bdf8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  1 Lakh+
-                </span>{' '}Happy Customers
-              </h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.05rem', fontWeight: 500, maxWidth: '500px', margin: '0 auto', lineHeight: 1.6 }}>
-                India's most trusted home &amp; commercial services platform — professional, verified, on-demand.
-              </p>
-            </div>
+            {/* Two-column layout */}
+            <div style={{ display: 'flex', gap: '5rem', alignItems: 'center', flexWrap: 'wrap' }}>
 
-            {/* Stats strip */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', borderTop: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)', marginBottom: '5rem' }}>
-              {[
-                { number: '1L+', label: 'Happy Customers' },
-                { number: '4.9', label: 'Avg. Star Rating' },
-                { number: '500+', label: 'Verified Experts' },
-              ].map((stat, i) => (
-                <div key={i} style={{ padding: '2.5rem 1rem', textAlign: 'center', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
-                  <div className="stat-number" style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 900, color: '#facc15', lineHeight: 1, marginBottom: '0.4rem', letterSpacing: '-0.02em' }}>{stat.number}</div>
-                  <div className="stat-label" style={{ fontSize: '0.82rem', fontWeight: 700, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{stat.label}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Features */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', marginBottom: '2.5rem', maxWidth: '700px', margin: '0 auto 2.5rem' }}>
-              {[
-                { icon: <Clock size={22} />, title: '15 Min Response Time', desc: 'Experts assigned instantly after booking — no waiting, no delays.', color: '#818cf8' },
-                { icon: <ShieldCheck size={22} />, title: 'Verified & Insured Experts', desc: 'Every pro is background-checked, trained, and insured.', color: '#38bdf8' },
-                { icon: <Star size={22} />, title: '4.9/5 Consistent Rating', desc: 'Quality guaranteed — or we redo the job, free of charge.', color: '#fbbf24' },
-              ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem' }}>
-                  <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: `rgba(${item.color === '#818cf8' ? '99,102,241' : item.color === '#38bdf8' ? '56,189,248' : '251,191,36'},0.15)`, color: item.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
-                    {item.icon}
-                  </div>
-                  <div>
-                    <div className="feature-title" style={{ fontWeight: 800, fontSize: '1.05rem', color: '#f1f5f9', marginBottom: '0.3rem', letterSpacing: '-0.01em' }}>{item.title}</div>
-                    <div className="feature-desc" style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.6 }}>{item.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '2.5rem', justifyContent: 'center', padding: '0 1rem' }}>
-              {['No Hidden Charges', 'On-Time Guarantee', 'Easy Rescheduling', 'Post-Service Support'].map(b => (
-                <span key={b} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)', color: '#e2e8f0', fontSize: '0.8rem', fontWeight: 700, padding: '6px 13px', borderRadius: '99px', whiteSpace: 'nowrap' }}>
-                  <span style={{ fontSize: '0.7rem', color: '#4ade80' }}>✓</span> {b}
+              {/* ── LEFT COLUMN ── */}
+              <div className="why-dhoond-content" style={{ flex: '1 1 480px', minWidth: 0, padding: '2rem 0' }}>
+                {/* Label */}
+                <span style={{ display: 'inline-block', background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.35)', color: '#a5b4fc', fontSize: '0.72rem', fontWeight: 800, padding: '5px 16px', borderRadius: '99px', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
+                  Why Dhoond?
                 </span>
-              ))}
-            </div>
+                <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.25rem)', fontWeight: 900, color: '#fff', margin: '0 0 1rem', lineHeight: 1.1 }}>
+                  Join{' '}
+                  <span style={{ background: 'linear-gradient(90deg, #818cf8 0%, #38bdf8 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    1 Lakh+
+                  </span>{' '}Happy Customers
+                </h2>
+                <p className="description" style={{ color: '#94a3b8', fontSize: '1rem', fontWeight: 500, maxWidth: '480px', margin: '0 0 3rem', lineHeight: 1.65 }}>
+                  India's most trusted home &amp; commercial services platform — professional, verified, on-demand.
+                </p>
 
-            <div style={{ textAlign: 'center' }}>
-              <button
-                onClick={() => navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)}
-                style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#fff', border: 'none', padding: '1.1rem 2.5rem', borderRadius: '14px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 8px 32px rgba(99,102,241,0.35)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
-                className="btn-hover"
-              >
-                Book a Service Now <ChevronRight size={18} />
-              </button>
+                {/* Features List */}
+                <div className="features-list" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginBottom: '2.5rem' }}>
+                  {[
+                    { icon: <Clock size={22} />, title: '15 Min Response Time', desc: 'Experts assigned instantly after booking — no waiting, no delays.', color: '#818cf8' },
+                    { icon: <ShieldCheck size={22} />, title: 'Verified & Insured Experts', desc: 'Every pro is background-checked, trained, and insured.', color: '#38bdf8' },
+                    { icon: <Star size={22} />, title: '4.9/5 Consistent Rating', desc: 'Quality guaranteed — or we redo the job, free of charge.', color: '#fbbf24' },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem' }}>
+                      <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: `rgba(${item.color === '#818cf8' ? '99,102,241' : item.color === '#38bdf8' ? '56,189,248' : '251,191,36'},0.15)`, color: item.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+                        {item.icon}
+                      </div>
+                      <div>
+                        <div className="feature-title" style={{ fontWeight: 800, fontSize: '1.05rem', color: '#f1f5f9', marginBottom: '0.3rem', letterSpacing: '-0.01em' }}>{item.title}</div>
+                        <div className="feature-desc" style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.6 }}>{item.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pills */}
+                <div className="pills-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '2.5rem' }}>
+                  {['No Hidden Charges', 'On-Time Guarantee', 'Easy Rescheduling', 'Post-Service Support'].map(b => (
+                    <span key={b} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)', color: '#e2e8f0', fontSize: '0.8rem', fontWeight: 700, padding: '6px 13px', borderRadius: '99px', whiteSpace: 'nowrap' }}>
+                      <span style={{ fontSize: '0.7rem', color: '#4ade80' }}>✓</span> {b}
+                    </span>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                <button
+                  onClick={() => { if (isBengaluru) { navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`); } else { openComingSoon(); } }}
+                  style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#fff', border: 'none', padding: '1.1rem 2.5rem', borderRadius: '14px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 8px 32px rgba(99,102,241,0.35)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
+                  className="btn-hover"
+                >
+                  Book a Service Now <ChevronRight size={18} />
+                </button>
+              </div>
+
+              {/* ── RIGHT COLUMN — Phone mockup ── */}
+              <div className="phone-mockup-col desktop-only" style={{ flex: '1 1 500px', minWidth: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+                  {/* Glow behind image */}
+                  <div style={{ position: 'absolute', inset: '-60px', background: 'radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 70%)', filter: 'blur(30px)', borderRadius: '50%', pointerEvents: 'none' }} />
+                  <img
+                    src="/images/hero_tech.png"
+                    alt="Dhoond Service Excellence"
+                    style={{
+                      width: '100%',
+                      maxWidth: '650px',
+                      height: 'auto',
+                      display: 'block',
+                      margin: '0 auto',
+                      position: 'relative',
+                      zIndex: 1,
+                      filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.4))',
+                      maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
+                      WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
+                    }}
+                  />
+                </div>
+              </div>
+
             </div>
           </div>
         </section>
@@ -559,9 +624,9 @@ const Home = () => {
             </div>
             <div className="testi-scroll testi-grid fade-up" style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', paddingBottom: '3.5rem', WebkitOverflowScrolling: 'touch' }}>
               {[
-                { name: 'Hemanth', role: 'Resident of Bengaluru', stars: 5, text: 'Absolutely brilliant service! The technician arrived on time, diagnosed the issue within minutes, and was done in under 30 mins. Will definitely book again.' },
-                { name: 'Rahul Mehta', role: 'Business Owner', stars: 4, text: 'Good experience overall. The painting team was professional and the work quality was solid. Took a bit longer than expected, but the result was worth it.' },
-                { name: 'Sunita Kapoor', role: 'House Owner', stars: 3, text: 'Service was okay. The plumber did fix the leak but left without cleaning up. Could improve on punctuality and communication.' },
+                { name: 'Hemanth', role: 'HSR Layout, Bengaluru', stars: 5, text: 'Absolutely brilliant service! The technician arrived on time, diagnosed the issue within minutes, and was done in under 30 mins. Will definitely book again.' },
+                { name: 'Rahul Mehta', role: 'Business Owner, Bengaluru', stars: 4, text: 'Good experience overall. The painting team was professional and the work quality was solid. Took a bit longer than expected, but the result was worth it.' },
+                { name: 'Sunita Kapoor', role: 'House Owner, Nagpur', stars: 3, text: 'Service was okay. The plumber did fix the leak but left without cleaning up. Could improve on punctuality and communication.' },
               ].map(r => (
                 <div key={r.name} style={{ flex: '0 0 300px', minWidth: '260px', background: '#fff', padding: '2rem', borderRadius: '20px', border: '1px solid #f1f5f9', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }} className="card-hover-lift stagger-card">
                   <div style={{ display: 'flex', gap: '3px', marginBottom: '0.85rem' }}>
@@ -590,7 +655,17 @@ const Home = () => {
 
 
         <div className="mobile-only fade-up" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '1rem', background: '#fff', borderTop: '1px solid #e5e7eb', zIndex: 50 }}>
-          <button onClick={() => navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)} style={{ width: '100%', background: '#facc15', color: '#111', padding: '1.25rem 1.5rem', borderRadius: '16px', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="btn-hover cta-glow">
+          <button 
+            onClick={() => {
+              if (isBengaluru) {
+                navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`);
+              } else {
+                openComingSoon();
+              }
+            }} 
+            style={{ width: '100%', background: '#facc15', color: '#111', padding: '1.25rem 1.5rem', borderRadius: '16px', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} 
+            className="btn-hover cta-glow"
+          >
             <span style={{ fontWeight: 900, fontSize: '1.15rem' }}>Book a Service</span>
             <span style={{ fontSize: '1.1rem', fontWeight: 900 }}>₹99</span>
           </button>

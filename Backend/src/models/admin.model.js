@@ -1,4 +1,4 @@
-const pool = require("../db/db");
+const pool = require('../db/db.js');
 
 const getStats = async () => {
   const usersCount = (await pool.query('SELECT COUNT(*) FROM users')).rows[0].count;

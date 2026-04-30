@@ -44,8 +44,10 @@ const getUserProfileController = async (req, res) => {
     console.log(`[Backend Profile] Request ID: ${id}, Phone Query: ${phone}`);
     
     let user;
-    if (id && id !== 'undefined' && id !== 'null') {
-      user = await userModel.getUserById(id);
+    const effectiveId = id === 'AMEC01' ? 1 : id;
+
+    if (effectiveId && effectiveId !== 'undefined' && effectiveId !== 'null') {
+      user = await userModel.getUserById(effectiveId);
       if (user) console.log(`[Backend Profile] Found by ID: ${user.id}`);
     }
     

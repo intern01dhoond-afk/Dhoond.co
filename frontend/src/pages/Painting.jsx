@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import PaintingServiceList from '../components/PaintingServiceList';
+import { useUI } from '../context/UIContext';
 
 function loadScript(src) {
   return new Promise((res) => {
@@ -23,6 +24,7 @@ export default function Painting() {
   const [galleryActive, setGalleryActive] = useState('after');
   const [activeService, setActiveService] = useState('Painting');
   const [selectedService, setSelectedService] = useState(null);
+  const { openComingSoon, locationLabel, locationSubtext } = useUI();
 
   // Sync URL Params -> Local Modal State
   useEffect(() => {
@@ -42,6 +44,17 @@ export default function Painting() {
   const cleanupRef = useRef([]);
 
   useEffect(() => {
+    const isBengaluru = locationLabel.toLowerCase().includes('bengaluru') || 
+                         locationLabel.toLowerCase().includes('bangalore') ||
+                         locationSubtext.toLowerCase().includes('bengaluru') ||
+                         locationSubtext.toLowerCase().includes('bangalore');
+    
+    if (locationLabel && locationLabel !== 'Fetching location…' && locationLabel !== 'Detecting…' && !isBengaluru) {
+      openComingSoon();
+      navigate('/');
+      return;
+    }
+
     window.scrollTo(0, 0);
     const touch = isTouch();
 
