@@ -447,17 +447,10 @@ const PaintingServiceList = ({ service, onClose }) => {
                                 <span style={{ width: '24px', textAlign: 'center', fontWeight: 800, fontSize: '0.95rem', color: '#111' }}>{qty}</span>
                                 <button onClick={() => updateQuantity(svc.id, 1)}
                                   disabled={qty >= 1}
-<<<<<<< HEAD
                                   style={{
                                     width: '32px', height: '32px', background: 'none', border: 'none',
                                     cursor: qty >= 1 ? 'not-allowed' : 'pointer', fontSize: '1.1rem',
                                     color: qty >= 1 ? '#cbd5e1' : '#16a34a', fontWeight: 900
-=======
-                                  style={{ 
-                                    width: '32px', height: '32px', background: 'none', border: 'none', 
-                                    cursor: qty >= 1 ? 'not-allowed' : 'pointer', fontSize: '1.1rem', 
-                                    color: qty >= 1 ? '#cbd5e1' : '#16a34a', fontWeight: 900 
->>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa
                                   }}>+</button>
                               </div>
                               <span style={{ fontSize: '0.65rem', color: '#16a34a', fontWeight: 800 }}>In Cart</span>

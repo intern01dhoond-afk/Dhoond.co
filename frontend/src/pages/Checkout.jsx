@@ -5,10 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { MapPin, Clock, CreditCard, Tag, Percent, Phone, SquareCheck, Info, X, Calendar, Edit2, CheckCircle2, ShieldCheck, Lock, Smartphone, Building2, ChevronRight, CheckCircle, ChevronLeft } from 'lucide-react';
 import { formatOrderId } from '../utils/formatOrderId';
 import { detectCurrentLocation } from '../utils/location';
-<<<<<<< HEAD
 import AuthModal from '../components/AuthModal';
-=======
->>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa
 
 const Checkout = () => {
   const { cartItems: allCartItems, clearCart, clearCategoryFromCart, updateQuantity } = useCart();
@@ -481,7 +478,7 @@ const Checkout = () => {
 
         {/* FIRST SECTION (ON MOBILE: Summary & Cart) */}
         <div style={{ order: isMobile ? 1 : 2, display: 'flex', flexDirection: 'column', gap: '1rem', width: isMobile ? '100%' : '40%' }}>
-<<<<<<< HEAD
+
 
           {/* Cart Block - Matched to Image 1 */}
           <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #eaeaea', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
@@ -492,7 +489,7 @@ const Checkout = () => {
                 <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '0.95rem', color: '#111', fontWeight: 600, lineHeight: 1.4 }}>{item.title}</div>
-=======
+
            
             {/* Cart Block - Matched to Image 1 */}
             <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #eaeaea', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
@@ -680,7 +677,6 @@ const Checkout = () => {
                     <textarea value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} rows={2} style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '0.95rem', marginBottom: '1.25rem', resize: 'none', outline: 'none' }} placeholder="Door No, Street name..." autoFocus />
                     
                     <button onClick={() => setIsEditingAddress(false)} style={{ width: '100%', background: '#111', color: '#fff', border: 'none', padding: '1.1rem', borderRadius: '12px', fontWeight: 800, cursor: 'pointer', fontSize: '1rem' }}>Confirm Location</button>
->>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
