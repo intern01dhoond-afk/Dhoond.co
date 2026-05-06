@@ -678,35 +678,38 @@ const Checkout = () => {
                     
                     <button onClick={() => setIsEditingAddress(false)} style={{ width: '100%', background: '#111', color: '#fff', border: 'none', padding: '1.1rem', borderRadius: '12px', fontWeight: 800, cursor: 'pointer', fontSize: '1rem' }}>Confirm Location</button>
                   </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                    {/* Counter - Clean style from Image 1 */}
-                    <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.15rem' }}>
-                      <button style={{ background: 'transparent', border: 'none', width: '24px', height: '24px', cursor: 'pointer', color: '#6e42e5', fontSize: '1rem', fontWeight: 700 }} onClick={() => updateQuantity(item.id, -1)}>-</button>
-                      <span style={{ width: '20px', textAlign: 'center', fontSize: '0.9rem', fontWeight: 700, color: '#6e42e5' }}>{item.quantity}</span>
-                      <button
-                        style={{
-                          background: 'transparent', border: 'none', width: '24px', height: '24px',
-                          cursor: item.title?.toLowerCase().includes('consultation') ? 'not-allowed' : 'pointer',
-                          color: item.title?.toLowerCase().includes('consultation') ? '#cbd5e1' : '#6e42e5',
-                          fontSize: '1rem', fontWeight: 700
-                        }}
-                        onClick={() => updateQuantity(item.id, 1)}
-                        disabled={item.title?.toLowerCase().includes('consultation')}
-                      >+</button>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '12px', marginRight: '1.25rem', color: '#64748b' }}>
+                        <MapPin size={22} strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: '1rem', color: '#111', marginBottom: '0.1rem' }}>Address</div>
+                        <div style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 600, maxWidth: isMobile ? '160px' : '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{formData.address}</div>
+                      </div>
                     </div>
-
-                    {/* Price */}
-                    <div style={{ textAlign: 'right', minWidth: '60px' }}>
-                      <div style={{ fontSize: '1rem', fontWeight: 800, color: '#111' }}>₹{Number(item.discountPrice || 0).toFixed(0)}</div>
-                      {item.originalPrice > item.discountPrice && (
-                        <div style={{ fontSize: '0.8rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>₹{Number(item.originalPrice || 0).toFixed(0)}</div>
-                      )}
-                    </div>
+                    <button onClick={() => setIsEditingAddress(true)} style={{ background: 'transparent', border: 'none', color: '#6e42e5', fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Edit2 size={14}/> Edit</button>
                   </div>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+  
+              {/* 3. Slot Details */}
+              <div style={{ padding: '1.5rem' }}>
+                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '12px', marginRight: '1.25rem', color: '#64748b' }}>
+                        <Clock size={22} strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: '1rem', color: '#111', marginBottom: '0.1rem' }}>Service Timing</div>
+                        <div style={{ fontSize: '0.9rem', color: (selectedDate && selectedTime) ? '#111' : '#ef4444', fontWeight: 600 }}>
+                          {(selectedDate && selectedTime) ? `${selectedDate} at ${selectedTime}` : 'Select a date and time'}
+                        </div>
+                      </div>
+                    </div>
+                    <button onClick={() => { setTempDate(selectedDate || dates[0].display); setTempTime(selectedTime || '09:00 AM'); setIsSlotModalOpen(true); }} style={{ background: 'transparent', border: 'none', color: '#6e42e5', fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>{(selectedDate && selectedTime) ? <Edit2 size={14}/> : <Plus size={14}/>} { (selectedDate && selectedTime) ? 'Edit' : 'Select'}</button>
+                 </div>
 
             {/* Expert arrival instruction */}
             <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem', marginTop: '0.25rem' }}>
