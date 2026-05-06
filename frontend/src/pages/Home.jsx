@@ -8,11 +8,12 @@ import ComingSoonModal from '../components/ComingSoonModal';
 
 const Home = () => {
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
   const [featuredServices, setFeaturedServices] = useState([]);
   const { openComingSoon, closeComingSoon, showComingSoon, locationLabel, locationSubtext, userLat, userLng } = useUI();
   const [shakingId, setShakingId] = useState(null);
   const scrollContainerRef = useRef(null);
+  const servicesRef = useRef(null);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -48,10 +49,26 @@ const Home = () => {
       navigate('/cart');
     }
   };
+  const isBengaluru = (locationLabel || '').toLowerCase().includes('bengaluru') || 
+                       (locationLabel || '').toLowerCase().includes('bangalore') ||
+                       (locationSubtext || '').toLowerCase().includes('bengaluru') ||
+                       (locationSubtext || '').toLowerCase().includes('bangalore');
+
+  const isNagpur = isInsideGeofence(userLat, userLng, 21.1497877, 79.0806859, 8000) || 
+                    (locationLabel || '').toLowerCase().includes('nagpur') ||
+                    (locationSubtext || '').toLowerCase().includes('nagpur');
+
   useEffect(() => {
     // Map service titles to distinct local images by keyword
     const pickImage = (title = '') => {
       const t = title.toLowerCase();
+      if (t === 'ac gas top-up') return '/services/ac_gas_top_up.webp';
+      if (t === 'geyser installation') return '/services/geyser.webp';
+      if (t === 'ceiling fan installation') return '/services/electrician_ceiling_fan_install.webp';
+      if (t.includes('washing machine installation')) return '/services/washing_machine_inspection_fully_automatic_front_load_.webp';
+      if (t === 'water purifier installation') return '/services/water_purifier.webp';
+      if (t === 'electrician visit') return '/services/electrician_visit.webp';
+      
       if (t.includes('consultation') || t.includes('expert')) return '/painting_banner.png';
       if (t.includes('single')) return '/images/single%20wall.jpg';
       if (t.includes('exterior') || t.includes('weather')) return '/images/exterior_painting.webp';
@@ -71,6 +88,15 @@ const Home = () => {
       return '/images/exterior_painting.webp'; // generic fallback — a real painting photo
     };
 
+    const nagpurFallback = [
+      { id: 'n1', title: 'AC Gas Top-up', discountPrice: 1499, originalPrice: 1800, image: '/services/ac_gas_top_up.webp' },
+      { id: 'n2', title: 'Geyser installation', discountPrice: 449, originalPrice: 600, image: '/services/geyser.webp' },
+      { id: 'n3', title: 'Ceiling Fan Installation', discountPrice: 199, originalPrice: 300, image: '/services/electrician_ceiling_fan_install.webp' },
+      { id: 'n4', title: "Washing Machine Installation 'Fully-automatic front load'", discountPrice: 549, originalPrice: 950, image: '/services/washing_machine_inspection_fully_automatic_front_load_.webp' },
+      { id: 'n5', title: 'Water Purifier Installation', discountPrice: 449, originalPrice: 600, image: '/services/water_purifier.webp' },
+      { id: 'n6', title: 'Electrician Visit', discountPrice: 199, originalPrice: 300, image: '/services/electrician_visit.webp' },
+    ];
+
     const apiUrl = import.meta.env.VITE_API_URL || '';
     fetch(`${apiUrl}/api/V1/services`)
       .then(res => res.json())
@@ -78,16 +104,62 @@ const Home = () => {
         // Handle wrapped vs direct response
         const data = Array.isArray(result) ? result : (result.services || result.data || []);
 
-        // Filter for painting services only, or use a curated list if none found
-        const paintingServices = data.filter(s => s.title && s.title.toLowerCase().includes('paint'));
+        if (isNagpur) {
+          const nagpurTitles = [
+            "AC Gas Top-up",
+            "Geyser installation",
+            "Ceiling Fan Installation",
+            "Washing Machine Installation 'Fully-automatic front load'",
+            "Water Purifier Installation",
+            "Electrician Visit"
+          ];
 
-        if (paintingServices.length > 0) {
-          // Assign distinct images based on title keywords
-          setFeaturedServices(
-            paintingServices.slice(0, 6).map(s => ({ ...s, image: pickImage(s.title) }))
-          );
+          const filtered = nagpurTitles.map(title => {
+            const s = data.find(x => x.title === title);
+            if (s) {
+              return { 
+                ...s, 
+                discountPrice: s.discount_price, 
+                originalPrice: s.original_price,
+                image: pickImage(s.title) 
+              };
+            }
+            return nagpurFallback.find(x => x.title === title);
+          }).filter(Boolean);
+
+          setFeaturedServices(filtered.length > 0 ? filtered : nagpurFallback);
         } else {
-          // Fallback curated list of painting services for the launch
+          // Filter for painting services only, or use a curated list if none found
+          const paintingServices = data.filter(s => s.title && s.title.toLowerCase().includes('paint'));
+
+          if (paintingServices.length > 0) {
+            // Assign distinct images based on title keywords
+            setFeaturedServices(
+              paintingServices.slice(0, 6).map(s => ({ 
+                ...s, 
+                discountPrice: s.discount_price, 
+                originalPrice: s.original_price,
+                image: pickImage(s.title) 
+              }))
+            );
+          } else {
+            // Fallback curated list of painting services for the launch
+            setFeaturedServices([
+              { id: 'f1', title: 'Full Home Painting (2BHK)', discountPrice: 5999, originalPrice: 8999, image: '/wall1.jpg' },
+              { id: 'f2', title: 'Full Home Painting (3BHK)', discountPrice: 7999, originalPrice: 11999, image: '/interior.jpg' },
+              { id: 'f3', title: 'Exterior Weatherproof Coating', discountPrice: 12999, originalPrice: 18999, image: '/images/exterior_painting.webp' },
+              { id: 'f4', title: 'Specialty Texture Wall', discountPrice: 2499, originalPrice: 3999, image: '/texture.png' },
+              { id: 'f5', title: 'Kitchen & Bathroom Painting', discountPrice: 1999, originalPrice: 2999, image: '/wall2.jpg' },
+              { id: 'f6', title: 'Commercial Office Painting', discountPrice: 9999, originalPrice: 14999, image: '/exterior_painter.png' },
+            ]);
+          }
+        }
+      })
+      .catch(() => {
+        // Fallback on error
+        if (isNagpur) {
+          setFeaturedServices(nagpurFallback);
+        } else {
           setFeaturedServices([
             { id: 'f1', title: 'Full Home Painting (2BHK)', discountPrice: 5999, originalPrice: 8999, image: '/wall1.jpg' },
             { id: 'f2', title: 'Full Home Painting (3BHK)', discountPrice: 7999, originalPrice: 11999, image: '/interior.jpg' },
@@ -97,17 +169,6 @@ const Home = () => {
             { id: 'f6', title: 'Commercial Office Painting', discountPrice: 9999, originalPrice: 14999, image: '/exterior_painter.png' },
           ]);
         }
-      })
-      .catch(() => {
-        // Fallback on error
-        setFeaturedServices([
-          { id: 'f1', title: 'Full Home Painting (2BHK)', discountPrice: 5999, originalPrice: 8999, image: '/wall1.jpg' },
-          { id: 'f2', title: 'Full Home Painting (3BHK)', discountPrice: 7999, originalPrice: 11999, image: '/interior.jpg' },
-          { id: 'f3', title: 'Exterior Weatherproof Coating', discountPrice: 12999, originalPrice: 18999, image: '/images/exterior_painting.webp' },
-          { id: 'f4', title: 'Specialty Texture Wall', discountPrice: 2499, originalPrice: 3999, image: '/texture.png' },
-          { id: 'f5', title: 'Kitchen & Bathroom Painting', discountPrice: 1999, originalPrice: 2999, image: '/wall2.jpg' },
-          { id: 'f6', title: 'Commercial Office Painting', discountPrice: 9999, originalPrice: 14999, image: '/exterior_painter.png' },
-        ]);
       });
 
     const observer = new IntersectionObserver((entries) => {
@@ -124,16 +185,7 @@ const Home = () => {
     }, 100);
 
     return () => observer.disconnect();
-  }, []);
-
-  const isBengaluru = (locationLabel || '').toLowerCase().includes('bengaluru') || 
-                       (locationLabel || '').toLowerCase().includes('bangalore') ||
-                       (locationSubtext || '').toLowerCase().includes('bengaluru') ||
-                       (locationSubtext || '').toLowerCase().includes('bangalore');
-
-  const isNagpur = isInsideGeofence(userLat, userLng, 21.1497877, 79.0806859, 8000) || 
-                    (locationLabel || '').toLowerCase().includes('nagpur') ||
-                    (locationSubtext || '').toLowerCase().includes('nagpur');
+  }, [isNagpur]);
 
   return (
     <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden', background: '#f9fafb', fontFamily: 'Inter, sans-serif', color: '#1a1a1a' }}>
@@ -181,10 +233,12 @@ const Home = () => {
            .hero-cta-row button { width: 100% !important; justify-content: center !important; }
            .hero-trust { justify-content: center !important; width: 100%; }
            
-           .service-grid-mobile { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 0.6rem !important; padding: 0 !important; }
-           .service-grid-mobile > div { width: 100% !important; min-height: 120px !important; padding: 1.2rem 0.3rem !important; border-radius: 18px !important; border: 1.5px solid #f1f5f9 !important; }
-           .service-grid-mobile img { width: 48px !important; height: 48px !important; margin-bottom: 6px !important; }
-           .service-grid-mobile span { font-size: 0.65rem !important; line-height: 1.1 !important; }
+           .service-grid-mobile { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 1rem !important; padding: 0 !important; }
+           .service-grid-mobile > div { width: 100% !important; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; overflow: visible !important; }
+           .service-grid-mobile .svc-icon-box { width: 100% !important; aspect-ratio: 1 / 1 !important; height: auto !important; border-radius: 16px !important; background: #ffffff !important; }
+           .service-grid-mobile .svc-icon-box img { width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center !important; padding: 4px !important; }
+           .service-grid-mobile .svc-label { font-size: 0.7rem !important; }
+           .service-grid-mobile .svc-tag { font-size: 7px !important; padding: 2px 5px !important; }
            
            .availability-tag { font-size: 6.5px !important; padding: 2px 4px !important; border-radius: 3px !important; margin-top: 3px !important; }
            .painting-highlight { border: 2.5px solid #facc15 !important; background: #fffcf0 !important; }
@@ -193,7 +247,10 @@ const Home = () => {
            .section-pad h2 { font-size: 1.75rem !important; line-height: 1.2 !important; }
            .section-pad p { font-size: 0.85rem !important; }
            .pop-scroll-mobile { padding-left: 5% !important; padding-right: 5% !important; scroll-snap-type: x mandatory; }
-           .pop-scroll-mobile > div { flex: 0 0 78vw !important; scroll-snap-align: center; }
+           .pop-scroll-mobile > div { flex: 0 0 240px !important; scroll-snap-align: start; }
+            .svc-img-container { height: 180px !important; }
+            .svc-card-body { padding: 0.85rem 0.9rem 0.9rem !important; }
+            .svc-card-btn { padding: 0.65rem 0.5rem !important; font-size: 0.72rem !important; white-space: nowrap !important; }
            
            .stat-number { font-size: 1.75rem !important; }
            .stat-label { font-size: 0.65rem !important; }
@@ -212,7 +269,7 @@ const Home = () => {
         .phone-mockup-col:hover { transform: translateY(-5px); }
 
         @media(min-width: 769px) {
-           .service-grid { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important; }
+           .service-grid { display: flex !important; flex-wrap: wrap; justify-content: center; gap: 2rem !important; }
            .pop-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; }
            .testi-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; }
            .stagger-card:nth-child(even) { margin-top: 32px; }
@@ -258,13 +315,7 @@ const Home = () => {
 
                 <div className="hero-cta-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
                   <button
-                    onClick={() => {
-                      if (isBengaluru) {
-                        navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`);
-                      } else {
-                        openComingSoon();
-                      }
-                    }}
+                    onClick={() => servicesRef.current?.scrollIntoView({ behavior: 'smooth' })}
                     style={{ background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', color: '#fff', padding: '1.1rem 2rem', borderRadius: '14px', fontWeight: 800, fontSize: '1.05rem', border: 'none', cursor: 'pointer', boxShadow: '0 6px 24px rgba(37,99,235,0.35)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     className="btn-hover cta-glow"
                   >
@@ -308,19 +359,19 @@ const Home = () => {
               </div>
             </div>
 
-            <div style={{ marginTop: '2rem' }}>
+            <div ref={servicesRef} style={{ marginTop: '2rem' }}>
               <div style={{ marginBottom: '1.25rem' }}>
                 <span style={{ display: 'inline-block', background: '#eff6ff', color: '#2563eb', fontSize: '0.7rem', fontWeight: 800, padding: '3px 10px', borderRadius: '99px', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Our Services</span>
                 <h3 style={{ fontSize: 'clamp(1.15rem, 2.5vw, 1.4rem)', fontWeight: 900, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>Trusted Commercial &amp; Home Services</h3>
               </div>
               <div className="service-scroll service-grid service-grid-mobile" style={{ display: 'flex', gap: '1.25rem', overflowX: 'auto', paddingBottom: '1rem' }}>
-                {[
-                  { label: 'Painting',     img: '/icons/painter_new.jpg',    cat: 'painter' },
-                  { label: 'AC Tech',      img: '/icons/ac_technician.png',  cat: 'technician', subcat: 'ac' },
-                  { label: 'RO Tech',      img: '/icons/ro_technician.png',  cat: 'technician', subcat: 'ro' },
-                  { label: 'Electrician',  img: '/icons/electrician.png',    cat: 'electrician' },
-                  { label: 'Washing Mach.', img: '/icons/washing_machine.png', cat: 'technician', subcat: 'washing' },
-                  { label: 'Refrigerator', img: '/icons/refrigerator.png',   cat: 'technician', subcat: 'fridge' }
+                  {[
+                  { label: 'Painting',      img: '/icons/painter.png',     cat: 'painter',                      accent: '#d97706' },
+                  { label: 'AC Tech',       img: '/icons/ac_technician.png',   cat: 'technician', subcat: 'ac',      accent: '#2563eb' },
+                  { label: 'RO Tech',       img: '/icons/ro_technician.png',   cat: 'technician', subcat: 'ro',      accent: '#059669' },
+                  { label: 'Electrician',   img: '/icons/electrician.png',     cat: 'electrician',                   accent: '#db2777' },
+                  { label: 'Washing Mach.', img: '/icons/washing_machine.png', cat: 'technician', subcat: 'washing', accent: '#7c3aed' },
+                  { label: 'Refrigerator',  img: '/icons/refrigerator.png',    cat: 'technician', subcat: 'fridge',  accent: '#0284c7' }
                 ].map((item) => {
                   const isAvailable = (item.label === 'Painting' && isBengaluru) || 
                                       (item.label !== 'Painting' && item.label !== 'Refrigerator' && isNagpur);
@@ -347,29 +398,44 @@ const Home = () => {
                         }
                       }}
                       style={{
-                        flex: '0 0 auto', width: '120px', background: '#fff', padding: '1.25rem 0.5rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', cursor: 'pointer',
-                        border: isHighlight ? '2px solid #facc15' : (isAvailable ? '1px solid #e2e8f0' : '1px solid #f1f5f9'),
-                        boxShadow: isHighlight ? '0 0 20px rgba(250,204,21,0.2)' : '0 2px 8px rgba(0,0,0,0.04)',
-                        position: 'relative', transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                        transform: isHighlight ? 'scale(1.03)' : 'scale(1)',
-                        zIndex: isHighlight ? 5 : 1,
-                        opacity: 1,
-                        filter: 'none',
+                        flex: '0 0 auto', width: '150px',
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem',
+                        cursor: 'pointer', background: 'transparent', border: 'none', padding: 0,
+                        transition: 'transform 0.2s ease',
                       }}
-                      className={`card-hover-lift ${shakingId === item.label ? 'shake-anim' : ''}`}
+                      className={`${shakingId === item.label ? 'shake-anim' : ''}`}
                     >
-                      <div style={{ position: 'relative', width: '50px', height: '50px' }}>
-                        <img src={item.img} alt={item.label} style={{ width: '50px', height: '50px', objectFit: 'contain', filter: isAvailable ? 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))' : 'grayscale(0.7) opacity(0.6)' }} />
+                      {/* Standalone icon box */}
+                      <div className="svc-icon-box" style={{
+                        width: '135px', height: '135px', borderRadius: '28px',
+                        background: '#ffffff',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        overflow: 'hidden', position: 'relative',
+                        border: isHighlight ? `2.5px solid ${item.accent}` : '2.5px solid transparent',
+                        boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+                        transition: 'border 0.2s, box-shadow 0.2s',
+                      }}>
+                        <img
+                          src={item.img}
+                          alt={item.label}
+                          style={{
+                            width: '100%', height: '100%',
+                            objectFit: 'contain', objectPosition: 'center', padding: '6px',
+                            display: 'block',
+                            filter: isAvailable ? 'none' : 'grayscale(1) opacity(0.35)',
+                          }}
+                        />
                         {!isAvailable && (
-                          <div style={{ position: 'absolute', bottom: -4, right: -4, width: '18px', height: '18px', background: '#f1f5f9', border: '1.5px solid #e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px' }}>🔒</div>
+                          <div style={{ position: 'absolute', top: 10, right: 10, width: '22px', height: '22px', background: 'rgba(255,255,255,0.95)', border: '1.5px solid #e2e8f0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>🔒</div>
                         )}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: '1px' }}>
-                        <span style={{ fontSize: '0.8rem', fontWeight: 800, color: isAvailable ? '#1a1a1a' : '#94a3b8', textAlign: 'center', lineHeight: 1.2 }}>{item.label}</span>
+                      {/* Label + tag below the box */}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', width: '100%' }}>
+                        <span className="svc-label" style={{ fontSize: '1.05rem', fontWeight: 800, color: isAvailable ? '#0f172a' : '#94a3b8', textAlign: 'center', lineHeight: 1.25 }}>{item.label}</span>
                         {isAvailable ? (
-                          <div className="availability-tag tag-available">🔥 Available</div>
+                          <span className="svc-tag" style={{ fontSize: '10px', fontWeight: 800, color: item.accent, background: `${item.accent}12`, border: `1.5px solid ${item.accent}25`, padding: '3px 10px', borderRadius: '99px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>🔥 Available</span>
                         ) : (
-                          <div style={{ fontSize: '9px', color: '#94a3b8', fontWeight: 700, marginTop: '3px', textAlign: 'center', letterSpacing: '0.04em', textTransform: 'uppercase' }}>Coming Soon</div>
+                          <span className="svc-tag" style={{ fontSize: '10px', fontWeight: 700, color: '#cbd5e1', textAlign: 'center', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Coming Soon</span>
                         )}
                       </div>
                     </div>
@@ -386,7 +452,9 @@ const Home = () => {
               <div>
                 <span style={{ display: 'inline-block', background: '#dbeafe', color: '#1d4ed8', fontSize: '0.65rem', fontWeight: 800, padding: '4px 14px', borderRadius: '99px', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '1rem' }}>Popular Choices</span>
                 <h2 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.5rem)', fontWeight: 900, color: '#0f172a', margin: '0 0 0.75rem', lineHeight: 1.08, letterSpacing: '-0.03em' }}>Top Demanding Services</h2>
-                <p style={{ color: '#94a3b8', fontWeight: 300, fontSize: '1.05rem', margin: 0, letterSpacing: '0.01em', lineHeight: 1.65 }}>Book a consultation — our expert visits and gives exact pricing</p>
+                <p style={{ color: '#94a3b8', fontWeight: 300, fontSize: '1.05rem', margin: 0, letterSpacing: '0.01em', lineHeight: 1.65 }}>
+                  {isNagpur ? 'Reliable home and commercial services at transparent pricing' : 'Book a consultation — our expert visits and gives exact pricing'}
+                </p>
               </div>
               <div className="desktop-only" style={{ display: 'flex', gap: '0.5rem' }}>
                 <button onClick={scrollLeft} style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#fff', border: '1.5px solid #e2e8f0', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}><ChevronLeft size={22} /></button>
@@ -404,6 +472,11 @@ const Home = () => {
                   <div
                     key={s.id}
                     onClick={() => {
+                      if (isNagpur && !isConsult) {
+                        addToCart(s);
+                        navigate('/cart');
+                        return;
+                      }
                       if (!isBengaluru) {
                         openComingSoon();
                         return;
@@ -430,12 +503,12 @@ const Home = () => {
                     className="card-hover-lift"
                   >
                     {/* Image */}
-                    <div style={{ position: 'relative', width: '100%', height: '175px', overflow: 'hidden', background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)' }}>
+                    <div className="svc-img-container" style={{ position: 'relative', width: '100%', height: '175px', overflow: 'hidden', background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%)' }}>
                       <img
                         loading="lazy"
                         src={s.image}
                         alt={s.title}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', display: 'block' }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: isNagpur ? 'top' : 'center center', display: 'block' }}
                         onError={e => {
                           e.target.style.display = 'none';
                           e.target.parentElement.style.background = 'linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%)';
@@ -461,7 +534,7 @@ const Home = () => {
                     </div>
 
                     {/* Body */}
-                    <div style={{ padding: '1rem 1.1rem 1.1rem' }}>
+                    <div className="svc-card-body" style={{ padding: '1rem 1.1rem 1.1rem' }}>
                       <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.4rem', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {s.title}
                       </h3>
@@ -477,22 +550,28 @@ const Home = () => {
                         ) : (
                           <>
                             <span style={{ fontWeight: 900, color: '#0f172a', fontSize: '1rem' }}>Starting {'₹'}{Number(discountPrice).toLocaleString('en-IN')}</span>
-                            <span style={{ background: '#f1f5f9', color: '#64748b', fontSize: '0.65rem', fontWeight: 700, padding: '2px 7px', borderRadius: '6px', border: '1px solid #e2e8f0', whiteSpace: 'nowrap' }}>After Consult</span>
                           </>
                         )}
                       </div>
 
-                      <button style={{
-                        width: '100%',
-                        background: isConsult ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : '#0f172a',
-                        color: '#fff', border: 'none',
-                        padding: '0.7rem 1rem',
-                        borderRadius: '12px', fontWeight: 800, fontSize: '0.875rem', cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                        transition: 'opacity 0.2s',
-                      }}
+                      <button
+                        className="card-hover-lift svc-card-btn"
+                        style={{
+                          width: '100%',
+                          background: isConsult ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : '#0f172a',
+                          color: '#fff', border: 'none',
+                          padding: '0.7rem 1rem',
+                          borderRadius: '12px', fontWeight: 800, fontSize: '0.875rem', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                          transition: 'opacity 0.2s',
+                        }}
                         onClick={(e) => {
                           e.stopPropagation();
+                          if (isNagpur && !isConsult) {
+                            addToCart(s);
+                            navigate('/cart'); // Navigate directly to cart page
+                            return;
+                          }
                           if (!isBengaluru) {
                             openComingSoon();
                             return;
@@ -507,7 +586,7 @@ const Home = () => {
                           }
                         }}
                       >
-                        Book Consultation now
+                        {isNagpur && !isConsult ? 'Book Now' : 'Book Consultation'}
                         <ChevronRight size={15} />
                       </button>
                     </div>
@@ -578,7 +657,7 @@ const Home = () => {
 
                 {/* CTA */}
                 <button
-                  onClick={() => { if (isBengaluru) { navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`); } else { openComingSoon(); } }}
+                  onClick={() => servicesRef.current?.scrollIntoView({ behavior: 'smooth' })}
                   style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#fff', border: 'none', padding: '1.1rem 2.5rem', borderRadius: '14px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 8px 32px rgba(99,102,241,0.35)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
                   className="btn-hover"
                 >
@@ -654,22 +733,7 @@ const Home = () => {
 
 
 
-        <div className="mobile-only fade-up" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '1rem', background: '#fff', borderTop: '1px solid #e5e7eb', zIndex: 50 }}>
-          <button 
-            onClick={() => {
-              if (isBengaluru) {
-                navigate(`/painting?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`);
-              } else {
-                openComingSoon();
-              }
-            }} 
-            style={{ width: '100%', background: '#facc15', color: '#111', padding: '1.25rem 1.5rem', borderRadius: '16px', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} 
-            className="btn-hover cta-glow"
-          >
-            <span style={{ fontWeight: 900, fontSize: '1.15rem' }}>Book a Service</span>
-            <span style={{ fontSize: '1.1rem', fontWeight: 900 }}>₹99</span>
-          </button>
-        </div>
+
 
         {/* Global modal handled by MainLayout, but keeping this for legacy routes if any */}
       </div>

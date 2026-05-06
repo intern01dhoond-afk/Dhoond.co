@@ -208,11 +208,11 @@ export default function Painting() {
 
         /* ── HERO ── */
         .p-hero {
-          min-height: 100svh; /* iOS Safari fix */
-          padding: 20px 5vw 80px;
+          min-height: 90svh;
+          padding: 60px 5vw 60px;
           display: flex;
           flex-direction: column;
-          justify-content: flex-start;
+          justify-content: center;
           background: url(/painting_banner.png) center / cover no-repeat;
           overflow: hidden;
           position: relative;
@@ -396,6 +396,11 @@ export default function Painting() {
         .p-picon svg { width: 26px; height: 26px; fill: none; stroke-width: 1.5; }
         .process-card h3 { font-size: 17px; font-weight: 600; color: #2B2B2B; margin-bottom: 10px; }
         .process-card p { font-size: 13px; color: #8C8679; line-height: 1.65; font-weight: 300; margin: 0; }
+        @media (max-width: 768px) {
+          .p-process { padding: 40px 0 !important; }
+          .p-section-header { margin-bottom: 24px !important; }
+          .p-process-grid { padding-top: 0 !important; }
+        }
         @media (min-width: 1024px) {
           .p-process-grid { display: grid; grid-template-columns: repeat(4,1fr); overflow: visible; padding: 8px 5vw 0; }
           .process-card { min-width: unset; flex: unset; }
@@ -407,7 +412,7 @@ export default function Painting() {
         .p-gallery-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 48px; }
         .gitem { border-radius: 24px; overflow: hidden; position: relative; opacity: 0; cursor: pointer; height: 280px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); transition: box-shadow .4s, transform .4s; }
         .gitem:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.18); }
-        .p-gbg { position: absolute; inset: 0; height: 115%; top: -7%; transition: transform 1.3s cubic-bezier(.16,1,.3,1), filter .5s; background-size: cover !important; background-position: center !important; }
+        .p-gbg { position: absolute; inset: 0; transition: transform 1.3s cubic-bezier(.16,1,.3,1), filter .5s; background-size: cover !important; background-position: center 30% !important; }
         .gitem:hover .p-gbg { transform: scale(1.08); }
         .p-goverlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.55) 100%); transition: opacity .4s; }
         .p-glabel { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 24px 22px; background: linear-gradient(transparent, rgba(10,10,20,0.92)); transform: translateY(8px); opacity: 0; transition: all .4s cubic-bezier(.16,1,.3,1); }
@@ -666,9 +671,9 @@ export default function Painting() {
         <section className="p-stats" id="p-statsSec" aria-label="Our numbers">
           <div className="p-stats-glow" />
           {[
-            { target: 5200, label: 'Projects Completed' },
-            { target: 1200, label: 'Happy Clients' },
-            { target: 50, label: 'Expert Painters' },
+            { target: 1200, label: 'Projects Completed' },
+            { target: 950, label: 'Happy Clients' },
+            { target: 60, label: 'Expert Painters' },
           ].map(s => (
             <div key={s.label} className="p-stat">
               <div className="num"><span className="p-cnum" data-target={s.target}>0</span><span className="plus">+</span></div>
@@ -729,7 +734,7 @@ export default function Painting() {
               { bg: 'url(/Gemini_Generated_Image_nixczynixczynixc.png)', title: 'Living Room Makeover', loc: 'Nagpur', tag: 'Luxury', price: '₹18,000' },
               { bg: galleryActive === 'before' ? 'url(/wall2.jpg)' : 'url(/images/interior.jpg)', title: 'Bedroom Retreat', loc: 'Bengaluru, HSR Layout Sector 1', tag: galleryActive === 'before' ? 'Before' : 'After', price: '₹12,000' },
               { bg: 'url(/space.jpg)', title: 'Full Home Painting', loc: 'Bengaluru, Koramangala', tag: 'Elite', price: '₹45,000' },
-              { bg: 'url(/Gemini_Generated_Image_nixczynixczynixc.png)', title: 'Exterior Excellence', loc: 'Nagpur, Ramdaspeth', tag: 'Premium', price: '₹32,000' },
+              { bg: 'url(/exterior_excellence.png)', title: 'Exterior Excellence', loc: 'Nagpur, Ramdaspeth', tag: 'Premium', price: '₹32,000' },
             ].map(g => (
               <div key={g.title} className="gitem" tabIndex={0} role="img" aria-label={`${g.title}, ${g.loc}`}>
                 <div className="p-gbg" style={{ background: `${g.bg} center/cover no-repeat`, filter: galleryActive === 'before' ? 'grayscale(0.4) contrast(1.05)' : 'none', transition: 'filter .6s' }} />
@@ -813,23 +818,7 @@ export default function Painting() {
 
 
 
-        <div className="mobile-sticky-cta" role="complementary" aria-label="Book now">
-          <button onClick={() => navigate(`?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)} className="mobile-sticky-cta-call" style={{ width: '100%', margin: 0, border: 'none', background: '#facc15' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '42px', height: '42px', background: 'rgba(0,0,0,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg viewBox="0 0 24 24" stroke="#111" fill="none" width="20" height="20" strokeWidth="2.5"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" /></svg>
-              </div>
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111' }}>Book a Service</div>
-                <div style={{ fontSize: '0.8rem', color: 'rgba(0,0,0,0.6)', marginTop: '2px' }}>Book your Consultation</div>
-              </div>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.78rem', color: 'rgba(0,0,0,0.5)', fontWeight: 500 }}>Starting</div>
-              <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#111' }}>₹99</div>
-            </div>
-          </button>
-        </div>
+
 
       </div>
 

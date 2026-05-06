@@ -2,9 +2,19 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import * as Lucide from 'lucide-react';
 import { useUI } from '../context/UIContext';
+import { isInsideGeofence } from '../utils/location';
 
 const Footer = () => {
-  const { openComingSoon } = useUI();
+  const { openComingSoon, locationLabel, locationSubtext, userLat, userLng } = useUI();
+
+  const isBengaluru = (locationLabel || '').toLowerCase().includes('bengaluru') ||
+    (locationLabel || '').toLowerCase().includes('bangalore') ||
+    (locationSubtext || '').toLowerCase().includes('bengaluru') ||
+    (locationSubtext || '').toLowerCase().includes('bangalore');
+
+  const isNagpur = isInsideGeofence(userLat, userLng, 21.1497877, 79.0806859, 8000) ||
+    (locationLabel || '').toLowerCase().includes('nagpur') ||
+    (locationSubtext || '').toLowerCase().includes('nagpur');
 
   // Safe icon renderer to prevent runtime crashes if an icon is missing in this version
   const Icon = ({ name, size = 18 }) => {
@@ -95,7 +105,7 @@ const Footer = () => {
           }} className="mobile-text-center">
             {[
               { title: 'Company', links: ['About Us', 'Careers', 'Blog', 'Press'] },
-              { title: 'Services', links: ['Painting', 'AC Tech', 'Plumbing', 'Electrician', 'Deep Cleaning'] },
+              { title: 'Services', links: ['Painting', 'AC Tech', 'RO Tech', 'Electrician', 'Washing Mach.', 'Refrigerator'] },
               { title: 'Partners', links: ['Join as Expert', 'Partner with Us', 'Training Center'] },
               { title: 'Support', links: ['Help Center', 'Privacy Policy', 'Terms of Service', 'Refund Policy'] },
             ].map(col => (
@@ -110,9 +120,37 @@ const Footer = () => {
                     return (
                       <Link
                         key={l}
-                        to={isPainting ? "/painting" : "#"}
+                        to={(() => {
+                          const lower = l.toLowerCase();
+                          if (lower === 'painting') return "/painting";
+                          if (lower === 'ac tech') return "/shop?cat=technician&subcat=ac";
+                          if (lower === 'ro tech') return "/shop?cat=technician&subcat=ro";
+                          if (lower === 'electrician') return "/shop?cat=electrician";
+                          if (lower === 'washing mach.') return "/shop?cat=technician&subcat=washing";
+                          if (lower === 'refrigerator') return "/shop?cat=technician&subcat=fridge";
+                          return "#";
+                        })()}
                         onClick={(e) => {
-                          if (isOtherService) { e.preventDefault(); openComingSoon(); }
+                          const lower = l.toLowerCase();
+                          // Painting only in Bengaluru
+                          if (lower === 'painting' && !isBengaluru) {
+                            e.preventDefault();
+                            openComingSoon();
+                            return;
+                          }
+                          // Other services in Nagpur or Bengaluru
+                          const isOtherService = ['ac tech', 'ro tech', 'electrician', 'washing mach.', 'refrigerator'].includes(lower);
+                          if (isOtherService && !isNagpur && !isBengaluru) {
+                            e.preventDefault();
+                            openComingSoon();
+                            return;
+                          }
+                          
+                          // Handle coming soon for specific subcategories if needed in Shop.jsx
+                          if (lower === 'refrigerator') {
+                             e.preventDefault();
+                             openComingSoon();
+                          }
                         }}
                         style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.2s', textDecoration: 'none' }}
                         onMouseEnter={e => {

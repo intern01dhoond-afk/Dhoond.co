@@ -8,29 +8,29 @@ import { isInsideGeofence } from '../utils/location';
 
 // ─── Painting sub-category data (frontend-only, no DB needed) ─────────────────
 const FEW_ROOMS_SERVICES = [
-  { id: 'fw1', title: 'Few walls painting', image: '/services/Touch-Up Painter.png', discountPrice: 999, originalPrice: 1499, discountTag: '33% OFF', description: 'Paint 1-3 individual walls in any room with premium emulsion paint.', category: 'painter', subcategory: 'few-rooms' },
-  { id: 'fw2', title: 'Bedroom painting', image: '/services/Interior painter.png', discountPrice: 1499, originalPrice: 2199, discountTag: '32% OFF', description: 'Full bedroom walls and ceiling painted with smooth finish emulsion.', category: 'painter', subcategory: 'few-rooms' },
-  { id: 'fw3', title: 'Living & dining room painting', image: '/services/House Painter.png', discountPrice: 2499, originalPrice: 3499, discountTag: '28% OFF', description: 'Complete living and dining space painted including ceiling.', category: 'painter', subcategory: 'few-rooms' },
-  { id: 'fw4', title: 'Few rooms painting', image: '/services/Painter.png', discountPrice: 3499, originalPrice: 4999, discountTag: '30% OFF', description: 'Painting of 2-3 rooms including all walls with quality emulsion.', category: 'painter', subcategory: 'few-rooms' },
-  { id: 'fw5', title: 'Kitchen & bathroom painting', image: '/services/House Painter.png', discountPrice: 1299, originalPrice: 1999, discountTag: '35% OFF', description: 'Expert kitchen and bathroom wall painting with moisture-resistant paint.', category: 'painter', subcategory: 'few-rooms' },
-  { id: 'fw6', title: 'Doors, grills & cabinets', image: '/services/Wood Polisher.png', discountPrice: 799, originalPrice: 1199, discountTag: '33% OFF', description: 'Sanding and repainting of doors, grills, and wooden cabinets.', category: 'painter', subcategory: 'few-rooms' },
+  { id: 'fw1', title: 'Few walls painting', image: '/services/Touch-Up Painter.webp', discountPrice: 999, originalPrice: 1499, discountTag: '33% OFF', description: 'Paint 1-3 individual walls in any room with premium emulsion paint.', category: 'painter', subcategory: 'few-rooms' },
+  { id: 'fw2', title: 'Bedroom painting', image: '/services/Interior painter.webp', discountPrice: 1499, originalPrice: 2199, discountTag: '32% OFF', description: 'Full bedroom walls and ceiling painted with smooth finish emulsion.', category: 'painter', subcategory: 'few-rooms' },
+  { id: 'fw3', title: 'Living & dining room painting', image: '/services/House Painter.webp', discountPrice: 2499, originalPrice: 3499, discountTag: '28% OFF', description: 'Complete living and dining space painted including ceiling.', category: 'painter', subcategory: 'few-rooms' },
+  { id: 'fw4', title: 'Few rooms painting', image: '/services/Painter.webp', discountPrice: 3499, originalPrice: 4999, discountTag: '30% OFF', description: 'Painting of 2-3 rooms including all walls with quality emulsion.', category: 'painter', subcategory: 'few-rooms' },
+  { id: 'fw5', title: 'Kitchen & bathroom painting', image: '/services/House Painter.webp', discountPrice: 1299, originalPrice: 1999, discountTag: '35% OFF', description: 'Expert kitchen and bathroom wall painting with moisture-resistant paint.', category: 'painter', subcategory: 'few-rooms' },
+  { id: 'fw6', title: 'Doors, grills & cabinets', image: '/services/Wood Polisher.webp', discountPrice: 799, originalPrice: 1199, discountTag: '33% OFF', description: 'Sanding and repainting of doors, grills, and wooden cabinets.', category: 'painter', subcategory: 'few-rooms' },
 ];
 
 const FULL_HOME_SERVICES = {
-  '1bhk': { id: 'fh1', title: '1 BHK Full Home Painting', image: '/services/Interior painter.png', discountPrice: 6999, originalPrice: 8999, discountTag: '22% OFF', description: 'Complete interior painting of a 1 BHK home — all rooms, ceiling, and walls.', category: 'painter', subcategory: 'full-home' },
-  '2bhk': { id: 'fh2', title: '2 BHK Full Home Painting', image: '/services/House Painter.png', discountPrice: 10999, originalPrice: 13999, discountTag: '21% OFF', description: 'Complete interior painting of a 2 BHK home — all rooms, ceiling, and walls.', category: 'painter', subcategory: 'full-home' },
-  '3bhk': { id: 'fh3', title: '3 BHK Full Home Painting', image: '/services/House Painter.png', discountPrice: 15999, originalPrice: 19999, discountTag: '20% OFF', description: 'Complete interior painting of a 3 BHK home — all rooms, ceiling, and walls.', category: 'painter', subcategory: 'full-home' },
+  '1bhk': { id: 'fh1', title: '1 BHK Full Home Painting', image: '/services/Interior painter.webp', discountPrice: 6999, originalPrice: 8999, discountTag: '22% OFF', description: 'Complete interior painting of a 1 BHK home — all rooms, ceiling, and walls.', category: 'painter', subcategory: 'full-home' },
+  '2bhk': { id: 'fh2', title: '2 BHK Full Home Painting', image: '/services/House Painter.webp', discountPrice: 10999, originalPrice: 13999, discountTag: '21% OFF', description: 'Complete interior painting of a 2 BHK home — all rooms, ceiling, and walls.', category: 'painter', subcategory: 'full-home' },
+  '3bhk': { id: 'fh3', title: '3 BHK Full Home Painting', image: '/services/House Painter.webp', discountPrice: 15999, originalPrice: 19999, discountTag: '20% OFF', description: 'Complete interior painting of a 3 BHK home — all rooms, ceiling, and walls.', category: 'painter', subcategory: 'full-home' },
 };
 
 
 // ─── Electrician Subcategories ────────────────────────────────────────────────
 const ELECTRICIAN_SUBCATS = [
-  { id: 'fan', label: 'Fan', emoji: <img src="/services/electrician_fan.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Fan" /> },
-  { id: 'switch', label: 'Switch & socket', emoji: <img src="/services/switchboard_installation_6_points_.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Switch" /> },
-  { id: 'wiring', label: 'Wiring', emoji: <img src="/services/external_wiring.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Wiring" /> },
-  { id: 'doorbell', label: 'Doorbell', emoji: <img src="/services/doorbell.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Doorbell" /> },
-  { id: 'other', label: 'Other', emoji: <img src="/services/submeter.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Other" /> },
-  { id: 'painting', label: 'Painting', emoji: <img src="/icons/painter_new.jpg" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Painting" /> },
+  { id: 'fan', label: 'Fan', emoji: <img src="/services/electrician_fan.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Fan" /> },
+  { id: 'switch', label: 'Switch & socket', emoji: <img src="/services/switchboard_installation_6_points_.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Switch" /> },
+  { id: 'wiring', label: 'Wiring', emoji: <img src="/services/external_wiring.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Wiring" /> },
+  { id: 'doorbell', label: 'Doorbell', emoji: <img src="/services/doorbell.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Doorbell" /> },
+  { id: 'other', label: 'Other', emoji: <img src="/services/submeter.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Other" /> },
+  { id: 'painting', label: 'Painting', emoji: <img src="/icons/painter.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Painting" /> },
 ];
 
 const getElectricianSubcategory = (title) => {
@@ -46,12 +46,12 @@ const getElectricianSubcategory = (title) => {
 
 // ─── Technician Subcategories ─────────────────────────────────────────────────
 const TECHNICIAN_SUBCATS = [
-  { id: 'ac', label: 'AC', emoji: <img src="/services/ac_inspection.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="AC" /> },
-  { id: 'ro', label: 'RO', emoji: <img src="/services/ro_inspection.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="RO" /> },
-  { id: 'washing', label: 'Washing Machine', emoji: <img src="/services/washing_machine.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Washing Machine" /> },
-  { id: 'fridge', label: 'Refrigerator', emoji: <img src="/services/refrigarator.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Refrigerator" /> },
-  { id: 'microwave', label: 'Microwave', emoji: <img src="/services/microwave_oven.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Microwave" /> },
-  { id: 'painting', label: 'Painting', emoji: <img src="/icons/painter_new.jpg" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Painting" /> },
+  { id: 'ac', label: 'AC', emoji: <img src="/services/ac_inspection.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="AC" /> },
+  { id: 'ro', label: 'RO', emoji: <img src="/services/ro_inspection.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="RO" /> },
+  { id: 'washing', label: 'Washing Machine', emoji: <img src="/services/washing_machine.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Washing Machine" /> },
+  { id: 'fridge', label: 'Refrigerator', emoji: <img src="/services/refrigarator.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Refrigerator" /> },
+  { id: 'microwave', label: 'Microwave', emoji: <img src="/services/microwave_oven.webp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Microwave" /> },
+  { id: 'painting', label: 'Painting', emoji: <img src="/icons/painter.png" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Painting" /> },
 ];
 
 const getTechnicianSubcategory = (title) => {
@@ -188,10 +188,15 @@ const Shop = () => {
   // Subcategory click — updates URL
   const handleSubcatClick = (id, label) => {
     // Check if subcategory is available
-    const isComingSoon = (label === 'Refrigerator' || label === 'Microwave' || label === 'Painting');
+    const isComingSoon = (label === 'Refrigerator' || label === 'Microwave') || (label === 'Painting' && !isBengaluru);
     
     if (isComingSoon) {
       openComingSoon();
+      return;
+    }
+
+    if (label === 'Painting') {
+      navigate('/painting');
       return;
     }
 
@@ -462,14 +467,14 @@ const Shop = () => {
             <div className="subcat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.6rem' }}>
               {(category === 'electrician' ? ELECTRICIAN_SUBCATS : TECHNICIAN_SUBCATS)
                 .sort((a, b) => {
-                  const aSoon = (a.label === 'Refrigerator' || a.label === 'Microwave' || a.label === 'Painting');
-                  const bSoon = (b.label === 'Refrigerator' || b.label === 'Microwave' || b.label === 'Painting');
+                  const aSoon = (a.label === 'Refrigerator' || a.label === 'Microwave') || (a.label === 'Painting' && !isBengaluru);
+                  const bSoon = (b.label === 'Refrigerator' || b.label === 'Microwave') || (b.label === 'Painting' && !isBengaluru);
                   if (aSoon && !bSoon) return 1;
                   if (!aSoon && bSoon) return -1;
                   return 0;
                 })
                 .map(sc => {
-                  const isComingSoon = (sc.label === 'Refrigerator' || sc.label === 'Microwave' || sc.label === 'Painting');
+                  const isComingSoon = (sc.label === 'Refrigerator' || sc.label === 'Microwave') || (sc.label === 'Painting' && !isBengaluru);
                   return (
                     <div key={sc.id} onClick={() => handleSubcatClick(sc.id, sc.label)} style={{
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', cursor: 'pointer',
@@ -494,7 +499,7 @@ const Shop = () => {
                       <div style={{ width: '48px', height: '48px', borderRadius: '12px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', border: '1px solid #f1f5f9' }}>
                         {sc.emoji}
                       </div>
-                      <span style={{ fontSize: '0.62rem', textAlign: 'center', lineHeight: 1.1, color: isComingSoon ? '#94a3b8' : (subcat === sc.id ? '#1e40af' : '#475569'), fontWeight: subcat === sc.id ? 800 : 600, maxWidth: '95%', wordBreak: 'break-word', letterSpacing: '-0.01em' }}>{sc.label}</span>
+                      <span style={{ fontSize: '0.58rem', textAlign: 'center', lineHeight: 1.1, color: isComingSoon ? '#94a3b8' : (subcat === sc.id ? '#1e40af' : '#475569'), fontWeight: subcat === sc.id ? 800 : 700, maxWidth: '100%', wordBreak: 'break-word', letterSpacing: '-0.02em', height: '2.2em', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{sc.label}</span>
                     </div>
                   );
                 })}

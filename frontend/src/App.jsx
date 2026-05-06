@@ -53,10 +53,12 @@ const Navbar = () => {
   const mapSearchRef = React.useRef(null);
 
   React.useEffect(() => {
-    if (!localStorage.getItem('dhoond_location')) {
+    const savedLoc = localStorage.getItem('dhoond_location');
+    if (!savedLoc || savedLoc === 'Detecting…' || savedLoc === 'Location not found' || savedLoc === 'Fetching location…') {
       detectLocation();
     }
   }, []);
+
   const detectLocation = async () => {
     setLocating(true);
     updateLocation('Detecting…', '');
@@ -65,7 +67,7 @@ const Navbar = () => {
       updateLocation(loc.label, loc.sub, loc.lat, loc.lng);
     } catch (err) {
       console.error("Location detection failed:", err);
-      updateLocation('Location not found', 'Please enter manually');
+      updateLocation('Location not detected', 'Click to set manually');
     } finally {
       setLocating(false);
     }
@@ -269,8 +271,8 @@ const Navbar = () => {
         @media(max-width: 900px) { 
           .desktop-only { display: none !important; }
           .dhoond-logo { 
-            height: 240% !important; 
-            width: 100% !important;
+            height: 48px !important; 
+            width: auto !important;
             object-fit: contain;
             flex-shrink: 0;
           }
@@ -279,8 +281,8 @@ const Navbar = () => {
         @media(min-width: 901px) { 
           .mobile-only { display: none !important; } 
           .dhoond-logo-desktop {
-            height: 260% !important;
-            width: 100% !important;
+            height: 52px !important;
+            width: auto !important;
             object-fit: contain;
           }
         }
@@ -319,7 +321,7 @@ const Navbar = () => {
 
             <Link to="/" className="desktop-only" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
               <div className="dhoond-logo-container">
-                <img src="/logo.png" alt="Dhoond" className="dhoond-logo dhoond-logo-desktop" style={{ width: 'auto', objectFit: 'contain' }} />
+                <img src="/images/Dhoond logo-05.png" alt="Dhoond" className="dhoond-logo dhoond-logo-desktop" style={{ width: 'auto', objectFit: 'contain' }} />
               </div>
             </Link>
 
@@ -358,7 +360,7 @@ const Navbar = () => {
           <div className="mobile-only" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1.5, height: '100%' }}>
             <Link to="/" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
               <div className="dhoond-logo-container">
-                <img src="/logo.png" alt="Dhoond" className="dhoond-logo" />
+                <img src="/images/Dhoond logo-05.png" alt="Dhoond" className="dhoond-logo" />
               </div>
             </Link>
           </div>
@@ -587,7 +589,7 @@ const Navbar = () => {
           <div onClick={() => setIsMenuOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1100, backdropFilter: 'blur(2px)' }} />
           <div style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '280px', background: '#fff', zIndex: 1200, display: 'flex', flexDirection: 'column', boxShadow: '8px 0 32px rgba(0,0,0,0.12)' }}>
             <div style={{ padding: '1.5rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Link to="/" onClick={() => setIsMenuOpen(false)}><img src="/logo.png" alt="Dhoond" style={{ height: '60px', width: 'auto' }} /></Link>
+              <Link to="/" onClick={() => setIsMenuOpen(false)}><img src="/images/Dhoond logo-05.png" alt="Dhoond" style={{ height: '48px', width: 'auto', objectFit: 'contain' }} /></Link>
               <button className="icon-btn" onClick={() => setIsMenuOpen(false)}><X size={22} /></button>
             </div>
             <nav style={{ flex: 1, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', overflowY: 'auto' }}>
@@ -669,12 +671,21 @@ const MainLayout = () => {
   );
 };
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
 function App() {
   return (
     <UIProvider>
       <AuthProvider>
         <CartProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
               <Route path="/admin/*" element={<Admin />} />
               <Route element={<MainLayout />}>
