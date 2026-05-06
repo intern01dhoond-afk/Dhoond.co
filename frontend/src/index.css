@@ -483,6 +483,7 @@ input::placeholder { color: var(--text-dim); }
 
 /* ─── Google Maps Autocomplete Fix ────────────────────────────── */
 .pac-container {
+<<<<<<< HEAD
   z-index: 9999 !important;
   border-radius: 16px !important;
   margin-top: 6px !important;
@@ -507,3 +508,22 @@ input::placeholder { color: var(--text-dim); }
 .pac-item span:last-child { font-size: 12px; color: #94a3b8; font-weight: 500; }
 .pac-matched { color: #2563eb !important; }
 .pac-icon { display: none !important; } /* hide default Google pin icon */
+=======
+  z-index: 3000 !important;
+  border-radius: 12px;
+  margin-top: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important;
+  font-family: inherit;
+}
+.pac-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pac-item:hover { background: #f8fafc; }
+.pac-item-query { font-size: 14px; color: #111; font-weight: 600; }
+.pac-matched { color: #2563eb; }
+>>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa

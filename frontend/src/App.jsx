@@ -14,8 +14,12 @@ import { CartProvider, useCart } from './context/CartContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UIProvider, useUI } from './context/UIContext';
 import ComingSoonModal from './components/ComingSoonModal';
+<<<<<<< HEAD
 import AuthModal from './components/AuthModal';
 import { detectCurrentLocation, waitForGoogleMaps, isInsideGeofence } from './utils/location';
+=======
+import { detectCurrentLocation, waitForGoogleMaps } from './utils/location';
+>>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa
 import './index.css';
 
 const SUGGESTIONS = ['Painting Service', 'AC Repair', 'RO Technician', 'Plumber', 'Electrician', 'Washing Machine Repair', 'Refrigerator Repair'];
@@ -58,6 +62,7 @@ const Navbar = () => {
       detectLocation();
     }
   }, []);
+<<<<<<< HEAD
 
   const detectLocation = async () => {
     setLocating(true);
@@ -68,6 +73,20 @@ const Navbar = () => {
     } catch (err) {
       console.error("Location detection failed:", err);
       updateLocation('Location not detected', 'Click to set manually');
+=======
+  const detectLocation = async () => {
+    setLocating(true);
+    setLocationLabel('Detecting…');
+    try {
+      const loc = await detectCurrentLocation();
+      setLocationLabel(loc.label);
+      setLocationSubtext(loc.sub);
+      localStorage.setItem('dhoond_location', loc.label);
+      localStorage.setItem('dhoond_location_sub', loc.sub);
+    } catch (err) {
+      setLocationLabel('Enable location');
+      console.error("Location detection failed:", err);
+>>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa
     } finally {
       setLocating(false);
     }

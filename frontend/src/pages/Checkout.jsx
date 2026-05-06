@@ -5,7 +5,10 @@ import { useAuth } from '../context/AuthContext';
 import { MapPin, Clock, CreditCard, Tag, Percent, Phone, SquareCheck, Info, X, Calendar, Edit2, CheckCircle2, ShieldCheck, Lock, Smartphone, Building2, ChevronRight, CheckCircle, ChevronLeft } from 'lucide-react';
 import { formatOrderId } from '../utils/formatOrderId';
 import { detectCurrentLocation } from '../utils/location';
+<<<<<<< HEAD
 import AuthModal from '../components/AuthModal';
+=======
+>>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa
 
 const Checkout = () => {
   const { cartItems: allCartItems, clearCart, clearCategoryFromCart, updateQuantity } = useCart();
@@ -478,6 +481,7 @@ const Checkout = () => {
 
         {/* FIRST SECTION (ON MOBILE: Summary & Cart) */}
         <div style={{ order: isMobile ? 1 : 2, display: 'flex', flexDirection: 'column', gap: '1rem', width: isMobile ? '100%' : '40%' }}>
+<<<<<<< HEAD
 
           {/* Cart Block - Matched to Image 1 */}
           <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #eaeaea', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
@@ -488,6 +492,195 @@ const Checkout = () => {
                 <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '0.95rem', color: '#111', fontWeight: 600, lineHeight: 1.4 }}>{item.title}</div>
+=======
+           
+            {/* Cart Block - Matched to Image 1 */}
+            <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #eaeaea', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111', margin: '0 0 1.25rem 0' }}>Painting</h3>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '1.5rem' }}>
+                 {cartItems.map((item) => (
+                   <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+                     <div style={{ flex: 1 }}>
+                       <div style={{ fontSize: '0.95rem', color: '#111', fontWeight: 600, lineHeight: 1.4 }}>{item.title}</div>
+                     </div>
+                     
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                       {/* Counter - Clean style from Image 1 */}
+                       <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.15rem' }}>
+                          <button style={{ background: 'transparent', border: 'none', width: '24px', height: '24px', cursor: 'pointer', color: '#6e42e5', fontSize: '1rem', fontWeight: 700 }} onClick={() => updateQuantity(item.id, -1)}>-</button>
+                          <span style={{ width: '20px', textAlign: 'center', fontSize: '0.9rem', fontWeight: 700, color: '#6e42e5' }}>{item.quantity}</span>
+                          <button 
+                            style={{ 
+                              background: 'transparent', border: 'none', width: '24px', height: '24px', 
+                              cursor: item.title?.toLowerCase().includes('consultation') ? 'not-allowed' : 'pointer', 
+                              color: item.title?.toLowerCase().includes('consultation') ? '#cbd5e1' : '#6e42e5', 
+                              fontSize: '1rem', fontWeight: 700 
+                            }} 
+                            onClick={() => updateQuantity(item.id, 1)}
+                            disabled={item.title?.toLowerCase().includes('consultation')}
+                          >+</button>
+                       </div>
+                       
+                       {/* Price */}
+                       <div style={{ textAlign: 'right', minWidth: '60px' }}>
+                         <div style={{ fontSize: '1rem', fontWeight: 800, color: '#111' }}>₹{Number(item.discountPrice || 0).toFixed(0)}</div>
+                         {item.originalPrice > item.discountPrice && (
+                           <div style={{ fontSize: '0.8rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>₹{Number(item.originalPrice || 0).toFixed(0)}</div>
+                         )}
+                       </div>
+                     </div>
+                   </div>
+                 ))}
+              </div>
+  
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 0', borderTop: '1px solid #f8fafc' }}>
+                <div style={{ width: '22px', height: '22px', background: '#111', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <SquareCheck size={14} color="#fff" strokeWidth={3} />
+                </div>
+                <span style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600 }}>Avoid calling before reaching the location</span>
+              </div>
+            </div>
+  
+
+  
+            {/* Detailed Payment Summary - Matched to Image 1 */}
+            <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #eaeaea', overflow: 'hidden' }}>
+               <div style={{ padding: '1.5rem' }}>
+                 <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111', margin: '0 0 1.5rem 0' }}>Payment summary</h3>
+                 
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', color: '#475569', fontWeight: 600, fontSize: '0.95rem', marginBottom: '1.5rem' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                     <span>Item total (Net)</span>
+                     <span style={{ color: '#111', fontWeight: 700 }}>₹{netPrice.toFixed(2)}</span>
+                   </div>
+                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                     <span>Taxes (18% GST)</span>
+                     <span style={{ color: '#111', fontWeight: 700 }}>₹{inclusiveTax.toFixed(2)}</span>
+                   </div>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #f1f5f9', paddingTop: '1rem' }}>
+                     <span style={{ color: '#111', fontWeight: 700 }}>Total amount (Inclusive)</span>
+                     <span style={{ color: '#111', fontWeight: 800 }}>₹{total.toFixed(0)}</span>
+                   </div>
+                   {tipAmount > 0 && (
+                     <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6e42e5' }}>
+                       <span>Tip for the Professional</span>
+                       <span style={{ fontWeight: 700 }}>₹{tipAmount}</span>
+                     </div>
+                   )}
+                   <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '2px solid #f8fafc', paddingTop: '1rem' }}>
+                     <span style={{ color: '#111', fontWeight: 800 }}>Amount to pay</span>
+                     <span style={{ color: '#111', fontWeight: 900, fontSize: '1.1rem' }}>₹{finalAmountToPay.toFixed(0)}</span>
+                   </div>
+                 </div>
+  
+                 {/* Tip Selector */}
+                 <div style={{ marginBottom: '0.5rem' }}>
+                   <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111', marginBottom: '1.25rem' }}>Add a tip to thank the Professional</div>
+                   <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem', scrollbarWidth: 'none' }}>
+                     {[50, 75, 100].map(amt => (
+                       <button key={amt} onClick={() => setTipAmount(amt === tipAmount ? 0 : amt)} style={{ padding: '0.75rem 1.5rem', borderRadius: '99px', border: tipAmount === amt ? '2px solid #6e42e5' : '1px solid #e2e8f0', background: tipAmount === amt ? '#f5f3ff' : '#fff', color: tipAmount === amt ? '#6e42e5' : '#111', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', transition: 'all 0.2s', flexShrink: 0 }}>
+                         ₹{amt}
+                       </button>
+                     ))}
+                     
+                     <div style={{ flexShrink: 0 }}>
+                       {isCustomTipping ? (
+                         <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '2px solid #6e42e5', borderRadius: '99px', padding: '0.2rem 0.5rem 0.2rem 1rem' }}>
+                           <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>₹</span>
+                           <input type="number" value={customTip} onChange={e => setCustomTip(e.target.value)} autoFocus style={{ width: '40px', border: 'none', outline: 'none', padding: '0.5rem 0.25rem', fontSize: '0.9rem', fontWeight: 700 }} />
+                           <button onClick={handleApplyCustomTip} style={{ background: '#6e42e5', color: '#fff', border: 'none', padding: '0.4rem 0.75rem', borderRadius: '99px', fontWeight: 700, cursor: 'pointer', fontSize: '0.8rem' }}>OK</button>
+                         </div>
+                       ) : (
+                         <button onClick={() => setIsCustomTipping(true)} style={{ padding: '0.75rem 1.5rem', borderRadius: '99px', border: '1px solid #e2e8f0', background: '#fff', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>Custom</button>
+                       )}
+                     </div>
+                   </div>
+                 </div>
+               </div>
+  
+               {/* Mobile Sticky Summary Preview */}
+               {isMobile && (
+                 <div style={{ padding: '1.25rem 1.5rem', background: '#f9fafb', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                   <div>
+                     <div style={{ fontSize: '1rem', fontWeight: 900, color: '#111' }}>₹{finalAmountToPay.toFixed(0)}</div>
+                     <span onClick={() => window.scrollTo({ bottom: 0, behavior: 'smooth' })} style={{ fontSize: '0.75rem', color: '#6e42e5', fontWeight: 700, cursor: 'pointer' }}>View Breakup</span>
+                   </div>
+                   <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#111' }}>Amount to pay</div>
+                 </div>
+               )}
+            </div>
+        </div>
+        
+        {/* SECOND SECTION (ON MOBILE: Details & Payment) */}
+        <div style={{ order: isMobile ? 2 : 1, display: 'flex', flexDirection: 'column', gap: '1.5rem', width: isMobile ? '100% ' : '60%' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#059669', fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.5rem' }}>
+            <Tag size={16} fill="currentColor" /> Saving ₹{totalDiscount.toFixed(0)} on this order
+          </div>
+  
+          <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #eaeaea', overflow: 'hidden' }}>
+             
+             {/* 1. Contact Details */}
+             <div style={{ padding: '1.5rem', borderBottom: '1px solid #f1f5f9' }}>
+               {isEditingPhone ? (
+                 <div>
+                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#475569', marginBottom: '0.5rem' }}>Phone Number</label>
+                   <div style={{ display: 'flex', gap: '1rem' }}>
+                     <input type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} style={{ flex: 1, padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '1rem', outline: 'none' }} autoFocus />
+                     <button onClick={() => setIsEditingPhone(false)} style={{ background: '#111', color: '#fff', border: 'none', padding: '0 1.5rem', borderRadius: '12px', fontWeight: 700, cursor: 'pointer' }}>Save</button>
+                   </div>
+                 </div>
+               ) : (
+                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                   <div style={{ display: 'flex', alignItems: 'center' }}>
+                     <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '12px', marginRight: '1.25rem', color: '#64748b' }}>
+                        <Phone size={22} strokeWidth={2.5} />
+                     </div>
+                     <div>
+                       <div style={{ fontWeight: 800, fontSize: '1rem', color: '#111', marginBottom: '0.1rem' }}>Send booking details to</div>
+                       <div style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: 600 }}>{formData.phone}</div>
+                     </div>
+                   </div>
+                   <button onClick={() => setIsEditingPhone(true)} style={{ background: 'transparent', border: 'none', color: '#6e42e5', fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Edit2 size={14}/> Edit</button>
+                 </div>
+               )}
+             </div>
+  
+              {/* 2. Address Details */}
+              <div style={{ padding: '1.5rem', borderBottom: '1px solid #f1f5f9' }}>
+                {isEditingAddress ? (
+                  <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                       <label style={{ fontSize: '1.1rem', fontWeight: 900, color: '#111' }}>Address</label>
+                       <button onClick={() => setIsEditingAddress(false)} style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer' }}><X size={20} /></button>
+                    </div>
+  
+                    {/* THE MAP MOCKUP */}
+                    <div style={{ 
+                      width: '100%', height: '220px', background: '#f8fafc', borderRadius: '16px', marginBottom: '1.25rem', overflow: 'hidden', position: 'relative',
+                      border: '1px solid #e2e8f0'
+                    }}>
+                       {/* Simplified map look */}
+                       <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                          <MapPin size={40} color="#6e42e5" fill="#6e42e533" />
+                       </div>
+                       <div 
+                          onClick={handleFetchLocation}
+                          style={{ 
+                            position: 'absolute', bottom: '1rem', left: '1rem', background: '#fff', 
+                            padding: '0.6rem 1rem', borderRadius: '10px', fontSize: '0.8rem', 
+                            fontWeight: 800, border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                            cursor: locating ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem'
+                          }}>
+                           {locating ? '📍 Locating...' : '📍 Use Current Location'}
+                        </div>
+                    </div>
+  
+                    <textarea value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} rows={2} style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '0.95rem', marginBottom: '1.25rem', resize: 'none', outline: 'none' }} placeholder="Door No, Street name..." autoFocus />
+                    
+                    <button onClick={() => setIsEditingAddress(false)} style={{ width: '100%', background: '#111', color: '#fff', border: 'none', padding: '1.1rem', borderRadius: '12px', fontWeight: 800, cursor: 'pointer', fontSize: '1rem' }}>Confirm Location</button>
+>>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>

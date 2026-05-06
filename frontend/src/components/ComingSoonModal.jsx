@@ -1,14 +1,29 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { X, MapPin, Bell, CheckCircle2 } from 'lucide-react';
 import { useUI } from '../context/UIContext';
+=======
+import React, { useEffect, useState } from 'react';
+import { X, MapPin, Bell, Globe, CheckCircle2 } from 'lucide-react';
+import { detectCurrentLocation } from '../utils/location';
+>>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa
 
 const ComingSoonModal = ({ onClose }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+<<<<<<< HEAD
   const { openLocation, locationSubtext } = useUI();
   
   // Extract city from the globally selected location subtext (e.g., 'Bengaluru, Karnataka' -> 'Bengaluru')
   const location = locationSubtext ? locationSubtext.split(',')[0].trim() : '';
+=======
+  useEffect(() => {
+    const defaultCity = 'your current area';
+    detectCurrentLocation()
+      .then(loc => setLocation(loc.city || defaultCity))
+      .catch(() => setLocation(defaultCity));
+  }, []);
+>>>>>>> 5da8d88a5fd687f5fa9d1e850f94b852cc7807aa
 
   const handleNotifyMe = () => {
     setIsSubmitted(true);
