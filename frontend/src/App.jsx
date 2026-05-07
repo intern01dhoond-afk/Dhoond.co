@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, ChevronDown, MapPin, Zap, LogOut, Package, LayoutDashboard, ChevronLeft } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, ChevronDown, MapPin, Zap, LogOut, Package, LayoutDashboard, ChevronLeft, Home as HomeIcon, Paintbrush, Phone, Store, ArrowUpRight } from 'lucide-react';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Checkout from './pages/Checkout';
@@ -58,6 +58,7 @@ const Navbar = () => {
       detectLocation();
     }
   }, []);
+
   const detectLocation = async () => {
     setLocating(true);
     updateLocation('Detecting…', '');
@@ -262,26 +263,26 @@ const Navbar = () => {
         .nav-link:hover { color: #2563eb; }
         .nav-link.highlight { color: #d97706; }
         .nav-link.highlight::after { background: #d97706; }
-        .icon-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; transition: background 0.2s; color: #1e293b; }
-        .icon-btn:hover { background: #f1f5f9; color: #000; }
+        .icon-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 12px; transition: all 0.2s; color: #334155; }
+        .icon-btn:hover { background: #f1f5f9; color: #0f172a; }
         .suggest-item:hover { background: #f0f9ff; }
         .loc-use-btn:hover { background: #f0f0ff; }
         
         @media(max-width: 900px) { 
           .desktop-only { display: none !important; }
           .dhoond-logo { 
-            height: 48px !important; 
-            width: auto !important;
+            height: 240% !important; 
+            width: 100% !important;
             object-fit: contain;
             flex-shrink: 0;
           }
-          .mobile-nav-container { padding: 0 0.75rem !important; height: 72px !important; }
+          .mobile-nav-container { padding: 0 0.75rem !important; height: 64px !important; }
         }
         @media(min-width: 901px) { 
           .mobile-only { display: none !important; } 
           .dhoond-logo-desktop {
-            height: 52px !important;
-            width: auto !important;
+            height: 260% !important;
+            width: 100% !important;
             object-fit: contain;
           }
         }
@@ -291,18 +292,34 @@ const Navbar = () => {
           justify-content: center;
           height: 100%;
           width: 150px;
-          overflow: hidden; /* This masks the vertical whitespace */
+          overflow: hidden;
           position: relative;
+        }
+
+        @keyframes slideInLeft {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
+        @keyframes backdropFadeIn {
+          from { opacity: 0; backdrop-filter: blur(0px); }
+          to { opacity: 1; backdrop-filter: blur(4px); }
+        }
+        @keyframes rotateIn {
+          from { transform: rotate(-180deg) scale(0.5); opacity: 0; }
+          to { transform: rotate(0) scale(1); opacity: 1; }
         }
       `}</style>
 
       <div style={{
         position: 'sticky', top: 0, zIndex: 1000, width: '100%',
-        background: '#fff', borderBottom: '1px solid #f1f5f9',
-        boxShadow: scrolled ? '0 8px 30px rgba(0,0,0,0.04)' : 'none',
-        transition: 'all 0.3s ease',
+        background: scrolled ? 'rgba(255,255,255,0.85)' : '#fff',
+        backdropFilter: scrolled ? 'blur(16px) saturate(180%)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(16px) saturate(180%)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(241,245,249,0.8)' : '1px solid #f1f5f9',
+        boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.03)' : 'none',
+        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
       }}>
-        <nav className="mobile-nav-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 5%', height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <nav className="mobile-nav-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 5%', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
           {/* LEFT */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
@@ -313,14 +330,14 @@ const Navbar = () => {
                 </button>
               ) : (
                 <button className="icon-btn" onClick={() => setIsMenuOpen(true)} aria-label="Open menu">
-                  <Menu size={28} />
+                  <Menu size={24} />
                 </button>
               )}
             </div>
 
             <Link to="/" className="desktop-only" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
               <div className="dhoond-logo-container">
-                <img src="/images/Dhoond logo-05.png" alt="Dhoond" className="dhoond-logo dhoond-logo-desktop" style={{ width: 'auto', objectFit: 'contain' }} />
+                <img src="/logo.png" alt="Dhoond" className="dhoond-logo dhoond-logo-desktop" style={{ width: 'auto', objectFit: 'contain' }} />
               </div>
             </Link>
 
@@ -359,7 +376,7 @@ const Navbar = () => {
           <div className="mobile-only" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1.5, height: '100%' }}>
             <Link to="/" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
               <div className="dhoond-logo-container">
-                <img src="/images/Dhoond logo-05.png" alt="Dhoond" className="dhoond-logo" />
+                <img src="/logo.png" alt="Dhoond" className="dhoond-logo" />
               </div>
             </Link>
           </div>
@@ -378,12 +395,12 @@ const Navbar = () => {
             </div>
 
             <button className="icon-btn mobile-only" onClick={() => setIsSearchOpen(true)}>
-              <Search size={26} />
+              <Search size={24} />
             </button>
 
             <div style={{ position: 'relative' }}>
               <button className="icon-btn" onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : setIsAuthOpen(true)}>
-                <User size={isAuthenticated ? 26 : 24} color={isAuthenticated ? '#2563eb' : 'currentColor'} />
+                <User size={24} color={isAuthenticated ? '#2563eb' : 'currentColor'} />
               </button>
 
               {isAuthenticated && isProfileOpen && (
@@ -404,9 +421,9 @@ const Navbar = () => {
             </div>
 
             <button className="icon-btn" onClick={() => navigate('/shop/cart')} style={{ position: 'relative' }}>
-              <ShoppingCart size={26} />
+              <ShoppingCart size={24} />
               {totalItems > 0 && (
-                <span style={{ position: 'absolute', top: '2px', right: '2px', background: '#2563eb', color: '#fff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '10px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>
+                <span style={{ position: 'absolute', top: '2px', right: '2px', background: '#2563eb', color: '#fff', borderRadius: '50%', width: '16px', height: '16px', fontSize: '9px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>
                   {totalItems}
                 </span>
               )}
@@ -418,10 +435,10 @@ const Navbar = () => {
         <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
         {/* MOBILE: Location Bar */}
-        <div className="mobile-only" onClick={openLocation} style={{ padding: '0.65rem 1.25rem', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '0.65rem', background: '#fff', cursor: 'pointer' }}>
-          <MapPin size={15} color="#2563eb" />
-          <span style={{ fontSize: '13px', fontWeight: 600, color: '#334155', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{locationLabel}</span>
-          <ChevronDown size={14} color="#64748b" />
+        <div className="mobile-only" onClick={openLocation} style={{ padding: '0.5rem 1rem', borderTop: '1px solid #f8fafc', display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fafbfc', cursor: 'pointer' }}>
+          <MapPin size={13} color="#2563eb" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{locationLabel}</span>
+          <ChevronDown size={12} color="#94a3b8" style={{ flexShrink: 0 }} />
         </div>
       </div>
 
@@ -585,54 +602,94 @@ const Navbar = () => {
       {/* MOBILE SIDEBAR MENU */}
       {isMenuOpen && (
         <>
-          <div onClick={() => setIsMenuOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1100, backdropFilter: 'blur(2px)' }} />
-          <div style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '280px', background: '#fff', zIndex: 1200, display: 'flex', flexDirection: 'column', boxShadow: '8px 0 32px rgba(0,0,0,0.12)' }}>
-            <div style={{ padding: '1.5rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Link to="/" onClick={() => setIsMenuOpen(false)}><img src="/images/Dhoond logo-05.png" alt="Dhoond" style={{ height: '48px', width: 'auto', objectFit: 'contain' }} /></Link>
-              <button className="icon-btn" onClick={() => setIsMenuOpen(false)}><X size={22} /></button>
+          <div onClick={() => setIsMenuOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1100, animation: 'backdropFadeIn 0.3s ease forwards' }} />
+          <div style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '300px', background: '#fff', zIndex: 1200, display: 'flex', flexDirection: 'column', boxShadow: '8px 0 40px rgba(0,0,0,0.15)', animation: 'slideInLeft 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards' }}>
+            {/* Header */}
+            <div style={{ padding: '1.25rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9' }}>
+              <Link to="/" onClick={() => setIsMenuOpen(false)} style={{ height: '40px', display: 'flex' }}>
+                <div className="dhoond-logo-container" style={{ width: '130px', justifyContent: 'flex-start' }}>
+                  <img src="/logo.png" alt="Dhoond" className="dhoond-logo" />
+                </div>
+              </Link>
+              <button onClick={() => setIsMenuOpen(false)} style={{ background: '#f1f5f9', border: 'none', borderRadius: '10px', width: '36px', height: '36px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'rotateIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both' }}><X size={18} color="#475569" /></button>
             </div>
-            <nav style={{ flex: 1, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', overflowY: 'auto' }}>
-              <div onClick={() => {
-                setIsMenuOpen(false);
-                if (isAuthenticated) { navigate('/profile'); }
-                else { setIsAuthOpen(true); }
-              }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', cursor: 'pointer' }}>
-                <div style={{ width: '40px', height: '40px', background: '#eff6ff', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb' }}><User size={20} /></div>
-                <div><div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#111' }}>{isAuthenticated ? userName : 'Login / Register'}</div><div style={{ fontSize: '0.75rem', color: '#64748b' }}>{isAuthenticated ? `+91 ${userMobile}` : 'View Profile'}</div></div>
-              </div>
-              {NAV_LINKS.map(link => {
-                const isPaintingRestricted = link.label === 'Painting' && !isBengaluru;
-                
-                if (link.href) {
-                  return (
-                    <a
-                      key={link.label}
-                      href={link.href}
-                      style={{ textDecoration: 'none', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, color: '#111' }}
-                    >
-                      {link.label}
-                    </a>
-                  );
-                }
 
+            {/* Profile */}
+            <div onClick={() => {
+              setIsMenuOpen(false);
+              if (isAuthenticated) { navigate('/profile'); }
+              else { setIsAuthOpen(true); }
+            }} style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', padding: '1.25rem', cursor: 'pointer', borderBottom: '1px solid #f8fafc' }}>
+              <div style={{ width: '44px', height: '44px', background: 'linear-gradient(135deg, #eff6ff 0%, #ede9fe 100%)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb', flexShrink: 0 }}><User size={22} /></div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>{isAuthenticated ? userName : 'Login / Register'}</div>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 500, marginTop: '1px' }}>{isAuthenticated ? `+91 ${userMobile}` : 'Tap to get started'}</div>
+              </div>
+              <ChevronDown size={16} color="#94a3b8" style={{ transform: 'rotate(-90deg)' }} />
+            </div>
+
+            {/* Navigation */}
+            <nav style={{ flex: 1, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', overflowY: 'auto' }}>
+              {[
+                { label: 'Home', to: '/', icon: <HomeIcon size={20} /> },
+                { label: 'Painting', to: '/painting', icon: <Paintbrush size={20} />, badge: 'New', restricted: !isBengaluru },
+                { label: 'Shop', to: '/shop', icon: <Store size={20} /> },
+                { label: 'My Bookings', to: '/profile', icon: <Package size={20} /> },
+                { label: 'Contact', href: `tel:${PHONE_NUMBER}`, icon: <Phone size={20} /> },
+              ].map(link => {
+                const isActive = link.to && location.pathname === link.to;
+                const content = (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: '0.85rem',
+                    padding: '0.85rem 1rem', borderRadius: '14px',
+                    background: isActive ? '#eff6ff' : 'transparent',
+                    transition: 'background 0.2s',
+                    cursor: 'pointer',
+                  }}>
+                    <span style={{ color: isActive ? '#2563eb' : '#64748b', display: 'flex' }}>{link.icon}</span>
+                    <span style={{ fontWeight: isActive ? 800 : 600, fontSize: '0.92rem', color: isActive ? '#1e40af' : '#334155', flex: 1 }}>{link.label}</span>
+                    {link.badge && <span style={{ background: '#fef08a', color: '#854d0e', fontSize: '9px', fontWeight: 800, padding: '2px 7px', borderRadius: '8px' }}>{link.badge}</span>}
+                  </div>
+                );
+
+                if (link.href) {
+                  return <a key={link.label} href={link.href} style={{ textDecoration: 'none' }}>{content}</a>;
+                }
                 return (
-                  <Link
-                    key={link.label}
-                    to={link.to || '#'}
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      const isPaintingRestricted = link.label === 'Painting' && !isBengaluru;
-                      if (link.type === 'soon' || isPaintingRestricted) {
-                        openComingSoon();
-                      }
-                    }}
-                    style={{ textDecoration: 'none', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, color: '#111' }}
-                  >
-                    {link.label}
-                  </Link>
+                  <Link key={link.label} to={link.to || '#'} onClick={() => {
+                    setIsMenuOpen(false);
+                    if (link.restricted) { openComingSoon(); }
+                  }} style={{ textDecoration: 'none' }}>{content}</Link>
                 );
               })}
+
+              {/* CTA Button */}
+              <div style={{ padding: '0.5rem 0.5rem 0', marginTop: '0.5rem' }}>
+                <button onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate('/');
+                  setTimeout(() => document.querySelector('#services-section')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                }} style={{
+                  width: '100%', padding: '0.9rem',
+                  background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
+                  color: '#fff', border: 'none', borderRadius: '14px',
+                  fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                  boxShadow: '0 6px 20px rgba(37,99,235,0.3)',
+                }}>
+                  Book a Service <ArrowUpRight size={16} strokeWidth={3} />
+                </button>
+              </div>
             </nav>
+
+            {/* Footer */}
+            <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid #f1f5f9' }}>
+              <div onClick={() => { setIsMenuOpen(false); openLocation(); }} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', padding: '0.5rem 0' }}>
+                <MapPin size={14} color="#2563eb" />
+                <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#475569', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{locationLabel}</span>
+              </div>
+              <div style={{ fontSize: '0.68rem', color: '#cbd5e1', fontWeight: 500, marginTop: '0.25rem' }}>Dhoond v1.0 · Made in India 🇮🇳</div>
+            </div>
           </div>
         </>
       )}

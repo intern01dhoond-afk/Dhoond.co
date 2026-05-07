@@ -28,7 +28,7 @@ const Footer = () => {
       <div style={{ background: '#1e293b', borderBottom: '1px solid #334155', padding: 'var(--footer-contact-pad, 3.5rem 5%)' }}>
         <style>{`
           @media (max-width: 768px) {
-            :root { --footer-contact-pad: 2.5rem 1.5rem; }
+            :root { --footer-contact-pad: 2.5rem 1.5rem; --footer-main-pad: 3rem 1.5rem 2rem; --footer-main-gap: 2.5rem; }
             .mobile-centered-col { align-items: center !important; text-align: center !important; }
             .mobile-bottom-links { flex-direction: column !important; gap: 1rem !important; }
           }
@@ -80,18 +80,18 @@ const Footer = () => {
       </div>
 
       {/* Main links section */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '5rem 5% 4rem' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4rem' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: 'var(--footer-main-pad, 4.5rem 5% 3rem)' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--footer-main-gap, 4rem)' }}>
 
           {/* Brand Column */}
           <div style={{ flex: '1 1 300px', maxWidth: '400px' }} className="mobile-text-center">
-            <Link to="/" style={{ display: 'inline-block', marginBottom: '1.25rem' }}>
-              <img src="/images/cart%20nav.png" alt="Dhoond" style={{ height: '100px', width: 'auto', objectFit: 'contain', transition: 'transform 0.3s' }}
+            <Link to="/" style={{ display: 'inline-block', marginBottom: '0.75rem' }}>
+              <img src="/images/cart%20nav.png" alt="Dhoond" style={{ height: 'auto', maxHeight: '80px', width: 'auto', objectFit: 'contain', transition: 'transform 0.3s' }}
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
               />
             </Link>
-            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.8, fontWeight: 500, marginBottom: '2.5rem' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.7, fontWeight: 500, margin: '0 0 1.5rem 0' }}>
               India's fastest growing premium Commercial and home services marketplace. Quality craftsmanship delivered to your doorstep.
             </p>
           </div>
@@ -110,7 +110,7 @@ const Footer = () => {
               { title: 'Support', links: ['Help Center', 'Privacy Policy', 'Terms of Service', 'Refund Policy'] },
             ].map(col => (
               <div key={col.title}>
-                <h4 style={{ fontWeight: 800, fontSize: '0.85rem', color: '#fff', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                <h4 style={{ fontWeight: 800, fontSize: '0.85rem', color: '#fff', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                   {col.title}
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
@@ -174,12 +174,8 @@ const Footer = () => {
 
       {/* Bottom bar */}
       <div style={{ borderTop: '1px solid #1e293b', padding: '2rem 5%' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }} className="mobile-stack mobile-text-center">
-          <span style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>© {new Date().getFullYear()} DhoondApp. All rights reserved.</span>
-          <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
-            <Link to="#" style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none' }}>Terms of Service</Link>
-            <Link to="#" style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600, textDecoration: 'none' }}>Privacy Policy</Link>
-          </div>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '1rem' }} className="mobile-stack mobile-text-center">
+          <span style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 500 }}>© 2023 DhoondApp. All rights reserved.</span>
         </div>
       </div>
     </footer>
