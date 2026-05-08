@@ -1,4 +1,4 @@
-const pool = require("../db/db");
+const pool = require('../db/db.js');
 
 const createUser = async (name, phone, email) => {
   const result = await pool.query(
@@ -14,6 +14,9 @@ const getUsers = async () => {
 };
 
 const getUserById = async (id) => {
+  // Return null if id is not a number (e.g. "AMEC01") to prevent DB crash
+  if (isNaN(Number(id))) return null;
+  
   // Use explicit casting for robustness
   const result = await pool.query("SELECT * FROM users WHERE id = $1::int", [id]);
   return result.rows[0];
@@ -37,6 +40,8 @@ const updateUserById = async (id, { name, email }) => {
     // Nothing to update — just return current user
     return getUserById(id);
   }
+
+  if (isNaN(Number(id))) return null;
 
   values.push(id);
   const result = await pool.query(

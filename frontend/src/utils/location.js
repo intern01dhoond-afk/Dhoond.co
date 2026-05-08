@@ -1,7 +1,7 @@
 /**
  * Helper to wait for window.google.maps to be ready
  */
-export const waitForGoogleMaps = (cb, retries = 20) => {
+export const waitForGoogleMaps = (cb, retries = 30) => {
   if (typeof window !== 'undefined' && window.google && window.google.maps && window.google.maps.Geocoder) {
     cb();
   } else if (retries > 0) {
@@ -36,7 +36,7 @@ export const detectCurrentLocation = () => {
               };
 
               const label = result.formatted_address || 'My Location';
-              const city = find(['locality', 'administrative_area_level_2']) || '';
+              const city = find(['locality', 'sublocality_level_1', 'administrative_area_level_2']) || '';
               const state = find(['administrative_area_level_1']) || '';
               const sub = [city, state].filter(Boolean).join(', ');
 
@@ -49,15 +49,45 @@ export const detectCurrentLocation = () => {
                 lng: longitude
               });
             } else {
-              reject(new Error('Geocoding failed: ' + status));
+              console.error('Geocoding error:', status);
+              // Fallback: resolve with lat/lng even if geocoding fails
+              resolve({
+                label: `Location (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`,
+                city: 'Unknown City',
+                state: '',
+                sub: 'Coordinates available',
+                lat: latitude,
+                lng: longitude
+              });
             }
           });
         });
       },
       (err) => {
+        console.warn('Geolocation error:', err.code, err.message);
         reject(err);
       },
-      { timeout: 10000, enableHighAccuracy: true }
+      { 
+        enableHighAccuracy: true, 
+        timeout: 10000, 
+        maximumAge: 0 
+      }
     );
   });
+};
+export const getDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371000; // Earth radius in meters
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+};
+
+export const isInsideGeofence = (userLat, userLng, centerLat, centerLng, radius) => {
+  if (!userLat || !userLng) return false;
+  return getDistance(userLat, userLng, centerLat, centerLng) <= radius;
 };

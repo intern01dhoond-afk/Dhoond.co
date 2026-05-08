@@ -19,8 +19,10 @@ const createOrderController = async (req, res) => {
       });
     }
 
+    const sanitizedUserId = user_id === 'AMEC01' ? 1 : user_id;
+
     const order = await orderModel.createOrder(
-      user_id,
+      sanitizedUserId,
       partner_id,
       category_id,
       address,
@@ -57,7 +59,21 @@ const getOrdersController = async (req, res) => {
   }
 };
 
+const updateOrderController = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    if (!id || !status) {
+      return res.status(400).json({ success: false, message: "id and status are required" });
+    }
+    const order = await orderModel.updateOrder(id, status);
+    res.status(200).json({ success: true, data: order });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   createOrderController,
   getOrdersController,
+  updateOrderController,
 };

@@ -1,11 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, ChevronDown, MapPin, Zap, LogOut, Package, LayoutDashboard, ChevronLeft } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, ChevronDown, MapPin, Zap, LogOut, Package, LayoutDashboard, ChevronLeft, Home as HomeIcon, Paintbrush, Phone, Store, ArrowUpRight } from 'lucide-react';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Checkout from './pages/Checkout';
 import Cart from './pages/Cart';
-import ServiceDetail from './pages/ServiceDetail';
 import Painting from './pages/Painting';
 import CommercialPainting from './pages/CommercialPainting';
 import Profile from './pages/Profile';
@@ -15,10 +14,19 @@ import { CartProvider, useCart } from './context/CartContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UIProvider, useUI } from './context/UIContext';
 import ComingSoonModal from './components/ComingSoonModal';
-import { detectCurrentLocation, waitForGoogleMaps } from './utils/location';
+import AuthModal from './components/AuthModal';
+import { detectCurrentLocation, waitForGoogleMaps, isInsideGeofence } from './utils/location';
 import './index.css';
 
-const SUGGESTIONS = ['Painting Service', 'AC Repair', 'RO Technician', 'Plumber', 'Electrician', 'Washing Machine Repair', 'Refrigerator Repair'];
+const SEARCH_SUGGESTIONS = [
+  { label: 'Painting Service', path: '/painting', isPainting: true },
+  { label: 'AC Repair', path: '/shop?cat=technician&subcat=ac' },
+  { label: 'RO Technician', path: '/shop?cat=technician&subcat=ro' },
+  { label: 'Plumber', path: '', isComingSoon: true },
+  { label: 'Electrician', path: '/shop?cat=electrician' },
+  { label: 'Washing Machine Repair', path: '/shop?cat=technician&subcat=washing' },
+  { label: 'Refrigerator Repair', path: '', isComingSoon: true }
+];
 
 const Navbar = () => {
   const location = useLocation();
@@ -30,6 +38,7 @@ const Navbar = () => {
   const userMobile = user?.mobile || '';
 
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const [isAuthOpen, setIsAuthOpen] = React.useState(false);
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -38,14 +47,11 @@ const Navbar = () => {
   const [showSuggestions, setShowSuggestions] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
 
-  const [locationLabel, setLocationLabel] = React.useState(() => localStorage.getItem('dhoond_location') || 'Fetching location…');
-  const [locationSubtext, setLocationSubtext] = React.useState(() => localStorage.getItem('dhoond_location_sub') || '');
-  const [showLocationModal, setShowLocationModal] = React.useState(false);
-  const [locationSearchQuery, setLocationSearchQuery] = React.useState('');
   const [locating, setLocating] = React.useState(false);
   const [showMap, setShowMap] = React.useState(false);
+  const [locationSearchQuery, setLocationSearchQuery] = React.useState('');
   const [mapSelectedLabel, setMapSelectedLabel] = React.useState('');
-  const { openComingSoon } = useUI();
+  const { openComingSoon, showLocationModal, openLocation, closeLocation, locationLabel, locationSubtext, updateLocation, userLat, userLng } = useUI();
 
   const searchRef = React.useRef(null);
   const locationInputRef = React.useRef(null);
@@ -55,22 +61,21 @@ const Navbar = () => {
   const mapSearchRef = React.useRef(null);
 
   React.useEffect(() => {
-    if (!localStorage.getItem('dhoond_location')) {
+    const savedLoc = localStorage.getItem('dhoond_location');
+    if (!savedLoc || savedLoc === 'Detecting…' || savedLoc === 'Location not found' || savedLoc === 'Fetching location…') {
       detectLocation();
     }
   }, []);
+
   const detectLocation = async () => {
     setLocating(true);
-    setLocationLabel('Detecting…');
+    updateLocation('Detecting…', '');
     try {
       const loc = await detectCurrentLocation();
-      setLocationLabel(loc.label);
-      setLocationSubtext(loc.sub);
-      localStorage.setItem('dhoond_location', loc.label);
-      localStorage.setItem('dhoond_location_sub', loc.sub);
+      updateLocation(loc.label, loc.sub, loc.lat, loc.lng);
     } catch (err) {
-      setLocationLabel('Enable location');
       console.error("Location detection failed:", err);
+      updateLocation('Location not detected', 'Click to set manually');
     } finally {
       setLocating(false);
     }
@@ -114,11 +119,10 @@ const Navbar = () => {
           const city = find(['locality', 'administrative_area_level_2']) || '';
           const state = find(['administrative_area_level_1']) || '';
           const sub = [city, state].filter(Boolean).join(', ');
-          setLocationLabel(label);
-          setLocationSubtext(sub);
-          localStorage.setItem('dhoond_location', label);
-          localStorage.setItem('dhoond_location_sub', sub);
-          setShowLocationModal(false);
+          const lat = place.geometry.location.lat();
+          const lng = place.geometry.location.lng();
+          updateLocation(label, sub, lat, lng);
+          closeLocation();
         });
       });
     }, 150);
@@ -190,7 +194,7 @@ const Navbar = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => initMap({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        ()    => initMap({ lat: 12.9716, lng: 77.5946 }),
+        () => initMap({ lat: 12.9716, lng: 77.5946 }),
         { timeout: 5000 }
       );
     } else {
@@ -198,28 +202,69 @@ const Navbar = () => {
     }
   }, [showMap]);
 
-  const filteredSuggestions = searchQuery.length > 0
-    ? SUGGESTIONS.filter(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
-    : SUGGESTIONS;
+  const isBengaluru = (locationLabel || '').toLowerCase().includes('bengaluru') ||
+    (locationLabel || '').toLowerCase().includes('bangalore') ||
+    (locationSubtext || '').toLowerCase().includes('bengaluru') ||
+    (locationSubtext || '').toLowerCase().includes('bangalore');
 
-  const handleSearchSubmit = (query) => {
-    const q = (query || searchQuery).toLowerCase();
+  const isNagpur = isInsideGeofence(userLat, userLng, 21.1497877, 79.0806859, 8000) ||
+    (locationLabel || '').toLowerCase().includes('nagpur') ||
+    (locationSubtext || '').toLowerCase().includes('nagpur');
+
+  const filteredSuggestions = searchQuery.length > 0
+    ? SEARCH_SUGGESTIONS.filter(s => s.label.toLowerCase().includes(searchQuery.toLowerCase()))
+    : SEARCH_SUGGESTIONS;
+
+  const handleSearchSubmit = (itemOrQuery) => {
     setShowSuggestions(false);
     setIsSearchOpen(false);
-    if (q.includes('paint')) {
-      navigate('/painting');
+
+    if (itemOrQuery && typeof itemOrQuery === 'object' && itemOrQuery.label) {
+      if (itemOrQuery.isComingSoon) {
+        openComingSoon();
+        return;
+      }
+      if (itemOrQuery.isPainting) {
+        if (isBengaluru) navigate(itemOrQuery.path);
+        else openComingSoon();
+        return;
+      }
+      if (isNagpur) navigate(itemOrQuery.path);
+      else openComingSoon();
+      return;
+    }
+
+    const q = (typeof itemOrQuery === 'string' ? itemOrQuery : searchQuery).toLowerCase();
+    const match = SEARCH_SUGGESTIONS.find(s => s.label.toLowerCase() === q) || 
+                  SEARCH_SUGGESTIONS.find(s => s.label.toLowerCase().includes(q));
+                  
+    if (match) {
+      if (match.isComingSoon) {
+        openComingSoon();
+      } else if (match.isPainting) {
+        if (isBengaluru) navigate(match.path);
+        else openComingSoon();
+      } else {
+        if (isNagpur) navigate(match.path);
+        else openComingSoon();
+      }
     } else {
-      openComingSoon();
+      if (q.includes('paint')) {
+        if (isBengaluru) navigate('/painting');
+        else openComingSoon();
+      } else {
+        if (isNagpur) navigate('/shop');
+        else openComingSoon();
+      }
     }
   };
 
+  const PHONE_NUMBER = '+919102740274';
   const NAV_LINKS = [
     { label: 'Home', to: '/' },
     { label: 'Painting', to: '/painting', badge: 'New' },
-    { label: 'Other Services', type: 'soon' },
+    { label: 'Contact', href: `tel:${PHONE_NUMBER}` },
   ];
-
-  const PHONE_NUMBER = '+919102740274';
 
   const LocationButton = ({ onClick, style = {} }) => (
     <button
@@ -251,8 +296,8 @@ const Navbar = () => {
         .nav-link:hover { color: #2563eb; }
         .nav-link.highlight { color: #d97706; }
         .nav-link.highlight::after { background: #d97706; }
-        .icon-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; transition: background 0.2s; color: #1e293b; }
-        .icon-btn:hover { background: #f1f5f9; color: #000; }
+        .icon-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 12px; transition: all 0.2s; color: #334155; }
+        .icon-btn:hover { background: #f1f5f9; color: #0f172a; }
         .suggest-item:hover { background: #f0f9ff; }
         .loc-use-btn:hover { background: #f0f0ff; }
         
@@ -264,7 +309,7 @@ const Navbar = () => {
             object-fit: contain;
             flex-shrink: 0;
           }
-          .mobile-nav-container { padding: 0 0.75rem !important; height: 72px !important; }
+          .mobile-nav-container { padding: 0 0.75rem !important; height: 64px !important; }
         }
         @media(min-width: 901px) { 
           .mobile-only { display: none !important; } 
@@ -280,18 +325,34 @@ const Navbar = () => {
           justify-content: center;
           height: 100%;
           width: 150px;
-          overflow: hidden; /* This masks the vertical whitespace */
+          overflow: hidden;
           position: relative;
+        }
+
+        @keyframes slideInLeft {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
+        @keyframes backdropFadeIn {
+          from { opacity: 0; backdrop-filter: blur(0px); }
+          to { opacity: 1; backdrop-filter: blur(4px); }
+        }
+        @keyframes rotateIn {
+          from { transform: rotate(-180deg) scale(0.5); opacity: 0; }
+          to { transform: rotate(0) scale(1); opacity: 1; }
         }
       `}</style>
 
       <div style={{
         position: 'sticky', top: 0, zIndex: 1000, width: '100%',
-        background: '#fff', borderBottom: '1px solid #f1f5f9',
-        boxShadow: scrolled ? '0 8px 30px rgba(0,0,0,0.04)' : 'none',
-        transition: 'all 0.3s ease',
+        background: scrolled ? 'rgba(255,255,255,0.85)' : '#fff',
+        backdropFilter: scrolled ? 'blur(16px) saturate(180%)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(16px) saturate(180%)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(241,245,249,0.8)' : '1px solid #f1f5f9',
+        boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.03)' : 'none',
+        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
       }}>
-        <nav className="mobile-nav-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 5%', height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <nav className="mobile-nav-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 5%', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
           {/* LEFT */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
@@ -302,7 +363,7 @@ const Navbar = () => {
                 </button>
               ) : (
                 <button className="icon-btn" onClick={() => setIsMenuOpen(true)} aria-label="Open menu">
-                  <Menu size={28} />
+                  <Menu size={24} />
                 </button>
               )}
             </div>
@@ -317,24 +378,30 @@ const Navbar = () => {
               {NAV_LINKS.map(link => {
                 const isSoon = link.type === 'soon';
                 const isActive = link.to && location.pathname === link.to;
+                
+                if (link.href) {
+                  return (
+                    <a key={link.label} href={link.href} className="nav-link">
+                      {link.label}
+                    </a>
+                  );
+                }
+
                 return (
                   <Link key={link.label} to={link.to || '#'}
-                    onClick={isSoon ? (e) => { e.preventDefault(); openComingSoon(); } : undefined}
+                    onClick={(e) => {
+                      const isPaintingRestricted = link.label === 'Painting' && !isBengaluru;
+                      if (isSoon || isPaintingRestricted) {
+                        e.preventDefault();
+                        openComingSoon();
+                      }
+                    }}
                     className={`nav-link ${link.badge ? 'highlight' : ''} ${isActive ? 'active' : ''}`}>
                     {link.label}
                     {link.badge && <span style={{ background: '#fef08a', color: '#854d0e', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '8px', marginLeft: '6px' }}>{link.badge}</span>}
                   </Link>
                 );
               })}
-              {/* Contact — visually separated CTA */}
-              <span style={{ width: '1px', height: '18px', background: '#e2e8f0', flexShrink: 0 }} />
-              <a href={`tel:${PHONE_NUMBER}`}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#eff6ff', color: '#2563eb', padding: '0.4rem 1rem', borderRadius: '99px', fontSize: '13px', fontWeight: 700, textDecoration: 'none', border: '1px solid #bfdbfe', transition: 'all 0.2s' }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#2563eb'; e.currentTarget.style.color = '#fff'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = '#eff6ff'; e.currentTarget.style.color = '#2563eb'; }}
-              >
-                Contact
-              </a>
             </div>
           </div>
 
@@ -350,23 +417,23 @@ const Navbar = () => {
           {/* RIGHT: Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flex: 1, justifyContent: 'flex-end' }}>
             <div className="desktop-only" style={{ marginRight: '1rem' }}>
-              <LocationButton onClick={() => setShowLocationModal(true)} />
+              <LocationButton onClick={openLocation} />
             </div>
 
             <div className="desktop-only" style={{ position: 'relative', width: '240px', marginRight: '1rem' }} ref={searchRef}>
               <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '99px', padding: '0.55rem 1rem' }}>
                 <Search size={16} color="#64748b" />
-                <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onFocus={() => setShowSuggestions(true)} style={{ background: 'none', border: 'none', outline: 'none', marginLeft: '8px', fontSize: '14px', width: '100%' }} />
+                <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onFocus={() => setShowSuggestions(true)} onKeyDown={e => e.key === 'Enter' && handleSearchSubmit()} style={{ background: 'none', border: 'none', outline: 'none', marginLeft: '8px', fontSize: '14px', width: '100%' }} />
               </div>
             </div>
 
             <button className="icon-btn mobile-only" onClick={() => setIsSearchOpen(true)}>
-              <Search size={26} />
+              <Search size={24} />
             </button>
 
             <div style={{ position: 'relative' }}>
-              <button className="icon-btn" onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : navigate('/profile')}>
-                <User size={isAuthenticated ? 26 : 24} color={isAuthenticated ? '#2563eb' : 'currentColor'} />
+              <button className="icon-btn" onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : setIsAuthOpen(true)}>
+                <User size={24} color={isAuthenticated ? '#2563eb' : 'currentColor'} />
               </button>
 
               {isAuthenticated && isProfileOpen && (
@@ -387,9 +454,9 @@ const Navbar = () => {
             </div>
 
             <button className="icon-btn" onClick={() => navigate('/shop/cart')} style={{ position: 'relative' }}>
-              <ShoppingCart size={26} />
+              <ShoppingCart size={24} />
               {totalItems > 0 && (
-                <span style={{ position: 'absolute', top: '2px', right: '2px', background: '#2563eb', color: '#fff', borderRadius: '50%', width: '18px', height: '18px', fontSize: '10px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>
+                <span style={{ position: 'absolute', top: '2px', right: '2px', background: '#2563eb', color: '#fff', borderRadius: '50%', width: '16px', height: '16px', fontSize: '9px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>
                   {totalItems}
                 </span>
               )}
@@ -397,18 +464,21 @@ const Navbar = () => {
           </div>
         </nav>
 
+        {/* Auth Modal */}
+        <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+
         {/* MOBILE: Location Bar */}
-        <div className="mobile-only" onClick={() => setShowLocationModal(true)} style={{ padding: '0.65rem 1.25rem', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '0.65rem', background: '#fff', cursor: 'pointer' }}>
-          <MapPin size={15} color="#2563eb" />
-          <span style={{ fontSize: '13px', fontWeight: 600, color: '#334155', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{locationLabel}</span>
-          <ChevronDown size={14} color="#64748b" />
+        <div className="mobile-only" onClick={openLocation} style={{ padding: '0.5rem 1rem', borderTop: '1px solid #f8fafc', display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fafbfc', cursor: 'pointer' }}>
+          <MapPin size={13} color="#2563eb" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: '12px', fontWeight: 600, color: '#475569', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{locationLabel}</span>
+          <ChevronDown size={12} color="#94a3b8" style={{ flexShrink: 0 }} />
         </div>
       </div>
 
       {/* LOCATION MODAL */}
       {showLocationModal && (
         <>
-          <div onClick={() => setShowLocationModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, backdropFilter: 'blur(4px)' }} />
+          <div onClick={closeLocation} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000, backdropFilter: 'blur(4px)' }} />
           <div style={{
             position: 'fixed', top: '50%', left: '50%',
             transform: 'translate(-50%, -50%)',
@@ -462,11 +532,9 @@ const Navbar = () => {
                     disabled={!mapSelectedLabel}
                     onClick={() => {
                       if (!mapSelectedLabel) return;
-                      setLocationLabel(mapSelectedLabel);
-                      setLocationSubtext('');
-                      localStorage.setItem('dhoond_location', mapSelectedLabel);
-                      localStorage.setItem('dhoond_location_sub', '');
-                      setShowLocationModal(false);
+                      const pos = markerRef.current.getPosition();
+                      updateLocation(mapSelectedLabel, '', pos.lat(), pos.lng());
+                      closeLocation();
                       setShowMap(false);
                     }}
                     style={{
@@ -492,7 +560,7 @@ const Navbar = () => {
                     <p style={{ margin: 0, fontWeight: 900, fontSize: '1.05rem', color: '#0f172a', letterSpacing: '-0.01em' }}>Set your location</p>
                     <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#94a3b8', fontWeight: 500 }}>Find services near you</p>
                   </div>
-                  <button onClick={() => setShowLocationModal(false)} style={{ background: '#f3f4f6', border: 'none', borderRadius: '50%', width: '34px', height: '34px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <button onClick={closeLocation} style={{ background: '#f3f4f6', border: 'none', borderRadius: '50%', width: '34px', height: '34px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <X size={16} color="#374151" />
                   </button>
                 </div>
@@ -518,7 +586,7 @@ const Navbar = () => {
 
                 {/* Use current location */}
                 <div style={{ padding: '0.5rem 1rem 0' }}>
-                  <button className="loc-use-btn" onClick={() => { setShowLocationModal(false); detectLocation(); }}
+                  <button className="loc-use-btn" onClick={() => { closeLocation(); detectLocation(); }}
                     style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'none', border: 'none', cursor: 'pointer', padding: '0.85rem 0.75rem', borderRadius: '14px', width: '100%', textAlign: 'left' }}>
                     <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #ede9fe, #dbeafe)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <MapPin size={20} color="#6d28d9" />
@@ -567,21 +635,93 @@ const Navbar = () => {
       {/* MOBILE SIDEBAR MENU */}
       {isMenuOpen && (
         <>
-          <div onClick={() => setIsMenuOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1100, backdropFilter: 'blur(2px)' }} />
-          <div style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '280px', background: '#fff', zIndex: 1200, display: 'flex', flexDirection: 'column', boxShadow: '8px 0 32px rgba(0,0,0,0.12)' }}>
-            <div style={{ padding: '1.5rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Link to="/" onClick={() => setIsMenuOpen(false)}><img src="/logo.png" alt="Dhoond" style={{ height: '60px', width: 'auto' }} /></Link>
-              <button className="icon-btn" onClick={() => setIsMenuOpen(false)}><X size={22} /></button>
-            </div>
-            <nav style={{ flex: 1, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', overflowY: 'auto' }}>
-              <Link to={isAuthenticated ? "/profile" : "/painting"} onClick={() => setIsMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', textDecoration: 'none' }}>
-                <div style={{ width: '40px', height: '40px', background: '#eff6ff', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb' }}><User size={20} /></div>
-                <div><div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#111' }}>{isAuthenticated ? userName : 'Login / Register'}</div><div style={{ fontSize: '0.75rem', color: '#64748b' }}>{isAuthenticated ? `+91 ${userMobile}` : 'View Profile'}</div></div>
+          <div onClick={() => setIsMenuOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1100, animation: 'backdropFadeIn 0.3s ease forwards' }} />
+          <div style={{ position: 'fixed', top: 0, left: 0, bottom: 0, width: '300px', background: '#fff', zIndex: 1200, display: 'flex', flexDirection: 'column', boxShadow: '8px 0 40px rgba(0,0,0,0.15)', animation: 'slideInLeft 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards' }}>
+            {/* Header */}
+            <div style={{ padding: '1.25rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9' }}>
+              <Link to="/" onClick={() => setIsMenuOpen(false)} style={{ height: '40px', display: 'flex' }}>
+                <div className="dhoond-logo-container" style={{ width: '130px', justifyContent: 'flex-start' }}>
+                  <img src="/logo.png" alt="Dhoond" className="dhoond-logo" />
+                </div>
               </Link>
-              {NAV_LINKS.map(link => (
-                <Link key={link.label} to={link.to || '#'} onClick={() => { setIsMenuOpen(false); if (link.type === 'soon') openComingSoon(); }} style={{ textDecoration: 'none', padding: '0.75rem 1rem', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 700, color: '#111' }}>{link.label}</Link>
-              ))}
+              <button onClick={() => setIsMenuOpen(false)} style={{ background: '#f1f5f9', border: 'none', borderRadius: '10px', width: '36px', height: '36px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'rotateIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both' }}><X size={18} color="#475569" /></button>
+            </div>
+
+            {/* Profile */}
+            <div onClick={() => {
+              setIsMenuOpen(false);
+              if (isAuthenticated) { navigate('/profile'); }
+              else { setIsAuthOpen(true); }
+            }} style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', padding: '1.25rem', cursor: 'pointer', borderBottom: '1px solid #f8fafc' }}>
+              <div style={{ width: '44px', height: '44px', background: 'linear-gradient(135deg, #eff6ff 0%, #ede9fe 100%)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb', flexShrink: 0 }}><User size={22} /></div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#0f172a' }}>{isAuthenticated ? userName : 'Login / Register'}</div>
+                <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 500, marginTop: '1px' }}>{isAuthenticated ? `+91 ${userMobile}` : 'Tap to get started'}</div>
+              </div>
+              <ChevronDown size={16} color="#94a3b8" style={{ transform: 'rotate(-90deg)' }} />
+            </div>
+
+            {/* Navigation */}
+            <nav style={{ flex: 1, padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', overflowY: 'auto' }}>
+              {[
+                { label: 'Home', to: '/', icon: <HomeIcon size={20} /> },
+                { label: 'Painting', to: '/painting', icon: <Paintbrush size={20} />, badge: 'New', restricted: !isBengaluru },
+                { label: 'My Bookings', to: '/profile', icon: <Package size={20} /> },
+                { label: 'Contact', href: `tel:${PHONE_NUMBER}`, icon: <Phone size={20} /> },
+              ].map(link => {
+                const isActive = link.to && location.pathname === link.to;
+                const content = (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: '0.85rem',
+                    padding: '0.85rem 1rem', borderRadius: '14px',
+                    background: isActive ? '#eff6ff' : 'transparent',
+                    transition: 'background 0.2s',
+                    cursor: 'pointer',
+                  }}>
+                    <span style={{ color: isActive ? '#2563eb' : '#64748b', display: 'flex' }}>{link.icon}</span>
+                    <span style={{ fontWeight: isActive ? 800 : 600, fontSize: '0.92rem', color: isActive ? '#1e40af' : '#334155', flex: 1 }}>{link.label}</span>
+                    {link.badge && <span style={{ background: '#fef08a', color: '#854d0e', fontSize: '9px', fontWeight: 800, padding: '2px 7px', borderRadius: '8px' }}>{link.badge}</span>}
+                  </div>
+                );
+
+                if (link.href) {
+                  return <a key={link.label} href={link.href} style={{ textDecoration: 'none' }}>{content}</a>;
+                }
+                return (
+                  <Link key={link.label} to={link.to || '#'} onClick={() => {
+                    setIsMenuOpen(false);
+                    if (link.restricted) { openComingSoon(); }
+                  }} style={{ textDecoration: 'none' }}>{content}</Link>
+                );
+              })}
+
+              {/* CTA Button */}
+              <div style={{ padding: '0.5rem 0.5rem 0', marginTop: '0.5rem' }}>
+                <button onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate('/');
+                  setTimeout(() => document.querySelector('#services-section')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                }} style={{
+                  width: '100%', padding: '0.9rem',
+                  background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
+                  color: '#fff', border: 'none', borderRadius: '14px',
+                  fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                  boxShadow: '0 6px 20px rgba(37,99,235,0.3)',
+                }}>
+                  Book a Service <ArrowUpRight size={16} strokeWidth={3} />
+                </button>
+              </div>
             </nav>
+
+            {/* Footer */}
+            <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid #f1f5f9' }}>
+              <div onClick={() => { setIsMenuOpen(false); openLocation(); }} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', padding: '0.5rem 0' }}>
+                <MapPin size={14} color="#2563eb" />
+                <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#475569', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{locationLabel}</span>
+              </div>
+              <div style={{ fontSize: '0.68rem', color: '#cbd5e1', fontWeight: 500, marginTop: '0.25rem' }}>Dhoond v1.0 · Made in India 🇮🇳</div>
+            </div>
           </div>
         </>
       )}
@@ -598,7 +738,7 @@ const Navbar = () => {
           </div>
           <div style={{ flex: 1, overflow: 'auto', padding: '1rem' }}>
             {filteredSuggestions.map(s => (
-              <div key={s} onClick={() => handleSearchSubmit(s)} style={{ padding: '1rem', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Search size={16} color="#2563eb" />{s}</div>
+              <div key={s.label} onClick={() => handleSearchSubmit(s)} style={{ padding: '1rem', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}><Search size={16} color="#2563eb" />{s.label}</div>
             ))}
           </div>
         </div>
@@ -619,18 +759,26 @@ const MainLayout = () => {
   );
 };
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
 function App() {
   return (
     <UIProvider>
       <AuthProvider>
         <CartProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
               <Route path="/admin/*" element={<Admin />} />
               <Route element={<MainLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/shop" element={<Shop />} />
-                <Route path="/service/:id" element={<ServiceDetail />} />
                 <Route path="/shop/cart" element={<Cart />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />

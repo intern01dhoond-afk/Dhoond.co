@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Building2, School, Home as House, Sparkles, ShieldCheck, ArrowRight, Palette } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useUI } from '../context/UIContext';
 
 const CommercialPainting = () => {
   const navigate = useNavigate();
@@ -18,9 +19,22 @@ const CommercialPainting = () => {
 
   const isAdded = cartItems.some(item => item.id === consultationItem.id);
 
+  const { openComingSoon, locationLabel, locationSubtext } = useUI();
+  
   useEffect(() => {
+    const isBengaluru = (locationLabel || '').toLowerCase().includes('bengaluru') || 
+                         (locationLabel || '').toLowerCase().includes('bangalore') ||
+                         (locationSubtext || '').toLowerCase().includes('bengaluru') ||
+                         (locationSubtext || '').toLowerCase().includes('bangalore');
+    
+    if (locationLabel && locationLabel !== 'Fetching location…' && locationLabel !== 'Detecting…' && !isBengaluru) {
+      openComingSoon();
+      navigate('/');
+      return;
+    }
+
     window.scrollTo(0, 0);
-  }, []);
+  }, [navigate, openComingSoon, locationLabel, locationSubtext]);
 
   const handleBooking = () => {
     if (!isAdded) {
@@ -144,38 +158,7 @@ const CommercialPainting = () => {
         </div>
       </div>
 
-      {/* STICKY CONVERSION BAR */}
-      <div style={{ 
-        position: 'fixed', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', 
-        width: '90%', maxWidth: '800px', background: '#fff', padding: '1rem 1.5rem', 
-        borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', 
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 1000,
-        border: '1px solid rgba(255,255,255,0.8)', backdropFilter: 'blur(20px)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ width: '50px', height: '50px', background: '#3b82f6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-            <Palette size={24} />
-          </div>
-          <div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#3b82f6', textTransform: 'uppercase' }}>Expert Visit</div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0f172a' }}>₹99 <span style={{ fontSize: '0.8rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 500 }}>₹499</span></div>
-          </div>
-        </div>
-        
-        <button 
-          onClick={handleBooking}
-          style={{ 
-            background: '#111', color: '#fff', border: 'none', padding: '1rem 2rem', 
-            borderRadius: '16px', fontWeight: 800, fontSize: '1rem', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'all 0.3s',
-            boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
-          }}
-          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-        >
-          {isAdded ? 'Go to Cart' : 'Book Consultation now'} <ArrowRight size={20} />
-        </button>
-      </div>
+
     </div>
   );
 };
