@@ -18,7 +18,15 @@ import AuthModal from './components/AuthModal';
 import { detectCurrentLocation, waitForGoogleMaps, isInsideGeofence } from './utils/location';
 import './index.css';
 
-const SUGGESTIONS = ['Painting Service', 'AC Repair', 'RO Technician', 'Plumber', 'Electrician', 'Washing Machine Repair', 'Refrigerator Repair'];
+const SEARCH_SUGGESTIONS = [
+  { label: 'Painting Service', path: '/painting', isPainting: true },
+  { label: 'AC Repair', path: '/shop?cat=technician&subcat=ac' },
+  { label: 'RO Technician', path: '/shop?cat=technician&subcat=ro' },
+  { label: 'Plumber', path: '', isComingSoon: true },
+  { label: 'Electrician', path: '/shop?cat=electrician' },
+  { label: 'Washing Machine Repair', path: '/shop?cat=technician&subcat=washing' },
+  { label: 'Refrigerator Repair', path: '', isComingSoon: true }
+];
 
 const Navbar = () => {
   const location = useLocation();
@@ -204,24 +212,49 @@ const Navbar = () => {
     (locationSubtext || '').toLowerCase().includes('nagpur');
 
   const filteredSuggestions = searchQuery.length > 0
-    ? SUGGESTIONS.filter(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
-    : SUGGESTIONS;
+    ? SEARCH_SUGGESTIONS.filter(s => s.label.toLowerCase().includes(searchQuery.toLowerCase()))
+    : SEARCH_SUGGESTIONS;
 
-  const handleSearchSubmit = (query) => {
-    const q = (query || searchQuery).toLowerCase();
+  const handleSearchSubmit = (itemOrQuery) => {
     setShowSuggestions(false);
     setIsSearchOpen(false);
-    if (q.includes('paint')) {
-      if (isBengaluru) {
-        navigate('/painting');
-      } else {
+
+    if (itemOrQuery && typeof itemOrQuery === 'object' && itemOrQuery.label) {
+      if (itemOrQuery.isComingSoon) {
         openComingSoon();
+        return;
+      }
+      if (itemOrQuery.isPainting) {
+        if (isBengaluru) navigate(itemOrQuery.path);
+        else openComingSoon();
+        return;
+      }
+      if (isNagpur) navigate(itemOrQuery.path);
+      else openComingSoon();
+      return;
+    }
+
+    const q = (typeof itemOrQuery === 'string' ? itemOrQuery : searchQuery).toLowerCase();
+    const match = SEARCH_SUGGESTIONS.find(s => s.label.toLowerCase() === q) || 
+                  SEARCH_SUGGESTIONS.find(s => s.label.toLowerCase().includes(q));
+                  
+    if (match) {
+      if (match.isComingSoon) {
+        openComingSoon();
+      } else if (match.isPainting) {
+        if (isBengaluru) navigate(match.path);
+        else openComingSoon();
+      } else {
+        if (isNagpur) navigate(match.path);
+        else openComingSoon();
       }
     } else {
-      if (isNagpur) {
-        navigate('/shop');
+      if (q.includes('paint')) {
+        if (isBengaluru) navigate('/painting');
+        else openComingSoon();
       } else {
-        openComingSoon();
+        if (isNagpur) navigate('/shop');
+        else openComingSoon();
       }
     }
   };
@@ -390,7 +423,7 @@ const Navbar = () => {
             <div className="desktop-only" style={{ position: 'relative', width: '240px', marginRight: '1rem' }} ref={searchRef}>
               <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '99px', padding: '0.55rem 1rem' }}>
                 <Search size={16} color="#64748b" />
-                <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onFocus={() => setShowSuggestions(true)} style={{ background: 'none', border: 'none', outline: 'none', marginLeft: '8px', fontSize: '14px', width: '100%' }} />
+                <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onFocus={() => setShowSuggestions(true)} onKeyDown={e => e.key === 'Enter' && handleSearchSubmit()} style={{ background: 'none', border: 'none', outline: 'none', marginLeft: '8px', fontSize: '14px', width: '100%' }} />
               </div>
             </div>
 
@@ -633,7 +666,6 @@ const Navbar = () => {
               {[
                 { label: 'Home', to: '/', icon: <HomeIcon size={20} /> },
                 { label: 'Painting', to: '/painting', icon: <Paintbrush size={20} />, badge: 'New', restricted: !isBengaluru },
-                { label: 'Shop', to: '/shop', icon: <Store size={20} /> },
                 { label: 'My Bookings', to: '/profile', icon: <Package size={20} /> },
                 { label: 'Contact', href: `tel:${PHONE_NUMBER}`, icon: <Phone size={20} /> },
               ].map(link => {
@@ -706,7 +738,7 @@ const Navbar = () => {
           </div>
           <div style={{ flex: 1, overflow: 'auto', padding: '1rem' }}>
             {filteredSuggestions.map(s => (
-              <div key={s} onClick={() => handleSearchSubmit(s)} style={{ padding: '1rem', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Search size={16} color="#2563eb" />{s}</div>
+              <div key={s.label} onClick={() => handleSearchSubmit(s)} style={{ padding: '1rem', fontSize: '15px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}><Search size={16} color="#2563eb" />{s.label}</div>
             ))}
           </div>
         </div>

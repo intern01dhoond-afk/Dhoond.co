@@ -65,7 +65,7 @@ const Checkout = () => {
   const [selectedPayment, setSelectedPayment] = useState('upi'); // upi, card, netbanking
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [avoidCalling, setAvoidCalling] = useState(true);
-  const [paymentError, setPaymentError] =('');
+  const [paymentError, setPaymentError] = useState('');
   const [isInitializing, setIsInitializing] = useState(true);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
   const [locating, setLocating] = useState(false);
@@ -326,7 +326,7 @@ const Checkout = () => {
 
       // 3. Open Razorpay with both IDs
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_Sdh2WaT4aYxo9E",
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_SeSxsY1JZab5Lw",
         amount: Math.round(finalAmountToPay * 100),
         currency: "INR",
         name: "Dhoond Services",
