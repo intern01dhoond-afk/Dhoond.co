@@ -184,26 +184,7 @@ const Home = () => {
         }
       });
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-up');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    // Use a slightly longer delay and requestAnimationFrame to ensure DOM is ready
-    const timer = setTimeout(() => {
-      requestAnimationFrame(() => {
-        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-      });
-    }, 300);
-
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-    };
+    // Removed IntersectionObserver for immediate visibility
   }, [isNagpur, isBengaluru]);
 
   return (
@@ -218,9 +199,6 @@ const Home = () => {
         .btn-hover:hover { transform: scale(1.05); box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important; }
         .btn-hover:active { transform: scale(0.97); }
 
-        .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .animate-up { opacity: 1; transform: translateY(0); }
-        
         .parallax-bg { background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M0,50 Q25,25 50,50 T100,50" stroke="rgba(217, 119, 6, 0.05)" stroke-width="2" fill="none"/></svg>'); }
 
         .service-scroll::-webkit-scrollbar, .testi-scroll::-webkit-scrollbar { display: none; }
@@ -482,7 +460,7 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="section-pad fade-up parallax-bg" style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #fff 100%)', padding: '5rem 5% 8rem' }}>
+        <section className="section-pad parallax-bg" style={{ background: 'linear-gradient(180deg, #f8fafc 0%, #fff 100%)', padding: '5rem 5% 8rem' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem' }}>
               <div>
@@ -626,7 +604,7 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="section-pad fade-up" style={{
+        <section className="section-pad" style={{
           background: '#0f172a',
           position: 'relative', overflow: 'hidden',
         }}>
@@ -723,14 +701,14 @@ const Home = () => {
         </section>
 
 
-        <section className="section-pad fade-up" style={{ background: '#f9fafb', padding: '5rem 5% 2.5rem' }}>
+        <section className="section-pad" style={{ background: '#f9fafb', padding: '5rem 5% 2.5rem' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
               <span style={{ display: 'inline-block', background: '#fef3c7', color: '#d97706', fontSize: '0.7rem', fontWeight: 800, padding: '3px 12px', borderRadius: '99px', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.6rem' }}>Reviews</span>
               <h2 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', fontWeight: 900, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>Loved by Thousands</h2>
               <p style={{ color: '#64748b', fontWeight: 500, fontSize: '0.95rem', marginTop: '0.5rem', marginBottom: 0 }}>Real feedback from real customers across India</p>
             </div>
-            <div className="testi-scroll testi-grid fade-up" style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1.5rem', WebkitOverflowScrolling: 'touch' }}>
+            <div className="testi-scroll testi-grid" style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1.5rem', WebkitOverflowScrolling: 'touch' }}>
               {[
                 { name: 'Hemanth', role: 'HSR Layout, Bengaluru', stars: 5, text: 'Absolutely brilliant service! The technician arrived on time, diagnosed the issue within minutes, and was done in under 30 mins. Will definitely book again.' },
                 { name: 'Rahul Mehta', role: 'Business Owner, Bengaluru', stars: 4, text: 'Good experience overall. The painting team was professional and the work quality was solid. Took a bit longer than expected, but the result was worth it.' },
