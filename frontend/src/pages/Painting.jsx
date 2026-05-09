@@ -4,6 +4,11 @@ import { ChevronRight } from 'lucide-react';
 import PaintingServiceList from '../components/PaintingServiceList';
 import { useUI } from '../context/UIContext';
 import paintingBanner from '../assets/painting_banner.png';
+import consultationImg from '../assets/consultation.png';
+import commercialImg from '../assets/commercial_painting.jpg';
+import interiorImg from '../assets/interior.jpg';
+import exteriorImg from '../assets/exterior_painting.webp';
+import specialtyImg from '../assets/grill_gate.png';
 
 function loadScript(src) {
   return new Promise((res) => {
@@ -620,11 +625,11 @@ export default function Painting() {
         <div style={{ background: '#fff', paddingTop: '12px', paddingBottom: '8px' }}>
           <div className="p-services-strip" id="p-sstrip" role="list">
             {[
-              { img: '/consultation.png', title: 'Book Consultation', sub: 'Talk to an expert — ₹99', filter: 'consultation', badge: 'Popular' },
-              { img: '/commercial_painting.jpg', title: 'Commercial Painting', sub: 'Offices, Schools & warehouses', filter: 'commercial', badge: null },
-              { img: '/interior.jpg', title: 'Interior Painting', sub: 'Walls, ceilings & trims', filter: 'interior', badge: null },
-              { img: '/exterior_painting.webp', title: 'Exterior Painting', sub: 'Weather-resistant finishes', filter: 'exterior', badge: null },
-              { img: '/grill_gate.png', title: 'Specialty Coatings', sub: 'Epoxy for Grills, Gates & Doors', filter: 'coatings', badge: null },
+              { img: consultationImg, title: 'Book Consultation', sub: 'Talk to an expert — ₹99', filter: 'consultation', badge: 'Popular' },
+              { img: commercialImg, title: 'Commercial Painting', sub: 'Offices, Schools & warehouses', filter: 'commercial', badge: null },
+              { img: interiorImg, title: 'Interior Painting', sub: 'Walls, ceilings & trims', filter: 'interior', badge: null },
+              { img: exteriorImg, title: 'Exterior Painting', sub: 'Weather-resistant finishes', filter: 'exterior', badge: null },
+              { img: specialtyImg, title: 'Specialty Coatings', sub: 'Epoxy for Grills, Gates & Doors', filter: 'coatings', badge: null },
             ].map(s => (
               <div key={s.title} className="p-service-item" role="listitem" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => {
                 navigate(`?service=${encodeURIComponent(s.title)}&sub=${encodeURIComponent(s.sub)}&filter=${s.filter}`);

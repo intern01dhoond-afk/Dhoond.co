@@ -7,6 +7,12 @@ import { detectCurrentLocation, isInsideGeofence } from '../utils/location';
 import ComingSoonModal from '../components/ComingSoonModal';
 import heroVideo from '../assets/hero_video.mp4';
 import heroPoster from '../assets/main-banner.webp';
+import acIcon from '../assets/icons/ac_technician.png';
+import electricianIcon from '../assets/icons/electrician.png';
+import painterIcon from '../assets/icons/painter.png';
+import refrigeratorIcon from '../assets/icons/refrigerator.png';
+import roIcon from '../assets/icons/ro_technician.png';
+import washingIcon from '../assets/icons/washing_machine.png';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -402,12 +408,12 @@ const Home = () => {
               </div>
               <div className="service-scroll service-grid service-grid-mobile" style={{ display: 'flex', gap: '1.25rem', overflowX: 'auto', paddingBottom: '1rem' }}>
                 {[
-                  { label: 'Painting', img: '/icons/painter.png?v=2', cat: 'painter', accent: '#d97706' },
-                  { label: 'AC Tech', img: '/icons/ac_technician.png?v=2', cat: 'technician', subcat: 'ac', accent: '#2563eb' },
-                  { label: 'RO Tech', img: '/icons/ro_technician.png?v=2', cat: 'technician', subcat: 'ro', accent: '#059669' },
-                  { label: 'Electrician', img: '/icons/electrician.png?v=2', cat: 'electrician', accent: '#db2777' },
-                  { label: 'Washing Mach.', img: '/icons/washing_machine.png?v=2', cat: 'technician', subcat: 'washing', accent: '#7c3aed' },
-                  { label: 'Refrigerator', img: '/icons/refrigerator.png?v=2', cat: 'technician', subcat: 'fridge', accent: '#0284c7' }
+                  { label: 'Painting', img: painterIcon, cat: 'painter', accent: '#d97706' },
+                  { label: 'AC Tech', img: acIcon, cat: 'technician', subcat: 'ac', accent: '#0284c7' },
+                  { label: 'RO Tech', img: roIcon, cat: 'technician', subcat: 'ro', accent: '#0891b2' },
+                  { label: 'Electrician', img: electricianIcon, cat: 'electrician', accent: '#ca8a04' },
+                  { label: 'Washing Mach.', img: washingIcon, cat: 'technician', subcat: 'washing', accent: '#4f46e5' },
+                  { label: 'Refrigerator', img: refrigeratorIcon, cat: 'technician', subcat: 'fridge', accent: '#059669' }
                 ].map((item) => {
                   const isAvailable = (item.label === 'Painting' && isBengaluru) ||
                     (item.label !== 'Painting' && item.label !== 'Refrigerator' && isNagpur);
