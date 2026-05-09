@@ -202,21 +202,21 @@ const OrdersManager = () => {
                   <tr key={b.id} style={{ borderBottom: idx < filtered.length - 1 ? '1px solid #f1f5f9' : 'none' }}
                     onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                    <td style={{ padding: '14px 16px', fontWeight: 800, color: '#1e40af', fontSize: '14px' }}>
+                    <td style={{ padding: '14px 16px', fontWeight: 800, color: '#1e40af', fontSize: '13px', whiteSpace: 'nowrap' }}>
                       {formatOrderId(b.id, b.created_at, b.daily_sequence)}
                     </td>
-                    <td style={{ padding: '14px 16px', maxWidth: '200px' }}>
-                      <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={items?.map(i => i.title).join(', ')}>
+                    <td style={{ padding: '14px 16px', minWidth: '180px', maxWidth: '250px' }}>
+                      <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', lineHeight: '1.4' }}>
                         {items?.length > 0 ? items.map(i => i.title).join(', ') : '—'}
                       </div>
-                      {items?.length > 1 && <div style={{ fontSize: '10px', color: '#2563eb', fontWeight: 700 }}>+{items.length - 1} more items</div>}
+                      {items?.length > 1 && <div style={{ fontSize: '10px', color: '#2563eb', fontWeight: 700, marginTop: '2px' }}>{items.length} services included</div>}
                     </td>
                     <td style={{ padding: '14px 16px' }}>
                       <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '14px' }}>{b.customer_name || '—'}</div>
                       <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{b.phone}</div>
                     </td>
-                    <td style={{ padding: '14px 16px', maxWidth: '180px' }}>
-                      <div style={{ fontSize: '12px', color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.address}>
+                    <td style={{ padding: '14px 16px', minWidth: '220px', maxWidth: '300px' }}>
+                      <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5' }}>
                         {b.address || '—'}
                       </div>
                     </td>

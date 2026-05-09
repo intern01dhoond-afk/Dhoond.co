@@ -254,18 +254,18 @@ const Admin = () => {
                      const items = Array.isArray(b.items) ? b.items : (() => { try { return JSON.parse(b.items || '[]'); } catch(e) { return []; } })();
                      return (
                        <tr key={b.id}>
-                         <td style={{ fontWeight: 800, color: '#1e40af' }}>{formatOrderId(b.id, b.created_at, b.daily_sequence)}</td>
+                         <td style={{ fontWeight: 800, color: '#1e40af', fontSize: '13px', whiteSpace: 'nowrap' }}>{formatOrderId(b.id, b.created_at, b.daily_sequence)}</td>
                          <td>
-                           <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={items?.map(i => i.title).join(', ')}>
+                           <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', lineHeight: '1.4', minWidth: '150px' }}>
                              {items?.length > 0 ? items.map(i => i.title).join(', ') : '—'}
                            </div>
                          </td>
                          <td>
-                           <div style={{ fontWeight: 600, color: '#0f172a' }}>{b.customer_name}</div>
+                           <div style={{ fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap' }}>{b.customer_name}</div>
                            <div style={{ fontSize: '12px', color: '#64748b' }}>{b.phone}</div>
                          </td>
                          <td>
-                           <div style={{ fontSize: '12px', color: '#64748b', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.address}>
+                           <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.4', minWidth: '180px' }}>
                              {b.address || '—'}
                            </div>
                          </td>
