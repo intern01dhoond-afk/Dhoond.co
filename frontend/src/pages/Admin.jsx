@@ -231,7 +231,9 @@ const Admin = () => {
                  <thead>
                    <tr>
                      <th>Order ID</th>
+                     <th>Product</th>
                      <th>Customer</th>
+                     <th>Location</th>
                      <th>Status</th>
                      <th>Payment</th>
                      <th>Method</th>
@@ -253,8 +255,18 @@ const Admin = () => {
                        <tr key={b.id}>
                          <td style={{ fontWeight: 800, color: '#1e40af' }}>{formatOrderId(b.id, b.created_at, b.daily_sequence)}</td>
                          <td>
+                           <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.items?.map(i => i.title).join(', ')}>
+                             {b.items?.length > 0 ? b.items.map(i => i.title).join(', ') : '—'}
+                           </div>
+                         </td>
+                         <td>
                            <div style={{ fontWeight: 600, color: '#0f172a' }}>{b.customer_name}</div>
                            <div style={{ fontSize: '12px', color: '#64748b' }}>{b.phone}</div>
+                         </td>
+                         <td>
+                           <div style={{ fontSize: '12px', color: '#64748b', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.address}>
+                             {b.address || '—'}
+                           </div>
                          </td>
                          <td>
                            <span className="status-badge" style={{ background: sc.bg, color: sc.color }}>

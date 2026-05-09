@@ -187,7 +187,7 @@ const OrdersManager = () => {
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '880px' }}>
             <thead>
               <tr style={{ background: '#f8fafc' }}>
-                {['Order ID', 'Customer', 'Amount', 'Method', 'Payment', 'Status', 'Date', 'Actions'].map(h => (
+                {['Order ID', 'Product', 'Customer', 'Location', 'Amount', 'Method', 'Payment', 'Status', 'Date', 'Actions'].map(h => (
                   <th key={h} style={{ padding: '13px 16px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#64748b', borderBottom: '1px solid #e2e8f0', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
                 ))}
               </tr>
@@ -203,9 +203,20 @@ const OrdersManager = () => {
                     <td style={{ padding: '14px 16px', fontWeight: 800, color: '#1e40af', fontSize: '14px' }}>
                       {formatOrderId(b.id, b.created_at, b.daily_sequence)}
                     </td>
+                    <td style={{ padding: '14px 16px', maxWidth: '200px' }}>
+                      <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.items?.map(i => i.title).join(', ')}>
+                        {b.items?.length > 0 ? b.items.map(i => i.title).join(', ') : '—'}
+                      </div>
+                      {b.items?.length > 1 && <div style={{ fontSize: '10px', color: '#2563eb', fontWeight: 700 }}>+{b.items.length - 1} more items</div>}
+                    </td>
                     <td style={{ padding: '14px 16px' }}>
                       <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '14px' }}>{b.customer_name || '—'}</div>
                       <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{b.phone}</div>
+                    </td>
+                    <td style={{ padding: '14px 16px', maxWidth: '180px' }}>
+                      <div style={{ fontSize: '12px', color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.address}>
+                        {b.address || '—'}
+                      </div>
                     </td>
                     <td style={{ padding: '14px 16px', fontWeight: 800, fontSize: '15px', color: '#0f172a' }}>
                       ₹{Number(b.paid_amount ?? b.total_amount).toLocaleString()}
