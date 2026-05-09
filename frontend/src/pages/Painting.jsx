@@ -403,15 +403,15 @@ export default function Painting() {
         .process-card h3 { font-size: 17px; font-weight: 600; color: #2B2B2B; margin-bottom: 10px; }
         .process-card p { font-size: 13px; color: #8C8679; line-height: 1.65; font-weight: 300; margin: 0; }
         @media (max-width: 768px) {
-          .p-process { padding: 48px 0 !important; }
+          .p-process { padding: 60px 0 !important; }
           .p-section-header { margin-bottom: 32px !important; }
-          .p-section-header h2 { font-size: 28px !important; line-height: 1.2 !important; }
+          .p-section-header h2 { font-size: 32px !important; line-height: 1.15 !important; letter-spacing: -0.5px !important; }
           .p-process-grid { padding-top: 10px !important; }
-          .p-intro { padding: 48px 5vw !important; }
-          .p-stats { padding: 48px 5vw !important; }
-          .p-gallery { padding: 48px 5vw !important; }
-          .p-testimonials { padding: 48px 5vw !important; }
-          .p-why { padding: 48px 5vw !important; }
+          .p-intro { padding: 60px 5vw !important; }
+          .p-stats { padding: 60px 5vw !important; }
+          .p-gallery { padding: 60px 5vw !important; }
+          .p-testimonials { padding: 60px 5vw !important; }
+          .p-why { padding: 60px 5vw !important; }
         }
         @media (min-width: 1024px) {
           .p-process-grid { display: grid; grid-template-columns: repeat(4,1fr); overflow: visible; padding: 8px 5vw 0; }
@@ -457,7 +457,6 @@ export default function Painting() {
         .p-ttext { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 28px; font-weight: 300; font-style: italic; }
         .p-tauthor { display: flex; align-items: center; gap: 14px; }
         .p-tavatar { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: #eee; border: 2px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.12); flex-shrink: 0; }
-        .p-tbadge { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-top: 4px; display: inline-block; }
         .p-tname { font-size: 14px; font-weight: 600; color: #2B2B2B; }
         .p-trole { font-size: 11px; color: #8C8679; margin-top: 2px; }
         @media (min-width: 760px) {
@@ -523,14 +522,6 @@ export default function Painting() {
         .p-btn-cta:hover { transform: scale(1.04) translateY(-2px); }
         .p-cta-phone { font-size: 13px; color: rgba(255,255,255,0.38); margin-top: 8px; }
         .p-cta-phone a { color: rgba(255,255,255,0.8); font-weight: 600; text-decoration: none; }
-        
-        /* Inline Form */
-        .p-quote-form { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 24px; border-radius: 20px; width: 100%; max-width: 400px; display: flex; flexDirection: column; gap: 12px; }
-        .p-q-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none; transition: border-color .2s; }
-        .p-q-input:focus { border-color: #facc15; }
-        .p-q-submit { background: #facc15; color: #111; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; transition: transform .2s; }
-        .p-q-submit:hover { transform: translateY(-2px); }
-
         @media (min-width: 760px) {
           #p-ctaEl { flex-direction: row; align-items: center; justify-content: space-between; padding: 64px 60px; gap: 40px; }
           .p-cta-btns { flex-direction: row; align-items: center; flex-shrink: 0; }
@@ -675,10 +666,10 @@ export default function Painting() {
           <div className="p-intro-inner">
             <div className="p-intro-imgs">
               <div className="p-intro-img" id="p-iimg1">
-                <div className="p-intro-img-inner" style={{ background: 'url(/wall2.webp) center/cover no-repeat' }} />
+                <div className="p-intro-img-inner" style={{ background: 'url(/wall2.jpg) center/cover no-repeat' }} />
               </div>
               <div className="p-intro-img" id="p-iimg2">
-                <div className="p-intro-img-inner" style={{ background: 'url(/wall3.webp) center/cover no-repeat' }} />
+                <div className="p-intro-img-inner" style={{ background: 'url(/wall3.jpg) center/cover no-repeat' }} />
               </div>
             </div>
             <div className="p-intro-text" id="p-introText" style={{ opacity: 0, transform: 'translateX(28px)' }}>
@@ -697,7 +688,7 @@ export default function Painting() {
           {[
             { target: 1200, label: 'Projects Completed' },
             { target: 950, label: 'Happy Clients' },
-            { target: 80, label: 'Verified Experts' },
+            { target: 80, label: 'Expert Painters' },
           ].map(s => (
             <div key={s.label} className="p-stat">
               <div className="num"><span className="p-cnum" data-target={s.target}>0</span><span className="plus">+</span></div>
@@ -755,10 +746,10 @@ export default function Painting() {
           </div>
           <div className="p-gallery-grid">
             {[
-              { bg: 'url(/Gemini_Generated_Image_nixczynixczynixc.webp)', title: 'Living Room Makeover', loc: 'Nagpur', tag: 'Luxury', price: '₹18,000' },
-              { bg: galleryActive === 'before' ? 'url(/wall2.webp)' : 'url(/images/interior.webp)', title: 'Bedroom Retreat', loc: 'Bengaluru, HSR Layout Sector 1', tag: galleryActive === 'before' ? 'Before' : 'After', price: '₹12,000' },
-              { bg: 'url(/space.webp)', title: 'Full Home Painting', loc: 'Bengaluru, Koramangala', tag: 'Elite', price: '₹45,000' },
-              { bg: 'url(/exterior_excellence.webp)', title: 'Exterior Excellence', loc: 'Nagpur, Ramdaspeth', tag: 'Premium', price: '₹32,000' },
+              { bg: 'url(/Gemini_Generated_Image_nixczynixczynixc.png)', title: 'Living Room Makeover', loc: 'Nagpur', tag: 'Luxury', price: '₹18,000' },
+              { bg: galleryActive === 'before' ? 'url(/wall2.jpg)' : 'url(/images/interior.jpg)', title: 'Bedroom Retreat', loc: 'Bengaluru, HSR Layout Sector 1', tag: galleryActive === 'before' ? 'Before' : 'After', price: '₹12,000' },
+              { bg: 'url(/space.jpg)', title: 'Full Home Painting', loc: 'Bengaluru, Koramangala', tag: 'Elite', price: '₹45,000' },
+              { bg: 'url(/exterior_excellence.png)', title: 'Exterior Excellence', loc: 'Nagpur, Ramdaspeth', tag: 'Premium', price: '₹32,000' },
             ].map(g => (
               <div key={g.title} className="gitem" tabIndex={0} role="img" aria-label={`${g.title}, ${g.loc}`}>
                 <div className="p-gbg" style={{ background: `${g.bg} center/cover no-repeat`, filter: galleryActive === 'before' ? 'grayscale(0.4) contrast(1.05)' : 'none', transition: 'filter .6s' }} />
@@ -793,13 +784,9 @@ export default function Painting() {
                 <div className="p-tstars">★★★★★</div>
                 <p className="p-ttext">"{t.text}"</p>
                 <div className="p-tauthor">
-                  <div className="p-tavatar">
-                      <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #2563eb, #1e3a8a)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 900 }}>{t.name[0]}</div>
-                  </div>
                   <div>
                     <div className="p-tname">{t.name}</div>
                     <div className="p-trole">{t.role}</div>
-                    <div className="p-tbadge">✓ Verified Customer</div>
                   </div>
                 </div>
               </div>
@@ -833,29 +820,48 @@ export default function Painting() {
         {/* ── CTA ── */}
         <section className="p-cta-wrap">
           <div id="p-ctaEl">
-            <div style={{ maxWidth: '480px' }}>
-              <span className="p-eyebrow" style={{ color: '#facc15', borderBottomColor: '#facc15' }}>Limited Availability</span>
-              <h2 style={{ marginBottom: '12px', fontSize: 'clamp(24px, 5vw, 42px)' }}>Book Your <em>Expert</em> for <em>June</em></h2>
-              <p style={{ marginBottom: '20px', color: 'rgba(255,255,255,0.8)' }}>Interior starting from <span>₹7/sq.ft</span>. Join 950+ happy homeowners who transformed their spaces with Dhoond.</p>
-              <div className="p-price-anchors" style={{ marginBottom: '24px' }}>
+            <div style={{ flex: 1 }}>
+              <h2>Transform Your Home<br /><em>Today.</em></h2>
+              <p>Premium service starting at transparent prices.</p>
+              <div className="p-price-anchors" style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                 <div className="p-price-tag">Consultation: <span>₹99</span></div>
-                <div className="p-price-tag">Warranty: <span>2 Years</span></div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#facc15', fontSize: '13px', fontWeight: 700 }}>
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 100% Satisfaction Guaranteed
+                <div className="p-price-tag">Interior: <span>₹7/sq.ft</span></div>
+                <div className="p-price-tag">Exterior: <span>₹9/sq.ft</span></div>
               </div>
             </div>
             
-            <form className="p-quote-form" onSubmit={(e) => { e.preventDefault(); openComingSoon(); }}>
-              <div style={{ fontSize: '15px', color: '#fff', fontWeight: 700, marginBottom: '4px' }}>Get a Free Quote</div>
-              <input type="text" placeholder="Your Name" className="p-q-input" required />
-              <input type="tel" placeholder="Phone Number" className="p-q-input" required />
-              <input type="text" placeholder="Pincode" className="p-q-input" required />
-              <button type="submit" className="p-q-submit">Get Price Quote</button>
-              <div style={{ textAlign: 'center', fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>No credit card required.</div>
-            </form>
+            <div className="p-cta-btns" style={{ flex: 1, maxWidth: '400px' }}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <div style={{ fontSize: '15px', color: '#fff', fontWeight: 700, marginBottom: '12px' }}>Quick Booking</div>
+                <button 
+                  onClick={() => navigate(`?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)} 
+                  className="p-btn-cta" 
+                  style={{ width: '100%', marginBottom: '12px' }}
+                >
+                  Book Consultation
+                </button>
+                <div style={{ textAlign: 'center', fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>
+                  Or call <a href={`tel:${PHONE}`} style={{ color: '#facc15', textDecoration: 'none' }}>+91 91027 40274</a>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
+
+        {/* ── MOBILE STICKY CTA ── */}
+        <div className="mobile-sticky-cta">
+          <button 
+            onClick={() => navigate(`?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)} 
+            className="mobile-sticky-cta-call"
+            style={{ width: '100%' }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', opacity: 0.8 }}>Book Professional Painting</span>
+              <span style={{ fontSize: '15px', fontWeight: 900 }}>Get Free Consultation</span>
+            </div>
+            <ChevronRight size={20} />
+          </button>
+        </div>
 
 
 

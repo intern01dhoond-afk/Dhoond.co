@@ -28,7 +28,7 @@ const Footer = () => {
       <div style={{ background: '#1e293b', borderBottom: '1px solid #334155', padding: 'var(--footer-contact-pad, 3.5rem 5%)' }}>
         <style>{`
           @media (max-width: 768px) {
-            :root { --footer-contact-pad: 2.5rem 1.5rem; --footer-main-pad: 3rem 1.5rem 2rem; --footer-main-gap: 2.5rem; }
+            :root { --footer-contact-pad: 2.5rem 1.5rem; --footer-main-pad: 3rem 1.5rem 2rem; --footer-main-gap: 3.5rem 2rem; }
             .mobile-centered-col { align-items: center !important; text-align: center !important; }
             .mobile-bottom-links { flex-direction: column !important; gap: 1rem !important; }
           }
@@ -100,8 +100,8 @@ const Footer = () => {
           <div style={{
             flex: '2 1 500px',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-            gap: '2.5rem'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: 'var(--footer-main-gap, 3.5rem 2.5rem)'
           }} className="mobile-text-center">
             {[
               { title: 'Company', links: ['About Us', 'Careers', 'Blog', 'Press'] },
