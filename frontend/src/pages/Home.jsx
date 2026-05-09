@@ -600,26 +600,38 @@ const Home = () => {
                           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
                           transition: 'opacity 0.2s',
                         }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (isNagpur && !isConsult) {
-                            addToCart(s);
-                            navigate('/cart'); // Navigate directly to cart page
-                            return;
-                          }
-                          if (!isBengaluru) {
-                            openComingSoon();
-                            return;
-                          }
-                          const title = s.title?.toLowerCase() || '';
-                          if (title.includes('commercial') || title.includes('office') || title.includes('school') || title.includes('warehouse')) {
-                            navigate(`/painting?service=${encodeURIComponent('Commercial Painting')}&sub=${encodeURIComponent('Offices, Colleges/Schools & warehouses')}&filter=commercial`);
-                          } else if (title.includes('exterior') || title.includes('weather')) {
-                            navigate(`/painting?service=${encodeURIComponent('Exterior Painting')}&sub=${encodeURIComponent('Weather-resistant finishes')}&filter=exterior`);
-                          } else {
-                            navigate(`/painting?service=${encodeURIComponent('Interior Painting')}&sub=${encodeURIComponent('Walls, ceilings & trims')}&filter=interior`);
-                          }
-                        }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        
+                        // Track ViewContent
+                        if (window.fbq) {
+                          window.fbq('track', 'ViewContent', {
+                            content_name: s.title,
+                            content_ids: [s.id],
+                            content_type: 'product',
+                            value: Number(discountPrice),
+                            currency: 'INR'
+                          });
+                        }
+
+                        if (isNagpur && !isConsult) {
+                          addToCart(s);
+                          navigate('/cart'); // Navigate directly to cart page
+                          return;
+                        }
+                        if (!isBengaluru) {
+                          openComingSoon();
+                          return;
+                        }
+                        const title = s.title?.toLowerCase() || '';
+                        if (title.includes('commercial') || title.includes('office') || title.includes('school') || title.includes('warehouse')) {
+                          navigate(`/painting?service=${encodeURIComponent('Commercial Painting')}&sub=${encodeURIComponent('Offices, Colleges/Schools & warehouses')}&filter=commercial`);
+                        } else if (title.includes('exterior') || title.includes('weather')) {
+                          navigate(`/painting?service=${encodeURIComponent('Exterior Painting')}&sub=${encodeURIComponent('Weather-resistant finishes')}&filter=exterior`);
+                        } else {
+                          navigate(`/painting?service=${encodeURIComponent('Interior Painting')}&sub=${encodeURIComponent('Walls, ceilings & trims')}&filter=interior`);
+                        }
+                      }}
                       >
                         {isNagpur && !isConsult ? 'Book Now' : 'Book Consultation'}
                         <ChevronRight size={15} />

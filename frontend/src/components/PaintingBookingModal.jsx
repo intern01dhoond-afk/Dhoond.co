@@ -28,6 +28,20 @@ const PaintingBookingModal = ({ service, onClose }) => {
   const [selectedDamages, setSelectedDamages] = useState([]);
   const { addToCart } = useCart();
   const navigate = useNavigate();
+  const { openComingSoon } = useUI();
+
+  React.useEffect(() => {
+    if (window.fbq && service) {
+      window.fbq('track', 'ViewContent', {
+        content_name: service.title,
+        content_category: 'Painting',
+        content_ids: [service.id],
+        content_type: 'product',
+        value: Number(service.discountPrice || CONSULTATION_FEE),
+        currency: 'INR'
+      });
+    }
+  }, [service]);
 
   const toggleDamage = (id) => {
     if (id === 'none') {

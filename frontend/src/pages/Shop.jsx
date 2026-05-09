@@ -132,6 +132,16 @@ const Shop = () => {
   }, [category, isBengaluru, isNagpur, openComingSoon, searchParams, setSearchParams, locationLabel]);
 
   useEffect(() => {
+    if (window.fbq) {
+      window.fbq('track', 'ViewContent', {
+        content_category: category,
+        content_name: getCategoryName(),
+        content_type: 'product_group'
+      });
+    }
+  }, [category, subcat]);
+
+  useEffect(() => {
     // Don't fetch from API when in a painting sub-view
     if (category === 'painter') return;
     // In dev, VITE_API_URL is empty → Vite proxy forwards /api → localhost:5001

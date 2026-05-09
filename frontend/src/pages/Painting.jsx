@@ -34,6 +34,16 @@ export default function Painting() {
 
   // Sync URL Params -> Local Modal State
   useEffect(() => {
+    if (window.fbq) {
+      window.fbq('track', 'ViewContent', {
+        content_name: 'Painting Services Landing',
+        content_category: 'Painting',
+        content_type: 'product_group'
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     const sTitle = params.get('service');
     if (sTitle) {
