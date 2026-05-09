@@ -22,6 +22,10 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Add custom Nginx config to handle React Router (Single Page App)
 RUN echo 'server { \
     listen 80; \
+    include /etc/nginx/mime.types; \
+    types { \
+        video/mp4 mp4; \
+    } \
     location / { \
         root /usr/share/nginx/html; \
         index index.html; \

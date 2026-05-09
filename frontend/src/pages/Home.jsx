@@ -191,11 +191,17 @@ const Home = () => {
       });
     }, { threshold: 0.1 });
 
-    setTimeout(() => {
-      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-    }, 100);
+    // Use a slightly longer delay and requestAnimationFrame to ensure DOM is ready
+    const timer = setTimeout(() => {
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+      });
+    }, 300);
 
-    return () => observer.disconnect();
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
   }, [isNagpur, isBengaluru]);
 
   return (
@@ -366,8 +372,16 @@ const Home = () => {
 
               <div className="hero-video fade-up" style={{ position: 'relative' }}>
                 <div className="video-container">
-                  <video autoPlay loop muted playsInline style={{ width: '100%', display: 'block' }}>
+                  <video 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline 
+                    poster="/main-banner.webp"
+                    style={{ width: '100%', display: 'block', objectFit: 'cover' }}
+                  >
                     <source src="/hero_video.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
                   </video>
                 </div>
                 <div className="floating-rating" style={{ position: 'absolute', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.18)', display: 'flex', flexDirection: 'column', zIndex: 10 }}>
