@@ -9,6 +9,9 @@ import commercialImg from '../assets/commercial_painting.jpg';
 import interiorImg from '../assets/interior.jpg';
 import exteriorImg from '../assets/exterior_painting.webp';
 import specialtyImg from '../assets/grill_gate.png';
+import hemanthImg from '../assets/Kuruba Hemanth Kishore.png';
+import rahulImg from '../assets/rahul_avatar.png';
+import sunitaImg from '../assets/sunita_avatar.png';
 
 function loadScript(src) {
   return new Promise((res) => {
@@ -812,14 +815,21 @@ export default function Painting() {
           </div>
           <div className="p-tgrid">
             {[
-              { name: 'Hemanth', role: 'HSR Layout, Bengaluru', text: 'Absolutely brilliant painting service! The team arrived on time, covered all furniture, and finished the job ahead of schedule. The walls look flawless!', featured: true },
-              { name: 'Rahul Mehta', role: 'Business Owner, Bengaluru', text: 'Good experience overall. The painting team was professional and the work quality was solid. The final finish on our exterior walls is exactly what we wanted.' },
-              { name: 'Sunita Kapoor', role: 'House Owner, Nagpur', text: 'Amazing transformation! The painters fixed our long-standing dampness issues and the new interior colors look stunning. Highly recommend for home painting.' },
+              { name: 'Hemanth', role: 'HSR Layout, Bengaluru', avatar: hemanthImg, text: 'Absolutely brilliant painting service! The team arrived on time, covered all furniture, and finished the job ahead of schedule. The walls look flawless!', featured: true },
+              { name: 'Rahul Mehta', role: 'Business Owner, Bengaluru', avatar: rahulImg, text: 'Good experience overall. The painting team was professional and the work quality was solid. The final finish on our exterior walls is exactly what we wanted.' },
+              { name: 'Sunita Kapoor', role: 'House Owner, Nagpur', avatar: sunitaImg, text: 'Amazing transformation! The painters fixed our long-standing dampness issues and the new interior colors look stunning. Highly recommend for home painting.' },
             ].map(t => (
               <div key={t.name} className={`p-tcard${t.featured ? ' p-tcard-featured' : ''}`}>
                 <div className="p-tstars">★★★★★</div>
                 <p className="p-ttext">"{t.text}"</p>
                 <div className="p-tauthor">
+                  <div className="p-tavatar">
+                    {t.avatar ? (
+                      <img src={t.avatar} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#eee', color: '#2563eb', fontWeight: 900 }}>{t.name[0]}</div>
+                    )}
+                  </div>
                   <div>
                     <div className="p-tname">{t.name}</div>
                     <div className="p-trole">{t.role}</div>

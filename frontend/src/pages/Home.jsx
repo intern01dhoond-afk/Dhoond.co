@@ -12,7 +12,9 @@ import electricianIcon from '../assets/icons/electrician.png';
 import painterIcon from '../assets/icons/painter.png';
 import refrigeratorIcon from '../assets/icons/refrigerator.png';
 import roIcon from '../assets/icons/ro_technician.png';
-import washingIcon from '../assets/icons/washing_machine.png';
+import hemanthImg from '../assets/Kuruba Hemanth Kishore.png';
+import rahulImg from '../assets/rahul_avatar.png';
+import sunitaImg from '../assets/sunita_avatar.png';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -750,9 +752,9 @@ const Home = () => {
             </div>
             <div className="testi-scroll testi-grid fade-up" style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1.5rem', WebkitOverflowScrolling: 'touch' }}>
               {[
-                { name: 'Hemanth', role: 'HSR Layout, Bengaluru', stars: 5, text: 'Absolutely brilliant service! The technician arrived on time, diagnosed the issue within minutes, and was done in under 30 mins. Will definitely book again.' },
-                { name: 'Rahul Mehta', role: 'Business Owner, Bengaluru', stars: 4, text: 'Good experience overall. The painting team was professional and the work quality was solid. Took a bit longer than expected, but the result was worth it.' },
-                { name: 'Sunita Kapoor', role: 'House Owner, Nagpur', stars: 3, text: 'Service was okay. The plumber did fix the leak but left without cleaning up. Could improve on punctuality and communication.' },
+                { name: 'Hemanth', role: 'HSR Layout, Bengaluru', stars: 5, avatar: hemanthImg, text: 'Absolutely brilliant service! The technician arrived on time, diagnosed the issue within minutes, and was done in under 30 mins. Will definitely book again.' },
+                { name: 'Rahul Mehta', role: 'Business Owner, Bengaluru', stars: 4, avatar: rahulImg, text: 'Good experience overall. The painting team was professional and the work quality was solid. Took a bit longer than expected, but the result was worth it.' },
+                { name: 'Sunita Kapoor', role: 'House Owner, Nagpur', stars: 3, avatar: sunitaImg, text: 'Service was okay. The plumber did fix the leak but left without cleaning up. Could improve on punctuality and communication.' },
               ].map(r => (
                 <div key={r.name} style={{ flex: '0 0 300px', minWidth: '260px', background: '#fff', padding: '1.5rem', borderRadius: '20px', border: '1px solid #f1f5f9', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }} className="card-hover-lift stagger-card">
                   <div style={{ display: 'flex', gap: '3px', marginBottom: '0.85rem' }}>
@@ -764,8 +766,12 @@ const Home = () => {
                   </div>
                   <p style={{ color: '#374151', fontSize: '0.95rem', lineHeight: 1.65, marginBottom: '1.5rem', fontStyle: 'italic', fontWeight: 500 }}>"{r.text}"</p>
                   <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #dbeafe, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.9rem', color: '#2563eb', flexShrink: 0 }}>
-                      {r.name[0]}
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', background: 'linear-gradient(135deg, #dbeafe, #ede9fe)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.9rem', color: '#2563eb', flexShrink: 0, border: '2px solid #fff', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
+                      {r.avatar ? (
+                        <img src={r.avatar} alt={r.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        r.name[0]
+                      )}
                     </div>
                     <div>
                       <h4 style={{ fontWeight: 800, color: '#111', margin: 0, fontSize: '0.9rem' }}>{r.name}</h4>
