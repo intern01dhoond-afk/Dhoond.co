@@ -5,6 +5,8 @@ import { useCart } from '../context/CartContext';
 import { useUI } from '../context/UIContext';
 import { detectCurrentLocation, isInsideGeofence } from '../utils/location';
 import ComingSoonModal from '../components/ComingSoonModal';
+import heroVideo from '../assets/hero_video.mp4';
+import heroPoster from '../assets/main-banner.webp';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -370,17 +372,17 @@ const Home = () => {
                 </div>
               </div>
 
-              <div className="hero-video fade-up" style={{ position: 'relative' }}>
-                <div className="video-container">
+              <div className="hero-video" style={{ position: 'relative' }}>
+                <div className="video-container" style={{ background: '#f8fafc', minHeight: '260px' }}>
                   <video 
                     autoPlay 
                     loop 
                     muted 
                     playsInline 
-                    poster="/main-banner.webp"
+                    poster={heroPoster}
                     style={{ width: '100%', display: 'block', objectFit: 'cover' }}
                   >
-                    <source src="/hero_video.mp4" type="video/mp4" />
+                    <source src={heroVideo} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 </div>
