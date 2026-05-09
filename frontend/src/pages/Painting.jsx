@@ -857,7 +857,7 @@ export default function Painting() {
           >
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', opacity: 0.8 }}>Book Professional Painting</span>
-              <span style={{ fontSize: '15px', fontWeight: 900 }}>Get Free Consultation</span>
+              <span style={{ fontSize: '15px', fontWeight: 900 }}>Book Consultation @ ₹99</span>
             </div>
             <ChevronRight size={20} />
           </button>
