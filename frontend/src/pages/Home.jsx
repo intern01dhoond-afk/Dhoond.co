@@ -12,6 +12,7 @@ import electricianIcon from '../assets/icons/electrician.png';
 import painterIcon from '../assets/icons/painter.png';
 import refrigeratorIcon from '../assets/icons/refrigerator.png';
 import roIcon from '../assets/icons/ro_technician.png';
+import washingIcon from '../assets/icons/washing_machine.png';
 import hemanthImg from '../assets/Kuruba Hemanth Kishore.png';
 import rahulImg from '../assets/rahul_avatar.png';
 import sunitaImg from '../assets/sunita_avatar.png';
