@@ -456,8 +456,26 @@ export default function Painting() {
 
         /* ── TESTIMONIALS ── */
         .p-testimonials { padding: 80px 5vw; background: #FAF8F4; }
-        .p-tgrid { display: flex; flex-direction: column; gap: 20px; margin-top: 48px; }
-        .p-tcard { background: #fff; border-radius: 22px; padding: 32px; border: 1px solid rgba(0,0,0,0.05); opacity: 0; transform: translateY(24px); transition: all .35s; }
+        .p-tgrid { 
+          display: flex; 
+          flex-direction: row; 
+          gap: 16px; 
+          margin-top: 48px; 
+          overflow-x: auto; 
+          scroll-snap-type: x mandatory; 
+          padding: 10px 5vw 30px; 
+          margin-left: -5vw; 
+          margin-right: -5vw;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .p-tgrid::-webkit-scrollbar { display: none; }
+        .p-tcard { 
+          background: #fff; border-radius: 22px; padding: 32px; border: 1px solid rgba(0,0,0,0.05); 
+          opacity: 0; transform: translateY(24px); transition: all .35s; 
+          flex: 0 0 85vw;
+          scroll-snap-align: center;
+        }
         .p-tcard:hover { transform: translateY(-6px); box-shadow: 0 24px 48px rgba(0,0,0,0.07); }
         .p-tcard-featured { background: #2B2B2B; color: #fff; }
         .p-tcard-featured .p-ttext { color: rgba(255,255,255,0.88); font-size: 16px; }
@@ -470,7 +488,15 @@ export default function Painting() {
         .p-tname { font-size: 14px; font-weight: 600; color: #2B2B2B; }
         .p-trole { font-size: 11px; color: #8C8679; margin-top: 2px; }
         @media (min-width: 760px) {
-          .p-tgrid { display: grid; grid-template-columns: 1fr 1fr; }
+          .p-tgrid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            overflow-x: visible; 
+            scroll-snap-type: none; 
+            margin: 48px 0 0;
+            padding: 0;
+          }
+          .p-tcard { flex: unset; scroll-snap-align: none; }
           .p-tcard-featured { grid-column: span 2; }
         }
         @media (min-width: 1024px) {
