@@ -403,9 +403,15 @@ export default function Painting() {
         .process-card h3 { font-size: 17px; font-weight: 600; color: #2B2B2B; margin-bottom: 10px; }
         .process-card p { font-size: 13px; color: #8C8679; line-height: 1.65; font-weight: 300; margin: 0; }
         @media (max-width: 768px) {
-          .p-process { padding: 40px 0 !important; }
-          .p-section-header { margin-bottom: 24px !important; }
-          .p-process-grid { padding-top: 0 !important; }
+          .p-process { padding: 60px 0 !important; }
+          .p-section-header { margin-bottom: 32px !important; }
+          .p-section-header h2 { font-size: 32px !important; line-height: 1.15 !important; letter-spacing: -0.5px !important; }
+          .p-process-grid { padding-top: 10px !important; }
+          .p-intro { padding: 60px 5vw !important; }
+          .p-stats { padding: 60px 5vw !important; }
+          .p-gallery { padding: 60px 5vw !important; }
+          .p-testimonials { padding: 60px 5vw !important; }
+          .p-why { padding: 60px 5vw !important; }
         }
         @media (min-width: 1024px) {
           .p-process-grid { display: grid; grid-template-columns: repeat(4,1fr); overflow: visible; padding: 8px 5vw 0; }
@@ -497,7 +503,10 @@ export default function Painting() {
         }
         #p-ctaEl h2 { font-family: 'Inter', sans-serif; font-size: clamp(28px, 5vw, 52px); font-weight: 900; line-height: 1.1; color: #fff; margin: 0; }
         #p-ctaEl h2 em { color: #facc15; font-style: italic; }
-        #p-ctaEl p { font-size: 15px; color: rgba(255,255,255,0.6); margin: 0; }
+        #p-ctaEl p { font-size: 15px; color: rgba(255,255,255,0.7); margin: 0; line-height: 1.6; }
+        .p-price-anchors { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+        .p-price-tag { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 8px; font-size: 13px; color: #fff; font-weight: 600; }
+        .p-price-tag span { color: #facc15; }
         .p-cta-btns { display: flex; flex-direction: column; gap: 14px; }
         .p-btn-cta {
           background: #facc15; color: #111; padding: 16px 36px; border-radius: 100px;
@@ -679,7 +688,7 @@ export default function Painting() {
           {[
             { target: 1200, label: 'Projects Completed' },
             { target: 950, label: 'Happy Clients' },
-            { target: 60, label: 'Expert Painters' },
+            { target: 80, label: 'Expert Painters' },
           ].map(s => (
             <div key={s.label} className="p-stat">
               <div className="num"><span className="p-cnum" data-target={s.target}>0</span><span className="plus">+</span></div>
@@ -698,10 +707,10 @@ export default function Painting() {
           </div>
           <div className="p-process-grid">
             {[
-              { num: '01', color: 'rgba(37,99,235,0.12)', stroke: '#2563eb', icon: <><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M9 7h6M9 11h6M9 15h4" /></>, title: 'Book Online', desc: 'Choose service & pickup time in 60 seconds.' },
-              { num: '02', color: 'rgba(56,189,248,0.15)', stroke: '#38bdf8', icon: <><circle cx="12" cy="8" r="5" /><path d="M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2" /></>, title: 'Expert Visit', desc: 'Verified pro assessment, same day.' },
-              { num: '03', color: 'rgba(30,58,138,0.12)', stroke: '#1e3a8a', icon: <path d="M3 6l3 1m0 0l-3 9a5 5 0 0 0 6 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5 5 0 0 0 6 0M18 7l3 9m-3-9l-6-2" />, title: 'Premium Painting', desc: 'Top-quality colours, clean application.' },
-              { num: '04', color: 'rgba(250,204,21,0.12)', stroke: '#facc15', icon: <><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></>, title: 'Final Walk', desc: '100% satisfaction guarantee.' },
+              { num: '01', color: 'rgba(37,99,235,0.12)', stroke: '#2563eb', icon: <><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M9 7h6M9 11h6M9 15h4" /><circle cx="18" cy="19" r="3" fill="#facc15" stroke="none" /></>, title: 'Book Online', desc: 'Choose service & pickup time in 60 seconds.' },
+              { num: '02', color: 'rgba(56,189,248,0.15)', stroke: '#38bdf8', icon: <><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /><path d="M12 12v10" stroke="#facc15" strokeWidth="2" /></>, title: 'Expert Visit', desc: 'Verified pro assessment & site inspection.' },
+              { num: '03', color: 'rgba(30,58,138,0.12)', stroke: '#1e3a8a', icon: <><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v5" /><path d="M14 10h4" /><path d="M10 20v-5a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v5" /><path d="M10 16h4" /><rect x="2" y="14" width="6" height="8" rx="1" fill="#facc15" stroke="none" /></>, title: 'Premium Execution', desc: 'Top-quality colours & dust-free application.' },
+              { num: '04', color: 'rgba(250,204,21,0.12)', stroke: '#facc15', icon: <><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" strokeWidth="3" /></>, title: 'Final Walkthrough', desc: '100% satisfaction check & cleanup.' },
             ].map(c => (
               <div key={c.num} className="process-card" data-num={c.num}>
                 <div className="p-picon" style={{ background: c.color }}>
