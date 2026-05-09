@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { MapPin, Clock, CreditCard, Tag, Percent, Phone, SquareCheck, Info, X, Calendar, Edit2, CheckCircle2, ShieldCheck, Lock, Smartphone, Building2, ChevronRight, CheckCircle, ChevronLeft } from 'lucide-react';
+import { MapPin, Clock, CreditCard, Tag, Percent, Phone, SquareCheck, Info, X, Calendar, Edit2, CheckCircle2, ShieldCheck, Lock, Smartphone, Building2, ChevronRight, CheckCircle, ChevronLeft, Sparkles, ArrowRight } from 'lucide-react';
 import { formatOrderId } from '../utils/formatOrderId';
 import { detectCurrentLocation } from '../utils/location';
 import AuthModal from '../components/AuthModal';
@@ -155,31 +155,33 @@ const Checkout = () => {
   // ─── SUCCESS SCREEN ────────────────────────────────────────────────────────
   if (status === 'success') {
     return (
-      <div style={{ padding: '6rem 5%', textAlign: 'center', background: '#f9f9f9', minHeight: '80vh' }}>
-        <div style={{ position: 'relative', display: 'inline-block', marginBottom: '2rem' }}>
-          <div style={{ position: 'absolute', inset: -20, background: 'rgba(16, 185, 129, 0.1)', borderRadius: '50%', filter: 'blur(10px)' }}></div>
-          <CheckCircle2 size={84} color="#10b981" style={{ position: 'relative' }} />
+      <div style={{ padding: '5rem 5%', textAlign: 'center', background: '#f8fafc', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'relative', display: 'inline-block', marginBottom: '1.5rem' }}>
+          <div style={{ position: 'absolute', inset: -20, background: 'rgba(37, 99, 235, 0.15)', borderRadius: '50%', filter: 'blur(15px)', animation: 'pulse 2s infinite' }}></div>
+          <div style={{ width: '90px', height: '90px', background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', boxShadow: '0 10px 30px rgba(37,99,235,0.3)' }}>
+            <CheckCircle2 size={48} color="#fff" strokeWidth={2.5} />
+          </div>
         </div>
-        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem', color: '#111' }}>Booking Confirmed!</h2>
-        <p style={{ color: '#555', fontSize: '1.2rem', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem' }}>Great! Your professional arrives on <b>{selectedDate}</b> at <b>{selectedTime}</b>.</p>
+        <h2 style={{ fontSize: 'clamp(2rem, 5vw, 2.75rem)', fontWeight: 900, marginBottom: '0.75rem', color: '#0f172a', letterSpacing: '-0.02em' }}>Booking Confirmed!</h2>
+        <p style={{ color: '#475569', fontSize: '1.1rem', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem', lineHeight: 1.6 }}>Great! Your professional arrives on <b style={{ color: '#0f172a' }}>{selectedDate}</b> at <b style={{ color: '#0f172a' }}>{selectedTime}</b>.</p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', maxWidth: '650px', margin: '0 auto 3rem' }}>
-          <div style={{ background: '#fff', border: '1px solid #eaeaea', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-            <h3 style={{ fontSize: '0.85rem', color: '#666', margin: '0 0 0.5rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>Booking ID</h3>
-            <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#111', margin: 0, letterSpacing: '2px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', width: '100%', maxWidth: '700px', margin: '0 auto 3.5rem' }}>
+          <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <h3 style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Booking ID</h3>
+            <p style={{ fontSize: '1.5rem', fontWeight: 900, color: '#0f172a', margin: 0, letterSpacing: '0.05em' }}>
               {formatOrderId(confirmedOrder?.id, confirmedOrder?.created_at, confirmedOrder?.daily_sequence)}
             </p>
           </div>
-          <div style={{ background: '#111', border: '1px solid #111', borderRadius: '16px', padding: '2rem', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', color: '#fff' }}>
-            <h3 style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', margin: '0 0 0.5rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>Service Start OTP</h3>
-            <p style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: 0, letterSpacing: '8px' }}>{startOtp}</p>
-            <p style={{ fontSize: '0.75rem', marginTop: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>Share this with your professional at the door</p>
+          <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '24px', padding: '2rem', boxShadow: '0 20px 40px -10px rgba(15,23,42,0.3)', color: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <h3 style={{ fontSize: '0.8rem', color: '#94a3b8', margin: '0 0 0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Service Start OTP</h3>
+            <p style={{ fontSize: '2rem', fontWeight: 900, color: '#fef08a', margin: 0, letterSpacing: '0.3em', textShadow: '0 2px 10px rgba(254,240,138,0.2)' }}>{startOtp}</p>
+            <p style={{ fontSize: '0.8rem', marginTop: '0.75rem', color: '#94a3b8', fontWeight: 500 }}>Share this with your professional at the door</p>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <button onClick={() => navigate('/')} style={{ background: '#6e42e5', color: '#fff', padding: '1rem 2.5rem', borderRadius: '12px', border: 'none', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 14px rgba(110,66,229,0.3)' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>Track Booking</button>
-          <button onClick={() => navigate('/')} style={{ background: '#fff', color: '#111', padding: '1rem 2.5rem', borderRadius: '12px', border: '1px solid #ddd', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer' }}>Back to Home</button>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
+          <button onClick={() => navigate('/')} style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', color: '#fff', padding: '1rem 2.5rem', borderRadius: '16px', border: 'none', fontWeight: 800, fontSize: '1.05rem', cursor: 'pointer', transition: 'all 0.25s', boxShadow: '0 8px 25px rgba(37,99,235,0.3)' }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(37,99,235,0.4)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(37,99,235,0.3)'; }}>Track Booking</button>
+          <button onClick={() => navigate('/')} style={{ background: '#fff', color: '#0f172a', padding: '1rem 2.5rem', borderRadius: '16px', border: '1px solid #e2e8f0', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }} onMouseEnter={e => { e.currentTarget.style.background = '#f8fafc'; }} onMouseLeave={e => { e.currentTarget.style.background = '#fff'; }}>Back to Home</button>
         </div>
       </div>
     );
@@ -368,7 +370,7 @@ const Checkout = () => {
           contact: String(user?.mobile || formData.phone).replace(/\D/g, '').slice(-10)
         },
         theme: {
-          color: "#6e42e5"
+          color: "#2563eb"
         },
         notes: {
           dhoond_order_id: String(dhoondOrderId),
@@ -425,40 +427,43 @@ const Checkout = () => {
   };
 
   return (
-    <div style={{ background: '#fafafa', minHeight: '100vh', paddingBottom: '4rem', fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ background: '#f8fafc', minHeight: '100vh', paddingBottom: '4rem', fontFamily: 'Inter, sans-serif' }}>
       {/* Header */}
       <style>{`
-        .checkout-header-img { position: absolute; right: 2%; top: 50%; transform: translateY(-50%); height: 90%; width: auto; object-fit: contain; pointer-events: none; user-select: none; }
-        @media (max-width: 600px) { .checkout-header-img { height: 50px; opacity: 0.6; } }
+        .checkout-header-img { position: absolute; right: 2%; top: 50%; transform: translateY(-50%); height: 110%; width: auto; object-fit: contain; pointer-events: none; user-select: none; opacity: 0.9; }
+        .checkout-card { background: #fff; border-radius: 24px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 40px -10px rgba(0,0,0,0.04); overflow: hidden; }
+        .form-input { width: 100%; padding: 1rem 1.25rem; border-radius: 12px; border: 2px solid #e2e8f0; font-size: 1rem; font-weight: 500; outline: none; transition: all 0.2s; background: #fafafa; }
+        .form-input:focus { border-color: #2563eb; background: #fff; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
+        .checkout-qty-btn { background: #f1f5f9; border: none; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; font-weight: 600; color: #475569; transition: all 0.2s; }
+        .checkout-qty-btn:hover { background: #e2e8f0; color: #0f172a; }
+        @media (max-width: 600px) { .checkout-header-img { height: 70px; opacity: 0.4; } }
       `}</style>
+      
       <div style={{
         position: 'sticky', top: 0, zIndex: 100, overflow: 'hidden',
-        padding: '1.25rem 5%',
-        background: 'linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#2563eb 100%)',
+        padding: '1.5rem 5%',
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
       }}>
-        <img
-          src="/images/cart nav.png"
-          alt=""
-          aria-hidden="true"
-          className="checkout-header-img"
-        />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 800, fontSize: '1.2rem', color: '#fff', maxWidth: '1200px', margin: '0 auto', width: '100%', position: 'relative', zIndex: 1 }}>
-          Checkout
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(circle at top right, rgba(255,255,255,0.1) 0%, transparent 60%)' }} />
+        <img src="/images/cart nav.png" alt="" aria-hidden="true" className="checkout-header-img" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 900, fontSize: '1.4rem', color: '#fff', maxWidth: '1100px', margin: '0 auto', width: '100%', position: 'relative', zIndex: 1, letterSpacing: '-0.02em' }}>
+          Secure Checkout
         </div>
       </div>
 
       {/* Payment Error Banner */}
       {paymentError && (
-        <div style={{ maxWidth: '1100px', margin: '1rem auto 0', padding: '0 5%' }}>
-          <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '12px', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', animation: 'fadeIn 0.3s ease-out' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div style={{ background: '#fee2e2', padding: '0.4rem', borderRadius: '8px', display: 'flex' }}>
-                <Info size={18} color="#ef4444" />
+        <div style={{ maxWidth: '1100px', margin: '1.5rem auto 0', padding: '0 5%' }}>
+          <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '16px', padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', animation: 'fadeIn 0.3s ease-out', boxShadow: '0 4px 15px rgba(239,68,68,0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ background: '#fee2e2', padding: '0.5rem', borderRadius: '10px', display: 'flex' }}>
+                <Info size={20} color="#dc2626" />
               </div>
-              <span style={{ color: '#991b1b', fontWeight: 600, fontSize: '0.9rem' }}>{paymentError}</span>
+              <span style={{ color: '#991b1b', fontWeight: 600, fontSize: '0.95rem' }}>{paymentError}</span>
             </div>
-            <button onClick={() => setPaymentError('')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.25rem' }}>
-              <X size={16} color="#991b1b" />
+            <button onClick={() => setPaymentError('')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.25rem', color: '#dc2626' }}>
+              <X size={20} />
             </button>
           </div>
         </div>
@@ -466,58 +471,58 @@ const Checkout = () => {
 
       <div className="checkout-grid" style={{
         maxWidth: '1100px', margin: '2rem auto', padding: '0 5%', display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row', gap: '2rem', alignItems: 'start',
-        opacity: (!isAuthenticated || isInitializing) ? 0.3 : 1,
+        flexDirection: isMobile ? 'column' : 'row', gap: '2.5rem', alignItems: 'start',
+        opacity: (!isAuthenticated || isInitializing) ? 0.4 : 1,
         pointerEvents: (!isAuthenticated || isInitializing) ? 'none' : 'auto',
-        filter: (!isAuthenticated || isInitializing) ? 'blur(4px)' : 'none',
-        transition: 'all 0.4s ease'
+        filter: (!isAuthenticated || isInitializing) ? 'blur(8px)' : 'none',
+        transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
 
         {(!isAuthenticated && !isInitializing) && (
-          <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 50, textAlign: 'center', background: '#fff', padding: '2rem', borderRadius: '20px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', width: '90%', maxWidth: '400px' }}>
-            <div style={{ background: '#f5f3ff', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-              <Lock size={28} color="#6e42e5" />
+          <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 50, textAlign: 'center', background: '#fff', padding: '2.5rem', borderRadius: '24px', boxShadow: '0 20px 60px rgba(0,0,0,0.15)', width: '90%', maxWidth: '420px', animation: 'slideUp 0.4s ease-out' }}>
+            <div style={{ background: '#eff6ff', width: '70px', height: '70px', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', border: '1px solid #dbeafe' }}>
+              <Lock size={32} color="#2563eb" />
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111', marginBottom: '0.5rem' }}>Login Required</h3>
-            <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Please verify your phone number to view checkout details and proceed with booking.</p>
-            <button onClick={() => setIsAuthModalOpen(true)} style={{ width: '100%', background: '#111', color: '#fff', border: 'none', padding: '1rem', borderRadius: '12px', fontWeight: 700, cursor: 'pointer' }}>Verify Now</button>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#0f172a', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>Login Required</h3>
+            <p style={{ color: '#64748b', fontSize: '1rem', marginBottom: '2rem', lineHeight: 1.5 }}>Please verify your phone number to view checkout details and proceed with booking.</p>
+            <button onClick={() => setIsAuthModalOpen(true)} style={{ width: '100%', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: '#fff', border: 'none', padding: '1.1rem', borderRadius: '14px', fontWeight: 800, fontSize: '1.05rem', cursor: 'pointer', boxShadow: '0 8px 20px rgba(15,23,42,0.2)', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>Verify Now</button>
           </div>
         )}
 
         {/* FIRST SECTION (ON MOBILE: Summary & Cart) */}
-        <div style={{ order: isMobile ? 1 : 2, display: 'flex', flexDirection: 'column', gap: '1rem', width: isMobile ? '100%' : '40%' }}>
+        <div style={{ order: isMobile ? 1 : 2, display: 'flex', flexDirection: 'column', gap: '1.5rem', width: isMobile ? '100%' : '42%' }}>
 
           {/* Cart Block */}
-          <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #eaeaea', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111', margin: '0 0 1.25rem 0' }}>{checkoutCategory === 'painter' ? 'Painting' : 'Booking Details'}</h3>
+          <div className="checkout-card" style={{ padding: '1.75rem' }}>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0f172a', margin: '0 0 1.5rem 0', letterSpacing: '-0.02em' }}>{checkoutCategory === 'painter' ? 'Painting Services' : 'Booking Details'}</h3>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2rem' }}>
               {cartItems.map((item) => (
                 <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '0.95rem', color: '#111', fontWeight: 600, lineHeight: 1.4 }}>{item.title}</div>
+                    <div style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 700, lineHeight: 1.4 }}>{item.title}</div>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.15rem' }}>
-                      <button style={{ background: 'transparent', border: 'none', width: '24px', height: '24px', cursor: 'pointer', color: '#6e42e5', fontSize: '1rem', fontWeight: 700 }} onClick={() => updateQuantity(item.id, -1)}>-</button>
-                      <span style={{ width: '20px', textAlign: 'center', fontSize: '0.9rem', fontWeight: 700, color: '#6e42e5' }}>{item.quantity}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '0.2rem' }}>
+                      <button className="checkout-qty-btn" onClick={() => updateQuantity(item.id, -1)}>−</button>
+                      <span style={{ width: '28px', textAlign: 'center', fontSize: '0.95rem', fontWeight: 800, color: '#2563eb' }}>{item.quantity}</span>
                       <button
+                        className="checkout-qty-btn"
                         style={{
-                          background: 'transparent', border: 'none', width: '24px', height: '24px',
                           cursor: item.title?.toLowerCase().includes('consultation') ? 'not-allowed' : 'pointer',
-                          color: item.title?.toLowerCase().includes('consultation') ? '#cbd5e1' : '#6e42e5',
-                          fontSize: '1rem', fontWeight: 700
+                          color: item.title?.toLowerCase().includes('consultation') ? '#cbd5e1' : '#475569',
+                          background: item.title?.toLowerCase().includes('consultation') ? '#f8fafc' : '#f1f5f9'
                         }}
                         onClick={() => updateQuantity(item.id, 1)}
                         disabled={item.title?.toLowerCase().includes('consultation')}
                       >+</button>
                     </div>
 
-                    <div style={{ textAlign: 'right', minWidth: '60px' }}>
-                      <div style={{ fontSize: '1rem', fontWeight: 800, color: '#111' }}>₹{Number(item.discountPrice || 0).toFixed(0)}</div>
+                    <div style={{ textAlign: 'right', minWidth: '65px' }}>
+                      <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#0f172a' }}>₹{Number(item.discountPrice || 0).toFixed(0)}</div>
                       {item.originalPrice > item.discountPrice && (
-                        <div style={{ fontSize: '0.8rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>₹{Number(item.originalPrice || 0).toFixed(0)}</div>
+                        <div style={{ fontSize: '0.85rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>₹{Number(item.originalPrice || 0).toFixed(0)}</div>
                       )}
                     </div>
                   </div>
@@ -526,9 +531,9 @@ const Checkout = () => {
             </div>
 
             {/* Expert arrival instruction */}
-            <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem', marginTop: '0.25rem' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.65rem' }}>Expert Arrival Preference</div>
-              <div style={{ display: 'flex', gap: '0.6rem' }}>
+            <div style={{ borderTop: '2px dashed #f1f5f9', paddingTop: '1.5rem' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem' }}>Expert Arrival Preference</div>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
                 {[
                   { id: 'direct', label: 'Arrive directly', sub: "Don't call" },
                   { id: 'call', label: 'Call me first', sub: 'Before coming' },
@@ -537,104 +542,104 @@ const Checkout = () => {
                     key={opt.id}
                     onClick={() => setArrivalPref(opt.id)}
                     style={{
-                      flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
-                      padding: '0.65rem 0.5rem',
-                      borderRadius: '12px',
-                      border: arrivalPref === opt.id ? '2px solid #6e42e5' : '1.5px solid #e2e8f0',
-                      background: arrivalPref === opt.id ? '#f5f3ff' : '#fafafa',
+                      flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+                      padding: '0.85rem 0.5rem',
+                      borderRadius: '14px',
+                      border: arrivalPref === opt.id ? '2px solid #2563eb' : '2px solid #f1f5f9',
+                      background: arrivalPref === opt.id ? '#eff6ff' : '#fff',
                       cursor: 'pointer',
-                      transition: 'all 0.18s',
+                      transition: 'all 0.2s',
+                      boxShadow: arrivalPref === opt.id ? '0 4px 15px rgba(37,99,235,0.1)' : 'none'
                     }}
                   >
-                    <span style={{ fontSize: '0.78rem', fontWeight: 800, color: arrivalPref === opt.id ? '#6e42e5' : '#334155' }}>{opt.label}</span>
-                    <span style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 600 }}>{opt.sub}</span>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 800, color: arrivalPref === opt.id ? '#1e40af' : '#475569' }}>{opt.label}</span>
+                    <span style={{ fontSize: '0.7rem', color: arrivalPref === opt.id ? '#3b82f6' : '#94a3b8', fontWeight: 600 }}>{opt.sub}</span>
                   </button>
                 ))}
               </div>
               {arrivalPref === 'call' && (
-                <div style={{ marginTop: '0.65rem', animation: 'fadeIn 0.2s' }}>
+                <div style={{ marginTop: '1rem', animation: 'fadeIn 0.2s' }}>
                   <input
                     type="tel"
                     value={arrivalNote}
                     onChange={e => setArrivalNote(e.target.value.replace(/\D/g, '').slice(0, 10))}
                     placeholder="Best number to call (+91 XXXXX)"
-                    style={{ width: '100%', padding: '0.65rem 0.9rem', borderRadius: '10px', border: '1.5px solid #e2e8f0', fontSize: '0.85rem', fontWeight: 600, outline: 'none', color: '#334155', background: '#fafafa' }}
-                    onFocus={e => e.target.style.borderColor = '#6e42e5'}
-                    onBlur={e => e.target.style.borderColor = '#e2e8f0'}
+                    className="form-input"
                   />
                 </div>
               )}
               {arrivalPref === 'direct' && (
-                <div style={{ marginTop: '0.65rem', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#64748b', fontSize: '0.75rem', fontWeight: 600 }}>
-                  <span style={{ fontSize: '0.7rem' }}>✓</span> Expert will head straight to your address
+                <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#059669', fontSize: '0.85rem', fontWeight: 600, background: '#ecfdf5', padding: '0.75rem', borderRadius: '10px' }}>
+                  <span style={{ display: 'flex', background: '#34d399', color: '#fff', borderRadius: '50%', padding: '2px' }}><CheckCircle size={14} /></span>
+                  Expert will head straight to your address
                 </div>
               )}
             </div>
           </div>
 
           {/* Payment Summary */}
-          <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #eaeaea', overflow: 'hidden' }}>
-            <div style={{ padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111', margin: '0 0 1.5rem 0' }}>Payment summary</h3>
+          <div className="checkout-card">
+            <div style={{ padding: '1.75rem' }}>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0f172a', margin: '0 0 1.5rem 0', letterSpacing: '-0.02em' }}>Payment summary</h3>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', color: '#475569', fontWeight: 600, fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', color: '#475569', fontWeight: 600, fontSize: '0.95rem', marginBottom: '1.75rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ color: '#94a3b8' }}>Item total</span>
-                  <span style={{ textDecoration: 'line-through', color: '#94a3b8', fontWeight: 600 }}>₹{subtotal.toFixed(0)}</span>
+                  <span style={{ color: '#64748b' }}>Item total</span>
+                  <span style={{ textDecoration: 'line-through', color: '#94a3b8', fontWeight: 700 }}>₹{subtotal.toFixed(0)}</span>
                 </div>
 
                 {totalDiscount > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ color: '#059669', display: 'flex', alignItems: 'center', gap: '4px' }}> Promotional Discount </span>
-                    <span style={{ color: '#059669', fontWeight: 700 }}>− ₹{totalDiscount.toFixed(0)}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f0fdf4', padding: '0.75rem 1rem', borderRadius: '10px' }}>
+                    <span style={{ color: '#059669', display: 'flex', alignItems: 'center', gap: '6px' }}><Tag size={16} /> Promotional Discount</span>
+                    <span style={{ color: '#059669', fontWeight: 800 }}>− ₹{totalDiscount.toFixed(0)}</span>
                   </div>
                 )}
 
-                <div style={{ borderTop: '1px dashed #e2e8f0' }} />
+                <div style={{ borderTop: '2px dashed #f1f5f9' }} />
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span>Price (excl. GST)</span>
-                  <span style={{ color: '#111', fontWeight: 700 }}>₹{netPrice.toFixed(2)}</span>
+                  <span style={{ color: '#0f172a', fontWeight: 800 }}>₹{netPrice.toFixed(2)}</span>
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>GST <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#64748b', padding: '1px 6px', borderRadius: '6px', fontWeight: 700 }}>18%</span></span>
-                  <span style={{ color: '#111', fontWeight: 700 }}>+ ₹{inclusiveTax.toFixed(2)}</span>
+                  <span>GST <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#64748b', padding: '2px 8px', borderRadius: '8px', fontWeight: 800 }}>18%</span></span>
+                  <span style={{ color: '#0f172a', fontWeight: 800 }}>+ ₹{inclusiveTax.toFixed(2)}</span>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1.5px solid #f1f5f9', paddingTop: '0.9rem' }}>
-                  <span style={{ color: '#0f172a', fontWeight: 700 }}>Total</span>
-                  <span style={{ color: '#0f172a', fontWeight: 800 }}>₹{total.toFixed(0)}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #e2e8f0', paddingTop: '1.25rem', marginTop: '0.25rem' }}>
+                  <span style={{ color: '#0f172a', fontWeight: 800, fontSize: '1.05rem' }}>Total</span>
+                  <span style={{ color: '#0f172a', fontWeight: 900, fontSize: '1.15rem' }}>₹{total.toFixed(0)}</span>
                 </div>
 
                 {tipAmount > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ color: '#6e42e5' }}>Tip for Professional</span>
-                    <span style={{ color: '#6e42e5', fontWeight: 700 }}>+ ₹{tipAmount}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', animation: 'fadeIn 0.3s ease-out' }}>
+                    <span style={{ color: '#2563eb', fontWeight: 700 }}>Tip for Professional</span>
+                    <span style={{ color: '#2563eb', fontWeight: 800 }}>+ ₹{tipAmount}</span>
                   </div>
                 )}
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0f172a', borderRadius: '12px', padding: '0.9rem 1rem', marginTop: '0.25rem' }}>
-                  <span style={{ color: '#fff', fontWeight: 800, fontSize: '0.95rem' }}>Amount to Pay</span>
-                  <span style={{ color: '#facc15', fontWeight: 900, fontSize: '1.15rem' }}>₹{finalAmountToPay.toFixed(0)}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', borderRadius: '16px', padding: '1.25rem', marginTop: '0.5rem', boxShadow: '0 8px 20px rgba(15,23,42,0.15)' }}>
+                  <span style={{ color: '#fff', fontWeight: 800, fontSize: '1.05rem' }}>Amount to Pay</span>
+                  <span style={{ color: '#fef08a', fontWeight: 900, fontSize: '1.4rem', textShadow: '0 2px 10px rgba(254,240,138,0.2)' }}>₹{finalAmountToPay.toFixed(0)}</span>
                 </div>
               </div>
 
               {/* Tip Selector */}
-              <div style={{ marginBottom: '0.5rem' }}>
-                <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111', marginBottom: '1rem' }}>Add a tip to thank the Professional</div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: isCustomTipping ? '0.75rem' : 0 }}>
+              <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
+                <div style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '6px' }}><Sparkles size={18} color="#2563eb" /> Add a tip to thank the Professional</div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: isCustomTipping ? '1rem' : 0 }}>
                   {[50, 75, 100].map(amt => (
-                    <button key={amt} onClick={() => { setTipAmount(amt === tipAmount ? 0 : amt); setIsCustomTipping(false); }} style={{ flex: 1, padding: '0.65rem 0', borderRadius: '10px', border: tipAmount === amt ? '2px solid #6e42e5' : '1px solid #e2e8f0', background: tipAmount === amt ? '#f5f3ff' : '#fff', color: tipAmount === amt ? '#6e42e5' : '#475569', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>₹{amt}</button>
+                    <button key={amt} onClick={() => { setTipAmount(amt === tipAmount ? 0 : amt); setIsCustomTipping(false); }} style={{ flex: 1, padding: '0.85rem 0', borderRadius: '12px', border: tipAmount === amt ? '2px solid #2563eb' : '1px solid #e2e8f0', background: tipAmount === amt ? '#eff6ff' : '#fff', color: tipAmount === amt ? '#1e40af' : '#475569', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: tipAmount === amt ? '0 4px 15px rgba(37,99,235,0.1)' : '0 2px 5px rgba(0,0,0,0.02)' }}>₹{amt}</button>
                   ))}
-                  <button onClick={() => { setIsCustomTipping(v => !v); setCustomTip(''); }} style={{ flex: 1, padding: '0.65rem 0', borderRadius: '10px', border: isCustomTipping ? '2px solid #6e42e5' : '1px solid #e2e8f0', background: isCustomTipping ? '#f5f3ff' : '#fff', color: isCustomTipping ? '#6e42e5' : '#475569', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>{isCustomTipping ? 'Cancel' : 'Custom'}</button>
+                  <button onClick={() => { setIsCustomTipping(v => !v); setCustomTip(''); }} style={{ flex: 1, padding: '0.85rem 0', borderRadius: '12px', border: isCustomTipping ? '2px solid #2563eb' : '1px solid #e2e8f0', background: isCustomTipping ? '#eff6ff' : '#fff', color: isCustomTipping ? '#1e40af' : '#475569', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', transition: 'all 0.2s' }}>{isCustomTipping ? 'Cancel' : 'Custom'}</button>
                 </div>
                 {isCustomTipping && (
-                  <div style={{ marginTop: '0.75rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', background: '#fafafa', border: '1.5px solid #e2e8f0', borderRadius: '10px', padding: '0.3rem 0.3rem 0.3rem 0.9rem', gap: '6px' }}>
-                      <span style={{ fontWeight: 700, color: '#475569', fontSize: '0.95rem' }}>₹</span>
-                      <input type="number" value={customTip} onChange={e => setCustomTip(Math.min(Number(e.target.value.replace(/\D/g, '')), 500).toString())} placeholder="Enter amount (max ₹500)" style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: '0.95rem', fontWeight: 700, color: '#0f172a' }} autoFocus />
-                      <button onClick={() => { const val = Number(customTip); if (val > 0) { setTipAmount(val); setIsCustomTipping(false); setCustomTip(''); } }} style={{ padding: '0.55rem 1rem', borderRadius: '8px', background: '#6e42e5', color: '#fff', border: 'none', fontWeight: 800, cursor: 'pointer' }}>Add Tip</button>
+                  <div style={{ marginTop: '1rem', animation: 'fadeIn 0.2s ease-out' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '2px solid #e2e8f0', borderRadius: '12px', padding: '0.3rem 0.3rem 0.3rem 1rem', gap: '8px', transition: 'border-color 0.2s' }}>
+                      <span style={{ fontWeight: 800, color: '#475569', fontSize: '1.1rem' }}>₹</span>
+                      <input type="number" value={customTip} onChange={e => setCustomTip(Math.min(Number(e.target.value.replace(/\D/g, '')), 500).toString())} placeholder="Enter amount (max ₹500)" style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: '1.05rem', fontWeight: 700, color: '#0f172a' }} autoFocus />
+                      <button onClick={() => { const val = Number(customTip); if (val > 0) { setTipAmount(val); setIsCustomTipping(false); setCustomTip(''); } }} style={{ padding: '0.75rem 1.25rem', borderRadius: '10px', background: '#2563eb', color: '#fff', border: 'none', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 15px rgba(37,99,235,0.2)' }}>Apply</button>
                     </div>
                   </div>
                 )}
@@ -644,64 +649,69 @@ const Checkout = () => {
         </div>
 
         {/* SECOND SECTION */}
-        <div style={{ order: isMobile ? 2 : 1, display: 'flex', flexDirection: 'column', gap: '1.5rem', width: isMobile ? '100% ' : '60%' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#059669', fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-             Saving ₹{totalDiscount.toFixed(0)} on this order
+        <div style={{ order: isMobile ? 2 : 1, display: 'flex', flexDirection: 'column', gap: '1.5rem', width: isMobile ? '100%' : '58%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#059669', fontWeight: 800, fontSize: '0.95rem', marginBottom: '0.25rem', background: '#ecfdf5', padding: '0.75rem 1.25rem', borderRadius: '12px', border: '1px solid #d1fae5' }}>
+             <Tag size={18} /> You are saving ₹{totalDiscount.toFixed(0)} on this order
           </div>
 
-          <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #eaeaea', overflow: 'hidden' }}>
-            <div style={{ padding: '1.5rem', borderBottom: '1px solid #f1f5f9' }}>
+          <div className="checkout-card">
+            <div style={{ padding: '1.75rem', borderBottom: '1px solid #f1f5f9' }}>
               {isEditingPhone ? (
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                  <input type="tel" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} style={{ flex: 1, padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '1rem' }} autoFocus />
-                  <button onClick={() => setIsEditingPhone(false)} style={{ background: '#111', color: '#fff', padding: '0 1.5rem', borderRadius: '12px', fontWeight: 700 }}>Save</button>
+                  <input type="tel" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="form-input" autoFocus />
+                  <button onClick={() => setIsEditingPhone(false)} style={{ background: '#0f172a', color: '#fff', padding: '0 1.75rem', borderRadius: '12px', fontWeight: 800, border: 'none', cursor: 'pointer' }}>Save</button>
                 </div>
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '12px', marginRight: '1.25rem' }}><Phone size={22} /></div>
-                    <div><div style={{ fontWeight: 800 }}>Send booking details to</div><div style={{ fontSize: '0.9rem', color: '#64748b' }}>{formData.phone}</div></div>
+                    <div style={{ background: '#eff6ff', padding: '0.85rem', borderRadius: '14px', marginRight: '1.25rem', color: '#2563eb' }}><Phone size={24} /></div>
+                    <div><div style={{ fontWeight: 800, color: '#0f172a', fontSize: '1.05rem', marginBottom: '2px' }}>Contact Number</div><div style={{ fontSize: '0.95rem', color: '#64748b', fontWeight: 500 }}>{formData.phone}</div></div>
                   </div>
-                  <button onClick={() => setIsEditingPhone(true)} style={{ color: '#6e42e5', fontWeight: 800, background: 'none', border: 'none' }}>Edit</button>
+                  <button onClick={() => setIsEditingPhone(true)} style={{ color: '#2563eb', fontWeight: 800, background: '#eff6ff', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#dbeafe'} onMouseLeave={e => e.currentTarget.style.background = '#eff6ff'}>Edit</button>
                 </div>
               )}
             </div>
 
-            <div style={{ padding: '1.5rem', borderBottom: '1px solid #f1f5f9' }}>
+            <div style={{ padding: '1.75rem', borderBottom: '1px solid #f1f5f9' }}>
               {isEditingAddress ? (
-                <div>
-                   <div style={{ width: '100%', height: '220px', background: '#f8fafc', borderRadius: '16px', marginBottom: '1.25rem', position: 'relative' }}>
-                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}><MapPin size={40} color="#6e42e5" /></div>
-                     <button onClick={handleFetchLocation} style={{ position: 'absolute', bottom: '1rem', left: '1rem', background: '#fff', padding: '0.6rem 1rem', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 800 }}>{locating ? 'Locating...' : 'Use Current Location'}</button>
+                <div style={{ animation: 'fadeIn 0.2s' }}>
+                   <div style={{ width: '100%', height: '240px', background: '#f8fafc', borderRadius: '16px', marginBottom: '1.25rem', position: 'relative', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                     <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', backgroundSize: '20px 20px', opacity: 0.5 }}></div>
+                     <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#fff', padding: '1rem', borderRadius: '50%', boxShadow: '0 10px 25px rgba(37,99,235,0.2)' }}><MapPin size={32} color="#2563eb" /></div>
+                     <button onClick={handleFetchLocation} style={{ position: 'absolute', bottom: '1rem', left: '50%', transform: 'translateX(-50%)', background: '#111', color: '#fff', padding: '0.75rem 1.5rem', borderRadius: '12px', border: 'none', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>{locating ? 'Locating...' : 'Use Current Location'}</button>
                    </div>
-                   <textarea value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} rows={2} style={{ width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0' }} />
-                   <button onClick={() => setIsEditingAddress(false)} style={{ width: '100%', background: '#111', color: '#fff', padding: '1.1rem', borderRadius: '12px', fontWeight: 800, marginTop: '1rem' }}>Confirm Location</button>
+                   <textarea value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} rows={3} className="form-input" style={{ resize: 'none' }} placeholder="Enter full address details" />
+                   <button onClick={() => setIsEditingAddress(false)} style={{ width: '100%', background: '#0f172a', color: '#fff', padding: '1.1rem', borderRadius: '12px', fontWeight: 800, marginTop: '1.25rem', border: 'none', cursor: 'pointer', boxShadow: '0 4px 15px rgba(15,23,42,0.1)' }}>Confirm Address</button>
                 </div>
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '12px', marginRight: '1.25rem' }}><MapPin size={22} /></div>
-                    <div><div style={{ fontWeight: 800 }}>Address</div><div style={{ fontSize: '0.9rem', color: '#64748b', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{formData.address}</div></div>
+                    <div style={{ background: '#eff6ff', padding: '0.85rem', borderRadius: '14px', marginRight: '1.25rem', color: '#2563eb' }}><MapPin size={24} /></div>
+                    <div><div style={{ fontWeight: 800, color: '#0f172a', fontSize: '1.05rem', marginBottom: '2px' }}>Service Address</div><div style={{ fontSize: '0.95rem', color: '#64748b', maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>{formData.address}</div></div>
                   </div>
-                  <button onClick={() => setIsEditingAddress(true)} style={{ background: '#fff', border: '1px solid #e2e8f0', padding: '0.5rem 1rem', borderRadius: '10px', fontWeight: 800 }}>Edit</button>
+                  <button onClick={() => setIsEditingAddress(true)} style={{ color: '#2563eb', fontWeight: 800, background: '#eff6ff', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#dbeafe'} onMouseLeave={e => e.currentTarget.style.background = '#eff6ff'}>Edit</button>
                 </div>
               )}
             </div>
 
-            <div style={{ padding: '1.5rem', borderBottom: '1px solid #f1f5f9' }}>
+            <div style={{ padding: '1.75rem', borderBottom: '1px solid #f1f5f9' }}>
                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                   <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '12px', marginRight: '1.25rem' }}><Clock size={22} /></div>
-                   <div><div style={{ fontWeight: 800 }}>Slot</div><div style={{ fontSize: '0.9rem', color: selectedDate ? '#059669' : '#64748b', fontWeight: 700 }}>{selectedDate ? `${selectedDate} at ${selectedTime}` : 'Select a time slot'}</div></div>
+                   <div style={{ background: selectedDate ? '#ecfdf5' : '#eff6ff', padding: '0.85rem', borderRadius: '14px', marginRight: '1.25rem', color: selectedDate ? '#059669' : '#2563eb', transition: 'all 0.3s' }}><Calendar size={24} /></div>
+                   <div><div style={{ fontWeight: 800, color: '#0f172a', fontSize: '1.05rem', marginBottom: '2px' }}>Service Slot</div><div style={{ fontSize: '0.95rem', color: selectedDate ? '#059669' : '#64748b', fontWeight: selectedDate ? 700 : 500 }}>{selectedDate ? `${selectedDate} at ${selectedTime}` : 'Please select a date & time'}</div></div>
                  </div>
-                 <button onClick={() => setIsSlotModalOpen(true)} style={{ color: '#6e42e5', fontWeight: 800, background: 'none', border: 'none' }}>{selectedDate ? 'Change' : 'Select'}</button>
+                 <button onClick={() => setIsSlotModalOpen(true)} style={{ color: selectedDate ? '#059669' : '#2563eb', fontWeight: 800, background: selectedDate ? '#ecfdf5' : '#eff6ff', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = selectedDate ? '#d1fae5' : '#dbeafe'} onMouseLeave={e => e.currentTarget.style.background = selectedDate ? '#ecfdf5' : '#eff6ff'}>{selectedDate ? 'Change' : 'Select'}</button>
                </div>
             </div>
 
-            <div style={{ padding: '1.5rem', background: '#f8fafc' }}>
-              <button onClick={handleBook} disabled={status === 'booking' || status === 'payment'} style={{ width: '100%', background: 'linear-gradient(135deg, #6e42e5 0%, #4f29c8 100%)', color: '#fff', padding: '1.25rem', borderRadius: '14px', border: 'none', fontWeight: 800, fontSize: '1.1rem', boxShadow: '0 8px 25px rgba(110,66,229,0.35)' }}>
-                {status === 'booking' || status === 'payment' ? 'Processing...' : `Proceed to Pay • ₹${finalAmountToPay.toFixed(0)}`}
+            <div style={{ padding: '1.75rem', background: '#f8fafc' }}>
+              <button onClick={handleBook} disabled={status === 'booking' || status === 'payment'} style={{ width: '100%', background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', color: '#fff', padding: '1.25rem', borderRadius: '16px', border: 'none', fontWeight: 800, fontSize: '1.15rem', boxShadow: '0 8px 30px rgba(37,99,235,0.35)', cursor: (status === 'booking' || status === 'payment') ? 'not-allowed' : 'pointer', transition: 'all 0.25s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }} onMouseEnter={e => { if(status !== 'booking' && status !== 'payment') { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 35px rgba(37,99,235,0.45)'; } }} onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(37,99,235,0.35)'; }}>
+                {status === 'booking' || status === 'payment' ? 'Processing Securely...' : `Proceed to Pay • ₹${finalAmountToPay.toFixed(0)}`}
+                {status !== 'booking' && status !== 'payment' && <ArrowRight size={20} />}
               </button>
+              <div style={{ textAlign: 'center', marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', color: '#64748b', fontSize: '0.8rem', fontWeight: 600 }}>
+                <ShieldCheck size={14} color="#059669" /> Payments are 100% secure & encrypted
+              </div>
             </div>
           </div>
         </div>
@@ -709,29 +719,37 @@ const Checkout = () => {
 
       {/* Date/Time Modal */}
       {isSlotModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#fff', width: '100%', maxWidth: '600px', borderTopLeftRadius: '24px', borderTopRightRadius: '24px', padding: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-              <h3 style={{ fontWeight: 800, margin: 0 }}>Select Slot</h3>
-              <button onClick={() => setIsSlotModalOpen(false)} style={{ background: 'none', border: 'none' }}><X size={20} /></button>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 1000, animation: 'fadeIn 0.2s' }}>
+          <div style={{ background: '#fff', width: '100%', maxWidth: '600px', borderTopLeftRadius: '28px', borderTopRightRadius: '28px', padding: '2rem', boxShadow: '0 -10px 40px rgba(0,0,0,0.1)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
+              <h3 style={{ fontWeight: 900, fontSize: '1.4rem', color: '#0f172a', margin: 0 }}>Select Service Slot</h3>
+              <button onClick={() => setIsSlotModalOpen(false)} style={{ background: '#f1f5f9', border: 'none', width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#475569', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#e2e8f0'} onMouseLeave={e => e.currentTarget.style.background = '#f1f5f9'}><X size={18} /></button>
             </div>
-            <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
+            
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#64748b', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>1. Pick a Date</div>
+            <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '1.5rem', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {dates.map(d => (
-                <button key={d.id} onClick={() => { setTempDate(d.display); setTempTime(''); }} style={{ padding: '0.75rem 1.25rem', borderRadius: '12px', flexShrink: 0, background: tempDate === d.display ? '#f5f3ff' : '#fff', border: tempDate === d.display ? '2px solid #6e42e5' : '1px solid #ddd' }}>
-                  <div style={{ fontSize: '0.7rem' }}>{d.label}</div><div>{d.date}</div>
+                <button key={d.id} onClick={() => { setTempDate(d.display); setTempTime(''); }} style={{ padding: '0.85rem 1.25rem', borderRadius: '14px', flexShrink: 0, background: tempDate === d.display ? '#2563eb' : '#fff', color: tempDate === d.display ? '#fff' : '#475569', border: tempDate === d.display ? '2px solid #2563eb' : '2px solid #e2e8f0', cursor: 'pointer', transition: 'all 0.2s', minWidth: '100px' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: tempDate === d.display ? 600 : 700, opacity: tempDate === d.display ? 0.9 : 0.6, marginBottom: '2px' }}>{d.label}</div>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 800 }}>{d.date.split(' ')[0]} <span style={{ fontSize: '0.85rem' }}>{d.date.split(' ')[1]}</span></div>
                 </button>
               ))}
             </div>
+
             {tempDate && (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '2rem' }}>
-                {getAvailableSlots(tempDate).map(slot => (
-                  <button key={slot.time} onClick={() => setTempTime(slot.time)} style={{ padding: '1rem', borderRadius: '12px', background: tempTime === slot.time ? '#f5f3ff' : '#fff', border: tempTime === slot.time ? '2px solid #6e42e5' : '1px solid #ddd' }}>
-                    {slot.time}
-                  </button>
-                ))}
+              <div style={{ animation: 'fadeIn 0.3s' }}>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#64748b', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>2. Pick a Time</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '2.5rem' }}>
+                  {getAvailableSlots(tempDate).map(slot => (
+                    <button key={slot.time} onClick={() => setTempTime(slot.time)} style={{ padding: '1rem', borderRadius: '12px', background: tempTime === slot.time ? '#eff6ff' : '#fff', color: tempTime === slot.time ? '#1e40af' : '#475569', border: tempTime === slot.time ? '2px solid #2563eb' : '2px solid #e2e8f0', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', transition: 'all 0.2s' }}>
+                      {slot.time}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
-            <button onClick={handleConfirmSlot} disabled={!tempDate || !tempTime} style={{ width: '100%', padding: '1.25rem', borderRadius: '12px', border: 'none', background: (tempDate && tempTime) ? '#111' : '#e2e8f0', color: '#fff', fontWeight: 700 }}>Confirm Slot</button>
+            
+            <button onClick={handleConfirmSlot} disabled={!tempDate || !tempTime} style={{ width: '100%', padding: '1.25rem', borderRadius: '14px', border: 'none', background: (tempDate && tempTime) ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' : '#e2e8f0', color: (tempDate && tempTime) ? '#fff' : '#94a3b8', fontWeight: 800, fontSize: '1.05rem', cursor: (tempDate && tempTime) ? 'pointer' : 'not-allowed', boxShadow: (tempDate && tempTime) ? '0 8px 20px rgba(15,23,42,0.2)' : 'none', transition: 'all 0.2s' }} onMouseEnter={e => { if(tempDate && tempTime) e.currentTarget.style.transform = 'translateY(-2px)' }} onMouseLeave={e => { if(tempDate && tempTime) e.currentTarget.style.transform = 'translateY(0)' }}>Confirm Slot</button>
           </div>
         </div>
       )}
