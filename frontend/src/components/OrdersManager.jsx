@@ -196,6 +196,8 @@ const OrdersManager = () => {
               {filtered.map((b, idx) => {
                 const ss = getStatusStyle(b.status);
                 const ps = getPaymentStyle(b.payment_status);
+                const items = Array.isArray(b.items) ? b.items : (() => { try { return JSON.parse(b.items || '[]'); } catch(e) { return []; } })();
+                
                 return (
                   <tr key={b.id} style={{ borderBottom: idx < filtered.length - 1 ? '1px solid #f1f5f9' : 'none' }}
                     onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
@@ -204,10 +206,10 @@ const OrdersManager = () => {
                       {formatOrderId(b.id, b.created_at, b.daily_sequence)}
                     </td>
                     <td style={{ padding: '14px 16px', maxWidth: '200px' }}>
-                      <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.items?.map(i => i.title).join(', ')}>
-                        {b.items?.length > 0 ? b.items.map(i => i.title).join(', ') : '—'}
+                      <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={items?.map(i => i.title).join(', ')}>
+                        {items?.length > 0 ? items.map(i => i.title).join(', ') : '—'}
                       </div>
-                      {b.items?.length > 1 && <div style={{ fontSize: '10px', color: '#2563eb', fontWeight: 700 }}>+{b.items.length - 1} more items</div>}
+                      {items?.length > 1 && <div style={{ fontSize: '10px', color: '#2563eb', fontWeight: 700 }}>+{items.length - 1} more items</div>}
                     </td>
                     <td style={{ padding: '14px 16px' }}>
                       <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '14px' }}>{b.customer_name || '—'}</div>

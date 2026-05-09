@@ -251,12 +251,13 @@ const Admin = () => {
                        Cancelled:   { bg: '#fef2f2', color: '#dc2626' },
                      };
                      const sc = statusColors[b.status] || { bg: '#fff7ed', color: '#ea580c' };
+                     const items = Array.isArray(b.items) ? b.items : (() => { try { return JSON.parse(b.items || '[]'); } catch(e) { return []; } })();
                      return (
                        <tr key={b.id}>
                          <td style={{ fontWeight: 800, color: '#1e40af' }}>{formatOrderId(b.id, b.created_at, b.daily_sequence)}</td>
                          <td>
-                           <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={b.items?.map(i => i.title).join(', ')}>
-                             {b.items?.length > 0 ? b.items.map(i => i.title).join(', ') : '—'}
+                           <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={items?.map(i => i.title).join(', ')}>
+                             {items?.length > 0 ? items.map(i => i.title).join(', ') : '—'}
                            </div>
                          </td>
                          <td>
