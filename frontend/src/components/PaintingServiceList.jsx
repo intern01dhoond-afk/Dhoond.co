@@ -92,6 +92,28 @@ const FILTER_TITLES = {
   coatings: 'Specialty & Coatings',
 };
 
+// Map service titles to distinct local images by keyword
+const pickImage = (title = '') => {
+  const t = title.toLowerCase();
+  if (t.includes('consultation') || t.includes('expert')) return '/consultation.png';
+  if (t.includes('single')) return '/images/single%20wall.jpg';
+  if (t.includes('exterior') || t.includes('weather')) return '/images/exterior_painting.webp';
+  if (t.includes('texture') || t.includes('stencil')) return '/texture.png';
+  if (t.includes('commercial') || t.includes('office') || t.includes('school')) return '/images/office%20space.jpg';
+  if (t.includes('warehouse') || t.includes('industrial')) return '/images/ware%20house.jpg';
+  if (t.includes('kitchen') || t.includes('bathroom')) return '/wall2.jpg';
+  if (t.includes('1bhk') || t.includes('1 bhk')) return '/bedroom.jpg';
+  if (t.includes('2bhk') || t.includes('2 bhk')) return '/space.jpg';
+  if (t.includes('3bhk') || t.includes('3 bhk')) return '/interior.jpg';
+  if (t.includes('4bhk') || t.includes('4 bhk') || t.includes('villa')) return '/images/vila.jpg';
+  if (t.includes('primer') || t.includes('priming')) return '/priming_specialist_painter.png';
+  if (t.includes('ceiling')) return '/interior.jpg';
+  if (t.includes('touch') || t.includes('repair')) return '/touch_up_painter.png';
+  if (t.includes('spray')) return '/spray_painter.png';
+  if (t.includes('full') || t.includes('home')) return '/wall1.jpg';
+  return '/images/exterior_painting.webp'; // generic fallback — a real painting photo
+};
+
 const PaintingServiceList = ({ service, onClose }) => {
   const navigate = useNavigate();
   const { addToCart, cartItems, updateQuantity, removeFromCart } = useCart();
@@ -126,28 +148,6 @@ const PaintingServiceList = ({ service, onClose }) => {
             keywords.some(kw => s.title.toLowerCase().includes(kw))
           )
           : data; // no filter = show all
-
-        // Map service titles to distinct local images by keyword
-        const pickImage = (title = '') => {
-          const t = title.toLowerCase();
-          if (t.includes('consultation') || t.includes('expert')) return '/painting_banner.png';
-          if (t.includes('single')) return '/images/single%20wall.jpg';
-          if (t.includes('exterior') || t.includes('weather')) return '/images/exterior_painting.webp';
-          if (t.includes('texture') || t.includes('stencil')) return '/texture.png';
-          if (t.includes('commercial') || t.includes('office') || t.includes('school')) return '/images/office%20space.jpg';
-          if (t.includes('warehouse') || t.includes('industrial')) return '/images/ware%20house.jpg';
-          if (t.includes('kitchen') || t.includes('bathroom')) return '/wall2.jpg';
-          if (t.includes('1bhk') || t.includes('1 bhk')) return '/bedroom.jpg';
-          if (t.includes('2bhk') || t.includes('2 bhk')) return '/space.jpg';
-          if (t.includes('3bhk') || t.includes('3 bhk')) return '/interior.jpg';
-          if (t.includes('4bhk') || t.includes('4 bhk') || t.includes('villa')) return '/images/vila.jpg';
-          if (t.includes('primer') || t.includes('priming')) return '/priming_specialist_painter.png';
-          if (t.includes('ceiling')) return '/interior.jpg';
-          if (t.includes('touch') || t.includes('repair')) return '/touch_up_painter.png';
-          if (t.includes('spray')) return '/spray_painter.png';
-          if (t.includes('full') || t.includes('home')) return '/wall1.jpg';
-          return '/images/exterior_painting.webp'; // generic fallback — a real painting photo
-        };
 
         const filteredWithImages = filtered.map(s => ({
           ...s,
@@ -216,7 +216,7 @@ const PaintingServiceList = ({ service, onClose }) => {
           title: consult.title,
           discountPrice: Number(consult.discount_price),
           originalPrice: Number(consult.original_price),
-          image: consult.image,
+          image: pickImage(consult.title),
           category: 'painter',
           quantity: 1,
         });
@@ -314,7 +314,7 @@ const PaintingServiceList = ({ service, onClose }) => {
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.9rem', fontWeight: 500, margin: '0 0 1rem' }}>
             {services.length > 0 ? `${services.length} service${services.length !== 1 ? 's' : ''} available` : 'Loading...'}
-            {' \u00b7 '}Starting {'\u20b9'}{services.length > 0 ? Math.min(...services.map(s => Number(s.discount_price || 99))) : 99}
+            {' \u00b7 '}Starting {'\u20b9'}{services.length > 0 ? Math.min(...services.map(s => Number(s.discount_price || 49))) : 49}
           </p>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Star size={14} fill="#facc15" color="#facc15" />

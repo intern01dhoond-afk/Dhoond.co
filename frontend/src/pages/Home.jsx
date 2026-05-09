@@ -97,7 +97,7 @@ const Home = () => {
     };
 
     const nagpurFallback = [
-      { id: 'n1', title: 'AC Gas Top-up', discountPrice: 1499, originalPrice: 1800, image: '/services/ac_gas_top_up.webp' },
+      { id: 'n1', title: 'AC Gas Top-up', discountPrice: 1999, originalPrice: 2999, image: '/services/ac_gas_top_up.webp' },
       { id: 'n2', title: 'Geyser installation', discountPrice: 449, originalPrice: 600, image: '/services/geyser.webp' },
       { id: 'n3', title: 'Ceiling Fan Installation', discountPrice: 199, originalPrice: 300, image: '/services/electrician_ceiling_fan_install.webp' },
       { id: 'n4', title: "Washing Machine Installation 'Fully-automatic front load'", discountPrice: 549, originalPrice: 950, image: '/services/washing_machine_inspection_fully_automatic_front_load_.webp' },

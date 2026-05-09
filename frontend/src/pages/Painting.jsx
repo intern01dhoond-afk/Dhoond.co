@@ -190,7 +190,7 @@ export default function Painting() {
   }, []);
 
   const services = [
-    { n: 'Consultation', p: 'at just ₹99' },
+    { n: 'Consultation', p: 'at just ₹49' },
   ];
 
   return (
@@ -634,7 +634,7 @@ export default function Painting() {
         <div style={{ background: '#fff', paddingTop: '12px', paddingBottom: '8px' }}>
           <div className="p-services-strip" id="p-sstrip" role="list">
             {[
-              { img: consultationImg, title: 'Book Consultation', sub: 'Talk to an expert — ₹99', filter: 'consultation', badge: 'Popular' },
+              { img: consultationImg, title: 'Book Consultation', sub: 'Talk to an expert — ₹49', filter: 'consultation', badge: 'Popular' },
               { img: commercialImg, title: 'Commercial Painting', sub: 'Offices, Schools & warehouses', filter: 'commercial', badge: null },
               { img: interiorImg, title: 'Interior Painting', sub: 'Walls, ceilings & trims', filter: 'interior', badge: null },
               { img: exteriorImg, title: 'Exterior Painting', sub: 'Weather-resistant finishes', filter: 'exterior', badge: null },
@@ -824,7 +824,7 @@ export default function Painting() {
               <h2>Transform Your Home<br /><em>Today.</em></h2>
               <p>Premium service starting at transparent prices.</p>
               <div className="p-price-anchors" style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                <div className="p-price-tag">Consultation: <span>₹99</span></div>
+                <div className="p-price-tag">Consultation: <span>₹49</span></div>
                 <div className="p-price-tag">Interior</div>
                 <div className="p-price-tag">Exterior</div>
               </div>
@@ -857,7 +857,7 @@ export default function Painting() {
           >
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', opacity: 0.8 }}>Book Professional Painting</span>
-              <span style={{ fontSize: '15px', fontWeight: 900 }}>Book Consultation @ ₹99</span>
+              <span style={{ fontSize: '15px', fontWeight: 900 }}>Book Consultation @ ₹49</span>
             </div>
             <ChevronRight size={20} />
           </button>
