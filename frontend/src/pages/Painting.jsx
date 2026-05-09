@@ -50,11 +50,11 @@ export default function Painting() {
   const cleanupRef = useRef([]);
 
   useEffect(() => {
-    const isBengaluru = locationLabel.toLowerCase().includes('bengaluru') || 
-                         locationLabel.toLowerCase().includes('bangalore') ||
-                         locationSubtext.toLowerCase().includes('bengaluru') ||
-                         locationSubtext.toLowerCase().includes('bangalore');
-    
+    const isBengaluru = locationLabel.toLowerCase().includes('bengaluru') ||
+      locationLabel.toLowerCase().includes('bangalore') ||
+      locationSubtext.toLowerCase().includes('bengaluru') ||
+      locationSubtext.toLowerCase().includes('bangalore');
+
     if (locationLabel && locationLabel !== 'Fetching location…' && locationLabel !== 'Detecting…' && !isBengaluru) {
       openComingSoon();
       navigate('/');
@@ -825,17 +825,17 @@ export default function Painting() {
               <p>Premium service starting at transparent prices.</p>
               <div className="p-price-anchors" style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                 <div className="p-price-tag">Consultation: <span>₹99</span></div>
-                <div className="p-price-tag">Interior: <span>₹7/sq.ft</span></div>
-                <div className="p-price-tag">Exterior: <span>₹9/sq.ft</span></div>
+                <div className="p-price-tag">Interior</div>
+                <div className="p-price-tag">Exterior</div>
               </div>
             </div>
-            
+
             <div className="p-cta-btns" style={{ flex: 1, maxWidth: '400px' }}>
               <div style={{ background: 'rgba(255,255,255,0.05)', padding: '24px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
                 <div style={{ fontSize: '15px', color: '#fff', fontWeight: 700, marginBottom: '12px' }}>Quick Booking</div>
-                <button 
-                  onClick={() => navigate(`?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)} 
-                  className="p-btn-cta" 
+                <button
+                  onClick={() => navigate(`?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)}
+                  className="p-btn-cta"
                   style={{ width: '100%', marginBottom: '12px' }}
                 >
                   Book Consultation
@@ -850,8 +850,8 @@ export default function Painting() {
 
         {/* ── MOBILE STICKY CTA ── */}
         <div className="mobile-sticky-cta">
-          <button 
-            onClick={() => navigate(`?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)} 
+          <button
+            onClick={() => navigate(`?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)}
             className="mobile-sticky-cta-call"
             style={{ width: '100%' }}
           >
