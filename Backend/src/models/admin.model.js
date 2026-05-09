@@ -13,22 +13,25 @@ const getStats = async () => {
 
   // Recent orders joined with payments for real status/amount
   const recentOrdersRes = await pool.query(`
-    SELECT
-      o.id,
-      u.name  AS customer_name,
-      u.phone AS phone,
-      o.price + o.platform_fee AS total_amount,
-      o.status,
-      o.created_at,
-      COALESCE(p.payment_status, 'Unpaid') AS payment_status,
-      COALESCE(p.payment_method, '')       AS payment_method,
-      COALESCE(p.amount::numeric, 0)       AS paid_amount,
-      p.transaction_id,
-      o.items
-    FROM orders o
-    LEFT JOIN users    u ON u.id = o.user_id
-    LEFT JOIN payments p ON p.order_id = o.id
-    ORDER BY o.created_at DESC
+    SELECT * FROM (
+      SELECT
+        o.id,
+        u.name  AS customer_name,
+        u.phone AS phone,
+        o.price + o.platform_fee AS total_amount,
+        o.status,
+        o.created_at,
+        COALESCE(p.payment_status, 'Unpaid') AS payment_status,
+        COALESCE(p.payment_method, '')       AS payment_method,
+        COALESCE(p.amount::numeric, 0)       AS paid_amount,
+        p.transaction_id,
+        o.items,
+        ROW_NUMBER() OVER (PARTITION BY o.created_at::date ORDER BY o.created_at ASC) as daily_sequence
+      FROM orders o
+      LEFT JOIN users    u ON u.id = o.user_id
+      LEFT JOIN payments p ON p.order_id = o.id
+    ) sub
+    ORDER BY created_at DESC
     LIMIT 10
   `);
 
@@ -45,23 +48,26 @@ const getStats = async () => {
 const getAllBookings = async () => {
   // Now fetches from orders + payments join (the correct linked data)
   const result = await pool.query(`
-    SELECT
-      o.id,
-      u.name  AS customer_name,
-      u.phone AS phone,
-      o.address,
-      o.price + o.platform_fee AS total_amount,
-      o.status,
-      o.created_at,
-      COALESCE(p.payment_status, 'Unpaid') AS payment_status,
-      COALESCE(p.payment_method, '')       AS payment_method,
-      COALESCE(p.amount::numeric, 0)       AS paid_amount,
-      p.transaction_id,
-      o.items
-    FROM orders o
-    LEFT JOIN users    u ON u.id = o.user_id
-    LEFT JOIN payments p ON p.order_id = o.id
-    ORDER BY o.created_at DESC
+    SELECT * FROM (
+      SELECT
+        o.id,
+        u.name  AS customer_name,
+        u.phone AS phone,
+        o.address,
+        o.price + o.platform_fee AS total_amount,
+        o.status,
+        o.created_at,
+        COALESCE(p.payment_status, 'Unpaid') AS payment_status,
+        COALESCE(p.payment_method, '')       AS payment_method,
+        COALESCE(p.amount::numeric, 0)       AS paid_amount,
+        p.transaction_id,
+        o.items,
+        ROW_NUMBER() OVER (PARTITION BY o.created_at::date ORDER BY o.created_at ASC) as daily_sequence
+      FROM orders o
+      LEFT JOIN users    u ON u.id = o.user_id
+      LEFT JOIN payments p ON p.order_id = o.id
+    ) sub
+    ORDER BY created_at DESC
   `);
   return result.rows;
 };

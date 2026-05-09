@@ -1,11 +1,26 @@
 const pool = require('../db/db.js'); 
 
 const createOrder = async (user_id, partner_id, category_id, address, price, platform_fee, items = []) => {
-  const result = await pool.query(
+  const insertRes = await pool.query(
     `INSERT INTO orders (user_id, partner_id, category_id, address, price, platform_fee, items)
      VALUES ($1, $2, $3, $4, $5, $6, $7)
-     RETURNING *`,
+     RETURNING id`,
     [user_id, partner_id, category_id, address, price, platform_fee, JSON.stringify(items)]
+  );
+
+  const orderId = insertRes.rows[0].id;
+
+  // Fetch the order back with the daily_sequence calculated
+  const result = await pool.query(
+    `SELECT *, (
+       SELECT COUNT(*) + 1 
+       FROM orders 
+       WHERE created_at::date = o.created_at::date 
+       AND created_at < o.created_at
+     ) as daily_sequence 
+     FROM orders o 
+     WHERE id = $1`,
+    [orderId]
   );
 
   return result.rows[0];
