@@ -381,7 +381,9 @@ const Navbar = () => {
                 
                 if (link.href) {
                   return (
-                    <a key={link.label} href={link.href} className="nav-link">
+                    <a key={link.label} href={link.href} className="nav-link" onClick={() => {
+                      if (window.fbq) window.fbq('track', 'Contact');
+                    }}>
                       {link.label}
                     </a>
                   );
@@ -763,6 +765,10 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
   React.useEffect(() => {
     window.scrollTo(0, 0);
+    // Track PageView on route change
+    if (window.fbq) {
+      window.fbq('track', 'PageView');
+    }
   }, [pathname]);
   return null;
 };

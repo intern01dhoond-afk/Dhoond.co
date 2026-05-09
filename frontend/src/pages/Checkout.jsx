@@ -92,6 +92,16 @@ const Checkout = () => {
     } else {
       setIsAuthModalOpen(false);
     }
+
+    // FB Pixel Tracking: InitiateCheckout
+    if (window.fbq && isAuthenticated && cartItems.length > 0) {
+      window.fbq('track', 'InitiateCheckout', {
+        content_ids: cartItems.map(i => i.id),
+        contents: cartItems.map(i => ({ id: i.id, quantity: i.quantity })),
+        value: Number(finalAmountToPay),
+        currency: 'INR'
+      });
+    }
   }, [isAuthenticated, authLoading]);
 
   // Tip State
@@ -214,6 +224,17 @@ const Checkout = () => {
       const mockOtp = Math.floor(1000 + Math.random() * 9000).toString();
       setStartOtp(mockOtp);
       setStatus('success');
+
+      // FB Pixel Tracking: Purchase
+      if (window.fbq) {
+        window.fbq('track', 'Purchase', {
+          content_ids: cartItems.map(i => i.id),
+          contents: cartItems.map(i => ({ id: i.id, quantity: i.quantity })),
+          value: Number(finalAmountToPay),
+          currency: 'INR',
+          transaction_id: dhoondOrderId
+        });
+      }
 
       if (checkoutCategory) {
         clearCategoryFromCart(checkoutCategory);

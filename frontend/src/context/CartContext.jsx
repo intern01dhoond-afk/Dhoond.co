@@ -28,6 +28,18 @@ export const CartProvider = ({ children }) => {
       }
       return [...prev, { ...service, quantity: isConsultation ? 1 : qtyToAdd }];
     });
+
+    // FB Pixel Tracking
+    if (window.fbq) {
+      window.fbq('track', 'AddToCart', {
+        content_name: service.title,
+        content_ids: [service.id],
+        content_type: 'product',
+        value: Number(service.discountPrice),
+        currency: 'INR'
+      });
+    }
+
     setIsCartOpen(true);
   };
 
