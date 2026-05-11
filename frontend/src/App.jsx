@@ -770,7 +770,7 @@ const ScrollToTop = () => {
       window.fbq('track', 'PageView');
     }
     if (window.gtag) {
-      window.gtag('config', 'G-FXDGQFRZJH', {
+      window.gtag('config', 'G-H6MH24CL5L', {
         page_path: pathname,
       });
     }
