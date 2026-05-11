@@ -124,7 +124,16 @@ const OrdersManager = () => {
   const filteredByCity = bookings.filter(b => {
     const isCityMatch = cityFilter === 'all' || getCity(b.address) === cityFilter;
     const orderId = formatOrderId(b.id, b.created_at, b.daily_sequence);
-    const isJunk = ['DHD-22.04-0005', 'DHD-22.04-0004', 'DHD-22.04-0003'].includes(orderId);
+    
+    // Safety filter for junk/test data
+    const isAbsurdPrice = (parseFloat(b.price) || parseFloat(b.total_amount) || 0) > 10000000;
+    const isTestName = (b.customer_name || '').toLowerCase() === 'asdfasdfasdf';
+    const specificJunkIds = [
+      'DHD-22.04-0005', 'DHD-22.04-0004', 'DHD-22.04-0003',
+      'DHD-22.04-0030', 'DHD-22.04-0029', 'DHD-22.04-0028'
+    ];
+    const isJunk = specificJunkIds.includes(orderId) || isAbsurdPrice || isTestName;
+    
     return isCityMatch && !isJunk;
   });
 
