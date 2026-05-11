@@ -121,10 +121,16 @@ const OrdersManager = () => {
     finally { setAssigning(false); }
   };
 
-  const filteredByCity = bookings.filter(b => cityFilter === 'all' || getCity(b.address) === cityFilter);
+  const filteredByCity = bookings.filter(b => {
+    const isCityMatch = cityFilter === 'all' || getCity(b.address) === cityFilter;
+    const orderId = formatOrderId(b.id, b.created_at, b.daily_sequence);
+    const isJunk = ['DHD-22.04-0005', 'DHD-22.04-0004', 'DHD-22.04-0003'].includes(orderId);
+    return isCityMatch && !isJunk;
+  });
+
   const filtered = filteredByCity.filter(b => {
-    const orderId = formatOrderId(b.id, b.created_at, b.daily_sequence).toLowerCase();
-    const matchSearch = (b.customer_name || '').toLowerCase().includes(search.toLowerCase()) || (b.phone || '').includes(search) || orderId.includes(search.toLowerCase());
+    const orderId = formatOrderId(b.id, b.created_at, b.daily_sequence);
+    const matchSearch = (b.customer_name || '').toLowerCase().includes(search.toLowerCase()) || (b.phone || '').includes(search) || orderId.toLowerCase().includes(search.toLowerCase());
     const matchStatus = statusFilter === 'all' || b.status === statusFilter;
     return matchSearch && matchStatus;
   });
