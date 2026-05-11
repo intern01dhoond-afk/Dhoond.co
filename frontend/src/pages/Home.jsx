@@ -698,7 +698,7 @@ const Home = () => {
 
                 {/* Pills */}
                 <div className="pills-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '2.5rem' }}>
-                  {['No Hidden Charges', 'On-Time Guarantee', 'Easy Rescheduling', 'Post-Service Support'].map(b => (
+                  {['No Hidden Charges', 'On-Time Guarantee', 'Easy Rescheduling'].map(b => (
                     <span key={b} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#cbd5e1', fontSize: '0.8rem', fontWeight: 600, padding: '7px 15px', borderRadius: '99px', whiteSpace: 'nowrap' }}>
                       <span style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 900 }}>✓</span> {b}
                     </span>
