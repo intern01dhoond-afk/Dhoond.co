@@ -224,23 +224,33 @@ const Checkout = () => {
         console.warn("[Checkout] Payment record failed but order exists:", paymentResult.message);
       }
 
-      // 3. Update UI
+      // 3. FB Pixel Tracking: Purchase (Track BEFORE clearing cart)
+      if (window.fbq) {
+        try {
+          const purchaseParams = {
+            content_ids: cartItems.map(i => String(i.id)),
+            contents: cartItems.map(i => ({
+              id: String(i.id),
+              quantity: i.quantity,
+              item_price: Number(i.discountPrice || 0)
+            })),
+            content_type: 'product',
+            value: Number(finalAmountToPay),
+            currency: 'INR',
+            num_items: cartItems.reduce((acc, i) => acc + i.quantity, 0),
+            transaction_id: String(dhoondOrderId)
+          };
+          window.fbq('track', 'Purchase', purchaseParams);
+          console.log("[FB Pixel] Purchase Tracked:", purchaseParams);
+        } catch (fbErr) {
+          console.error("[FB Pixel] Purchase Tracking Error:", fbErr);
+        }
+      }
+
+      // 4. Update UI
       const mockOtp = Math.floor(1000 + Math.random() * 9000).toString();
       setStartOtp(mockOtp);
       setStatus('success');
-
-      // FB Pixel Tracking: Purchase
-      if (window.fbq) {
-        window.fbq('track', 'Purchase', {
-          content_ids: cartItems.map(i => String(i.id)),
-          contents: cartItems.map(i => ({ id: String(i.id), quantity: i.quantity })),
-          content_type: 'product',
-          value: Number(finalAmountToPay),
-          currency: 'INR',
-          transaction_id: String(dhoondOrderId),
-          num_items: cartItems.reduce((acc, i) => acc + i.quantity, 0)
-        });
-      }
 
       if (checkoutCategory) {
         clearCategoryFromCart(checkoutCategory);
@@ -349,6 +359,22 @@ const Checkout = () => {
       }
 
       console.log("[Checkout] Razorpay Order ID:", orderData.order_id);
+
+      // FB Pixel: AddPaymentInfo
+      if (window.fbq) {
+        try {
+          const payInfoParams = {
+            content_ids: cartItems.map(i => String(i.id)),
+            content_type: 'product',
+            value: Number(finalAmountToPay),
+            currency: 'INR'
+          };
+          window.fbq('track', 'AddPaymentInfo', payInfoParams);
+          console.log("[FB Pixel] AddPaymentInfo Tracked:", payInfoParams);
+        } catch (fbErr) {
+          console.error("[FB Pixel] AddPaymentInfo Tracking Error:", fbErr);
+        }
+      }
 
       // 3. Open Razorpay with both IDs
       const options = {
