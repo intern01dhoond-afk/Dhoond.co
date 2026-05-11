@@ -769,6 +769,11 @@ const ScrollToTop = () => {
     if (window.fbq) {
       window.fbq('track', 'PageView');
     }
+    if (window.gtag) {
+      window.gtag('config', 'G-FXDGQFRZJH', {
+        page_path: pathname,
+      });
+    }
   }, [pathname]);
   return null;
 };
