@@ -176,10 +176,12 @@ const PaintingServiceList = ({ service, onClose }) => {
   const getCartQty = (id) => cartItems.find((i) => i.id === id)?.quantity || 0;
 
   const handleAdd = (svc) => {
+    const finalPrice = svc.title.toLowerCase().includes('consultation') ? 49 : Number(svc.discount_price);
+    
     addToCart({
       id: svc.id,
       title: svc.title,
-      discountPrice: Number(svc.discount_price),
+      discountPrice: finalPrice,
       originalPrice: Number(svc.original_price),
       image: svc.image,
       category: 'painter',
@@ -214,7 +216,7 @@ const PaintingServiceList = ({ service, onClose }) => {
         addToCart({
           id: consult.id,
           title: consult.title,
-          discountPrice: Number(consult.discount_price),
+          discountPrice: 49, // Forced consistency
           originalPrice: Number(consult.original_price),
           image: pickImage(consult.title),
           category: 'painter',
@@ -417,7 +419,7 @@ const PaintingServiceList = ({ service, onClose }) => {
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                           <span style={{ fontWeight: 900, fontSize: '1rem', color: '#111' }}>
-                            {'\u20b9'}{Number(svc.discount_price).toLocaleString('en-IN')}
+                            {'\u20b9'}{svc.title.toLowerCase().includes('consultation') ? 49 : Number(svc.discount_price).toLocaleString('en-IN')}
                           </span>
                           {svc.original_price > svc.discount_price && (
                             <>

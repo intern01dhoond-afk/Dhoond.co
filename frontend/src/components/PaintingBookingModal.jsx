@@ -20,7 +20,7 @@ const DAMAGE_OPTIONS = [
   { id: 'none', label: 'No issues — fresh paint only', icon: '✅' },
 ];
 
-const CONSULTATION_FEE = 99; // Updated to match the service list price
+const CONSULTATION_FEE = 49; // Standardized across all marketing and lists
 
 const PaintingBookingModal = ({ service, onClose }) => {
   const [step, setStep] = useState(1); // 1 = paint, 2 = damage, 3 = confirm
