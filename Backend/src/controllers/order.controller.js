@@ -72,8 +72,25 @@ const updateOrderController = async (req, res) => {
   }
 };
 
+const getSyncDetailsController = async (req, res) => {
+  try {
+    const { key } = req.params;
+    if (!key) {
+      return res.status(400).json({ success: false, message: "key is required" });
+    }
+    const data = await orderModel.getSyncDetails(key);
+    if (!data) {
+      return res.status(404).json({ success: false, message: "No records found" });
+    }
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   createOrderController,
   getOrdersController,
   updateOrderController,
+  getSyncDetailsController,
 };

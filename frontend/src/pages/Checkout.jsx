@@ -6,10 +6,12 @@ import { MapPin, Clock, CreditCard, Tag, Percent, Phone, SquareCheck, Info, X, C
 import { formatOrderId } from '../utils/formatOrderId';
 import { detectCurrentLocation } from '../utils/location';
 import AuthModal from '../components/AuthModal';
+import { useUI } from '../context/UIContext';
 
 const Checkout = () => {
   const { cartItems: allCartItems, clearCart, clearCategoryFromCart, updateQuantity } = useCart();
   const { user, login, isAuthenticated, loading: authLoading } = useAuth();
+  const { locationLabel } = useUI();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,8 +35,17 @@ const Checkout = () => {
   // Data States
   const [formData, setFormData] = useState({
     phone: user?.mobile || '',
-    address: 'Home - 78, 25th Main Rd, near Kamataka Ban...'
+    address: locationLabel || localStorage.getItem('dhoond_location') || ''
   });
+
+  // Keep address in sync when location context updates
+  useEffect(() => {
+    if (!formData.address || formData.address === 'Fetching location…' || formData.address === 'Detecting…' || formData.address.includes('78, 25th Main Rd')) {
+      if (locationLabel && locationLabel !== 'Fetching location…' && locationLabel !== 'Detecting…') {
+        setFormData(prev => ({ ...prev, address: locationLabel }));
+      }
+    }
+  }, [locationLabel]);
 
   // Keep phone in sync when user changes (e.g. after auth modal)
   useEffect(() => {

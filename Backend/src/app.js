@@ -17,8 +17,8 @@ const corsOptions = {
     // Allow requests with no origin (mobile apps, Postman, server-to-server)
     if (!origin) return callback(null, true);
 
-    // Always allow any dhoond.co or Vercel deployment
-    if (origin.endsWith('.dhoond.co') || origin.endsWith('.vercel.app') || origin === 'https://dhoond.co') return callback(null, true);
+    // Always allow any dhoond.co or Vercel deployment, and allow null origin (local files)
+    if (!origin || origin === 'null' || origin.endsWith('.dhoond.co') || origin.endsWith('.vercel.app') || origin === 'https://dhoond.co') return callback(null, true);
 
     // Allow explicit origins from ALLOWED_ORIGINS env var
     if (allowedList.length > 0 && allowedList.includes(origin)) return callback(null, true);

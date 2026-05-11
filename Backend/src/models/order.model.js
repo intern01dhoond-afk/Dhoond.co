@@ -53,9 +53,66 @@ const updateOrder = async (id, status) => {
   return result.rows[0];
 };
 
+const getSyncDetails = async (key) => {
+  let result;
+  let idToSearch = null;
+
+  // Extract ID from formatted strings (e.g., 0001 from DHD-11.05-0001)
+  const parts = key.split('-');
+  const lastPart = parts[parts.length - 1];
+  const idMatch = lastPart.match(/\d+/);
+  if (idMatch) idToSearch = parseInt(idMatch[0]);
+
+  // 1. Try search by Order ID (joined with users)
+  if (idToSearch) {
+    result = await pool.query(
+      `SELECT u.name, o.address, u.phone 
+       FROM orders o 
+       JOIN users u ON u.id = o.user_id 
+       WHERE o.id = $1`,
+      [idToSearch]
+    );
+    if (result.rows.length > 0) return result.rows[0];
+  }
+
+  // 2. Try search by Booking ID (if exists)
+  if (idToSearch) {
+    result = await pool.query(
+      "SELECT customer_name as name, address, phone FROM bookings WHERE id = $1::int",
+      [idToSearch]
+    );
+    if (result.rows.length > 0) return result.rows[0];
+  }
+
+  // 3. Try search by Phone (numeric check)
+  const cleanPhone = key.replace(/\D/g, '');
+  if (cleanPhone.length >= 10) {
+    // Search in users + latest order
+    result = await pool.query(
+      `SELECT u.name, o.address, u.phone 
+       FROM users u 
+       LEFT JOIN orders o ON o.user_id = u.id 
+       WHERE u.phone LIKE $1 
+       ORDER BY o.created_at DESC LIMIT 1`,
+      [`%${cleanPhone}`]
+    );
+    if (result.rows.length > 0) return result.rows[0];
+
+    // Search in bookings
+    result = await pool.query(
+      "SELECT customer_name as name, address, phone FROM bookings WHERE phone LIKE $1 LIMIT 1",
+      [`%${cleanPhone}`]
+    );
+    if (result.rows.length > 0) return result.rows[0];
+  }
+
+  return null;
+};
+
 module.exports = {
   createOrder,
   getOrders,
   getOrdersByUserId,
   updateOrder,
+  getSyncDetails,
 };
