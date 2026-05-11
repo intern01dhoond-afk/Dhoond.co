@@ -96,10 +96,12 @@ const Checkout = () => {
     // FB Pixel Tracking: InitiateCheckout
     if (window.fbq && isAuthenticated && cartItems.length > 0) {
       window.fbq('track', 'InitiateCheckout', {
-        content_ids: cartItems.map(i => i.id),
-        contents: cartItems.map(i => ({ id: i.id, quantity: i.quantity })),
+        content_ids: cartItems.map(i => String(i.id)),
+        contents: cartItems.map(i => ({ id: String(i.id), quantity: i.quantity })),
+        content_type: 'product',
         value: Number(finalAmountToPay),
-        currency: 'INR'
+        currency: 'INR',
+        num_items: cartItems.reduce((acc, i) => acc + i.quantity, 0)
       });
     }
   }, [isAuthenticated, authLoading]);
@@ -230,11 +232,13 @@ const Checkout = () => {
       // FB Pixel Tracking: Purchase
       if (window.fbq) {
         window.fbq('track', 'Purchase', {
-          content_ids: cartItems.map(i => i.id),
-          contents: cartItems.map(i => ({ id: i.id, quantity: i.quantity })),
+          content_ids: cartItems.map(i => String(i.id)),
+          contents: cartItems.map(i => ({ id: String(i.id), quantity: i.quantity })),
+          content_type: 'product',
           value: Number(finalAmountToPay),
           currency: 'INR',
-          transaction_id: dhoondOrderId
+          transaction_id: String(dhoondOrderId),
+          num_items: cartItems.reduce((acc, i) => acc + i.quantity, 0)
         });
       }
 
