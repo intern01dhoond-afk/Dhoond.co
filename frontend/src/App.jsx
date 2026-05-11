@@ -408,7 +408,7 @@ const Navbar = () => {
           </div>
 
           {/* CENTER: Mobile Logo */}
-          <div className="mobile-only" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1.5, height: '100%' }}>
+          <div className="mobile-only" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, height: '100%' }}>
             <Link to="/" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
               <div className="dhoond-logo-container">
                 <img src="/logo.png" alt="Dhoond" className="dhoond-logo" />
@@ -433,7 +433,7 @@ const Navbar = () => {
               <Search size={24} />
             </button>
 
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} className="desktop-only">
               <button className="icon-btn" onClick={() => isAuthenticated ? setIsProfileOpen(!isProfileOpen) : setIsAuthOpen(true)}>
                 <User size={24} color={isAuthenticated ? '#2563eb' : 'currentColor'} />
               </button>

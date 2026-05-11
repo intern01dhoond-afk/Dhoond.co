@@ -256,9 +256,9 @@ export default function Painting() {
         @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:.3; } }
         .p-hero h1 {
           font-family: 'Inter', sans-serif;
-          font-size: clamp(36px, 9vw, 68px);
-          font-weight: 900; line-height: 1.08; letter-spacing: -1.5px;
-          color: #fff; margin-bottom: 18px;
+          font-size: clamp(32px, 8vw, 68px);
+          font-weight: 900; line-height: 1.05; letter-spacing: -1.2px;
+          color: #fff; margin-bottom: 16px;
         }
         .p-hero h1 em { font-style: italic; color: #facc15; font-weight: 900; }
         .p-line-wrap { overflow: hidden; display: block; }
@@ -351,6 +351,11 @@ export default function Painting() {
           .p-services-strip { padding: 40px 2rem; }
           .p-services-strip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         }
+        @media (max-width: 480px) {
+          .p-si-img { width: 70px; height: 70px; }
+          .p-service-info h3 { font-size: 1rem; }
+          .p-service-info p { font-size: 0.8rem; }
+        }
 
         /* ── EYEBROW & SHARED ── */
         .p-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; color: #2563eb; font-weight: 800; display: inline-block; margin-bottom: 12px; position: relative; }
@@ -430,6 +435,11 @@ export default function Painting() {
           .p-process-grid { display: grid; grid-template-columns: repeat(4,1fr); overflow: visible; padding: 8px 5vw 0; }
           .process-card { min-width: unset; flex: unset; }
           .process-card:last-child { margin-right: 0; }
+        }
+        @media (max-width: 600px) {
+          .process-card { min-width: 230px; flex: 0 0 230px; padding: 24px 20px; }
+          .p-picon { width: 48px; height: 48px; margin-bottom: 16px; }
+          .process-card h3 { font-size: 16px; }
         }
 
         /* ── GALLERY ── */
@@ -661,8 +671,9 @@ export default function Painting() {
 
         {/* ── MARQUEE ── */}
         <div className="p-marquee-wrap" aria-hidden="true">
-          <div className="p-marquee-track" id="paint-mtrack">
+          <div className="p-marquee-track" id="paint-mtrack" style={{ width: 'max-content' }}>
             {['Interior Painting', 'Exterior Painting', 'Commercial Painting', 'Specialty Coatings', 'Wood Finish', 'Luxury Finishes', 'Wallpaper Install', 'Stencil Art',
+              'Interior Painting', 'Exterior Painting', 'Commercial Painting', 'Specialty Coatings', 'Wood Finish', 'Luxury Finishes', 'Wallpaper Install', 'Stencil Art',
               'Interior Painting', 'Exterior Painting', 'Commercial Painting', 'Specialty Coatings', 'Wood Finish', 'Luxury Finishes', 'Wallpaper Install', 'Stencil Art'].map((item, i) => (
                 <div key={i} className="p-marquee-item"><span className="p-mdot" />{item}</div>
               ))}

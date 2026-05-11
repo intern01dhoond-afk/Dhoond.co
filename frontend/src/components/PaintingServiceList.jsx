@@ -246,24 +246,24 @@ const PaintingServiceList = ({ service, onClose }) => {
       <header
         style={{
           position: 'sticky', top: 0, left: 0, right: 0, height: '64px',
-          background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)',
+          background: 'rgba(255,255,255,0.98)', backdropFilter: 'blur(20px)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0 5%', zIndex: 110, borderBottom: '1px solid #e2e8f0',
+          padding: '0 4%', zIndex: 110, borderBottom: '1px solid #e2e8f0',
           boxShadow: '0 1px 10px rgba(0,0,0,0.04)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flex: 1, minWidth: 0 }}>
           <button
             onClick={onClose}
             style={{
               background: '#f1f5f9', border: 'none', borderRadius: '50%',
-              width: '40px', height: '40px', display: 'flex', alignItems: 'center',
-              justifyContent: 'center', cursor: 'pointer',
+              width: '36px', height: '36px', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', cursor: 'pointer', flexShrink: 0
             }}
           >
-            <ArrowLeft size={20} color="#1e293b" />
+            <ArrowLeft size={18} color="#1e293b" />
           </button>
-          <span style={{ fontWeight: 800, color: '#111', fontSize: '1.05rem' }}>
+          <span style={{ fontWeight: 800, color: '#111', fontSize: '0.95rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {FILTER_TITLES[service?.filter] || 'Painting Services'}
           </span>
         </div>
@@ -271,17 +271,24 @@ const PaintingServiceList = ({ service, onClose }) => {
         {totalInCart > 0 && (
           <button
             onClick={() => navigate('/cart')}
+            className="header-cart-btn"
             style={{
               background: '#2563eb', color: '#fff', border: 'none',
-              borderRadius: '12px', padding: '0.6rem 1.2rem',
-              fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              borderRadius: '10px', padding: '0.5rem 0.8rem',
+              fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0
             }}
           >
-            <ShoppingCart size={16} />
-            Cart ({totalInCart})
+            <ShoppingCart size={15} />
+            <span className="cart-text">Cart ({totalInCart})</span>
           </button>
         )}
+        <style>{`
+          @media (max-width: 400px) {
+            .header-cart-btn .cart-text { display: none; }
+            .header-cart-btn { padding: 0.5rem !important; border-radius: 50% !important; }
+          }
+        `}</style>
       </header>
 
       {/* HERO BANNER */}
@@ -393,11 +400,12 @@ const PaintingServiceList = ({ service, onClose }) => {
                     <div
                       key={svc.id}
                       style={{
-                        background: '#fff', borderRadius: '16px',
-                        border: qty > 0 && isConsultation && group.key === 'consultation' ? '2px solid #2563eb' : '1px solid #e2e8f0',
-                        padding: '1rem 1.25rem',
+                        background: '#fff', borderRadius: '18px',
+                        border: qty > 0 && isConsultation && group.key === 'consultation' ? '2px solid #2563eb' : '1px solid #f1f5f9',
+                        padding: '1.1rem 1.25rem',
                         display: 'flex', alignItems: 'center', gap: '1rem',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                        transition: 'all 0.2s ease',
                       }}
                     >
                       {/* Image */}
@@ -525,15 +533,16 @@ const PaintingServiceList = ({ service, onClose }) => {
       {isConsultation && totalInCart > 0 && (
         <div style={{
           position: 'fixed', bottom: 0, left: 0, right: 0,
-          background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)',
+          background: 'rgba(255,255,255,0.98)', backdropFilter: 'blur(24px)',
           padding: '1rem 5%', borderTop: '1px solid #f1f5f9', zIndex: 120,
-          display: 'flex', alignItems: 'center', gap: '1rem',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          gap: '1rem', boxShadow: '0 -8px 24px rgba(0,0,0,0.04)'
         }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600 }}>
-              {totalInCart} service{totalInCart !== 1 ? 's' : ''} added
+          <div>
+            <div style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '2px' }}>
+              {totalInCart} Item{totalInCart !== 1 ? 's' : ''} Added
             </div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#111' }}>
+            <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.02em' }}>
               {'\u20b9'}{cartItems
                 .filter((i) => i.category === 'painter')
                 .reduce((sum, i) => sum + i.discountPrice * (i.quantity || 1), 0)
@@ -543,14 +552,14 @@ const PaintingServiceList = ({ service, onClose }) => {
           <button
             onClick={() => navigate('/cart')}
             style={{
-              background: '#2563eb', color: '#fff', border: 'none',
-              borderRadius: '14px', padding: '1rem 2rem',
-              fontWeight: 900, fontSize: '1rem', cursor: 'pointer',
+              background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)', color: '#fff', border: 'none',
+              borderRadius: '16px', padding: '0.9rem 1.75rem',
+              fontWeight: 800, fontSize: '1rem', cursor: 'pointer',
               boxShadow: '0 8px 20px rgba(37,99,235,0.3)',
-              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              display: 'flex', alignItems: 'center', gap: '0.6rem',
             }}
           >
-            View Cart <ArrowRight size={18} />
+            View Cart <ArrowRight size={18} strokeWidth={2.5} />
           </button>
         </div>
       )}

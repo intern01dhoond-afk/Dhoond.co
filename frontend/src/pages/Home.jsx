@@ -255,18 +255,23 @@ const Home = () => {
            .hero-video { order: 2; flex: none; width: 100% !important; margin-left: 0 !important; position: relative; display: block; overflow: visible !important; margin-top: 1.5rem !important; }
            .video-container { border-radius: 0 !important; box-shadow: none !important; margin-bottom: 0 !important; }
            .floating-rating { display: none !important; }
-           .hero-cta-row { flex-direction: column !important; }
-           .hero-cta-row button { width: 100% !important; justify-content: center !important; }
-           .hero-trust { justify-content: center !important; width: 100%; }
+           .hero-cta-row { flex-direction: column !important; width: 100%; }
+           .hero-cta-row button { width: 100% !important; justify-content: center !important; margin-bottom: 0.5rem; }
+           .hero-trust { justify-content: center !important; width: 100%; margin-top: 1rem; }
            
-           .service-grid-mobile { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 1rem !important; padding: 0 !important; }
+           .service-grid-mobile { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 0.75rem !important; padding: 0 !important; }
            .service-grid-mobile > div { width: 100% !important; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; overflow: visible !important; }
-           .service-grid-mobile .svc-icon-box { width: 100% !important; aspect-ratio: 1 / 1 !important; height: auto !important; border-radius: 16px !important; background: #ffffff !important; }
+           .service-grid-mobile .svc-icon-box { width: 100% !important; aspect-ratio: 1 / 1 !important; height: auto !important; border-radius: 12px !important; background: #ffffff !important; }
            .service-grid-mobile .svc-icon-box img { width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center !important; padding: 4px !important; }
-           .service-grid-mobile .svc-label { font-size: 0.7rem !important; }
-           .service-grid-mobile .svc-tag { font-size: 7px !important; padding: 2px 5px !important; }
+           .service-grid-mobile .svc-label { font-size: 0.65rem !important; font-weight: 700 !important; }
+           .service-grid-mobile .svc-tag { font-size: 6px !important; padding: 1px 4px !important; }
            
-           .availability-tag { font-size: 6.5px !important; padding: 2px 4px !important; border-radius: 3px !important; margin-top: 3px !important; }
+           @media(max-width: 400px) {
+             .service-grid-mobile { grid-template-columns: repeat(2, 1fr) !important; gap: 0.85rem !important; }
+             .service-grid-mobile .svc-label { font-size: 0.75rem !important; }
+           }
+           
+           .availability-tag { font-size: 6px !important; padding: 1px 3px !important; border-radius: 3px !important; margin-top: 2px !important; }
            .painting-highlight { border: 2.5px solid #facc15 !important; background: #fffcf0 !important; }
            
            .section-pad { padding: 1.5rem 5% 3rem !important; }
@@ -285,10 +290,12 @@ const Home = () => {
 
            .phone-mockup-col { margin-top: 2rem !important; }
            
-           .why-dhoond-content h2 { margin-bottom: 0.75rem !important; }
-           .why-dhoond-content .description { margin-bottom: 1.5rem !important; }
-           .why-dhoond-content .features-list { margin-bottom: 1.5rem !important; gap: 1.25rem !important; }
+           .why-dhoond-content { padding: 1rem 0 !important; }
+           .why-dhoond-content h2 { margin-bottom: 0.75rem !important; font-size: 1.85rem !important; }
+           .why-dhoond-content .description { margin-bottom: 1.5rem !important; font-size: 0.9rem !important; }
+           .why-dhoond-content .features-list { margin-bottom: 1.5rem !important; gap: 1rem !important; }
            .why-dhoond-content .pills-list { margin-bottom: 1.5rem !important; }
+           .why-dhoond-gap { gap: 1.5rem !important; }
         }
 
         .phone-mockup-col { transition: transform 0.3s ease; }
@@ -659,7 +666,7 @@ const Home = () => {
 
           <div style={{ maxWidth: '1280px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
             {/* Two-column layout */}
-            <div style={{ display: 'flex', gap: '5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="why-dhoond-gap" style={{ display: 'flex', gap: '5rem', alignItems: 'center', flexWrap: 'wrap' }}>
 
               {/* ── LEFT COLUMN ── */}
               <div className="why-dhoond-content" style={{ flex: '1 1 480px', minWidth: 0, padding: '2rem 0' }}>
