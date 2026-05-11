@@ -294,9 +294,8 @@ const Checkout = () => {
       return;
     }
 
-    if (finalAmountToPay <= 0) {
-      setPaymentError('Invalid payment amount. Please add items to your cart.');
-      setStatus('idle');
+    if (total <= 0) {
+      alert('Your cart is empty. Please add a service before proceeding.');
       return;
     }
 
