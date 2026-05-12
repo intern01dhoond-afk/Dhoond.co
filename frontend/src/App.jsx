@@ -15,6 +15,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { UIProvider, useUI } from './context/UIContext';
 import ComingSoonModal from './components/ComingSoonModal';
 import AuthModal from './components/AuthModal';
+import MetaBrowserPopup from './components/MetaBrowserPopup';
 import { detectCurrentLocation, waitForGoogleMaps, isInsideGeofence } from './utils/location';
 import './index.css';
 
@@ -753,6 +754,7 @@ const MainLayout = () => {
   const { showComingSoon, closeComingSoon } = useUI();
   return (
     <>
+      <MetaBrowserPopup />
       <Navbar />
       <Outlet />
       <Footer />
