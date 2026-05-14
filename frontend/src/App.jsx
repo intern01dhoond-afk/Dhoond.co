@@ -64,7 +64,7 @@ const Navbar = () => {
   React.useEffect(() => {
     const savedLoc = localStorage.getItem('dhoond_location');
     if (!savedLoc || savedLoc === 'Detecting…' || savedLoc === 'Location not found' || savedLoc === 'Fetching location…') {
-      detectLocation();
+      openLocation();
     }
   }, []);
 
