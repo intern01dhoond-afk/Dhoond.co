@@ -89,8 +89,6 @@ const Pill = ({ label, emoji, active, onClick }) => (
 const Shop = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { addToCart } = useCart();
-  const { isNagpur } = useUI();
   
   // SEO Integration
   useSEO({
@@ -111,7 +109,6 @@ const Shop = () => {
   const { addToCart, cartItems, updateQuantity, removeFromCart, totalAmount } = useCart();
   const { openComingSoon, locationLabel, locationSubtext, updateLocation, userLat, userLng } = useUI();
   const [selectedPaintService, setSelectedPaintService] = useState(null); 
-  const navigate = useNavigate();
 
   const isBengaluru = (locationLabel || '').toLowerCase().includes('bengaluru') || 
                       (locationLabel || '').toLowerCase().includes('bangalore') ||
