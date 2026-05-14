@@ -5,23 +5,26 @@
   <meta charset="UTF-8" />
   <!-- Facebook Pixel Code -->
   <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window,document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1961031598112857');
   </script>
   <!-- End Facebook Pixel Code -->
-  
+
   <!-- Google Analytics (GA4) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-H6MH24CL5L"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-H6MH24CL5L');
   </script>
@@ -32,15 +35,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#2563eb" />
-  <link rel="canonical" href="https://dhoond.co/" />
+  <link rel="canonical" href="https://www.dhoond.co/" />
   <!-- Open Graph -->
   <meta property="og:site_name" content="Dhoond.co" />
   <meta property="og:locale" content="en_IN" />
   <meta property="og:type" content="website" />
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <title>Dhoond.co — Electricians & Technicians at Your Doorstep in 15 Min</title>
-  
+  <title>Dhoond.co — Painting Service and Electricians & Technicians at Your Doorstep in 15 Min</title>
+
   <!-- Google Maps JS API (Places + Geocoding) -->
   <script>
     // Injected at build time via Vite env
@@ -65,7 +68,7 @@
 <body>
   <noscript>
     <img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=1961031598112857&ev=PageView&noscript=1"/>
+      src="https://www.facebook.com/tr?id=1961031598112857&ev=PageView&noscript=1" />
   </noscript>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>

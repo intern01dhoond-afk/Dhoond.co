@@ -6,7 +6,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const BASE_URL = 'https://dhoond.co';
+const BASE_URL = 'https://www.dhoond.co';
 
 /**
  * @param {Object} params
