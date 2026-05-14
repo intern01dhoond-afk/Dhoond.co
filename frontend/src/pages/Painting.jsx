@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import PaintingServiceList from '../components/PaintingServiceList';
 import { useUI } from '../context/UIContext';
+import { useSEO } from '../hooks/useSEO';
 import paintingBanner from '../assets/painting_banner.png';
 import consultationImg from '../assets/consultation.png';
 import commercialImg from '../assets/commercial_painting.jpg';
@@ -30,6 +31,14 @@ const isTouch = () => typeof window !== 'undefined' && ('ontouchstart' in window
 export default function Painting() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // SEO Integration
+  useSEO({
+    title: "Professional Painting Services in Bengaluru — Dhoond.co",
+    description: "Expert interior and exterior house painting services in Bengaluru. Get a free consultation and professional finish with premium paints.",
+    canonicalPath: "/painting"
+  });
+
   const [galleryActive, setGalleryActive] = useState('after');
   const [activeService, setActiveService] = useState('Painting');
   const [selectedService, setSelectedService] = useState(null);

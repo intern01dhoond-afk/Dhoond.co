@@ -389,12 +389,12 @@ const Checkout = () => {
 
       // 3. Open Razorpay with both IDs
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_SeSxsY1JZab5Lw",
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: Math.round(finalAmountToPay * 100),
         currency: "INR",
-        name: "Dhoond Services",
-        description: "Service Booking Transaction",
-        image: "https://dhoond.vercel.app/vite.svg",
+        name: "Dhoond.co",
+        description: "Service Payment",
+        image: "https://www.dhoond.co/favicon.png",
         order_id: orderData.order_id,
         handler: function (response) {
           processFinalBooking(dhoondOrderId, response.razorpay_payment_id);

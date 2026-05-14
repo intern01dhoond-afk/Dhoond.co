@@ -138,7 +138,13 @@ const Cart = () => {
         .qty-btn.plus { background: #eff6ff; color: #2563eb; }
         .qty-btn.plus:hover { background: #dbeafe; }
         .trust-badge { display: flex; align-items: center; gap: 0.5rem; background: #fff; padding: 0.6rem 1rem; border-radius: 99px; border: 1px solid #f1f5f9; box-shadow: 0 2px 10px rgba(0,0,0,0.02); color: #475569; font-size: 0.8rem; font-weight: 600; }
-        @media (max-width: 600px) { .cart-header-img { height: 70px; opacity: 0.4; } .checkout-btn { width: 100%; justify-content: center; } .trust-badge { padding: 0.5rem 0.8rem; font-size: 0.75rem; } }
+        @media (max-width: 600px) { 
+          .cart-header-img { height: 70px; opacity: 0.4; } 
+          .checkout-btn { width: 100%; justify-content: center; } 
+          .trust-badge { padding: 0.5rem 0.8rem; font-size: 0.75rem; } 
+          .cart-item-row { flex-wrap: wrap !important; }
+          .cart-item-controls { width: 100% !important; justify-content: space-between !important; margin-top: 0.5rem !important; border-top: 1px solid #f1f5f9 !important; padding-top: 0.75rem !important; }
+        }
       `}</style>
       
       {/* Header */}
@@ -199,7 +205,7 @@ const Cart = () => {
                   
                   <div style={{ padding: '0 1.75rem' }}>
                     {items.map((item, idx) => (
-                      <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem 0', borderBottom: idx === items.length - 1 ? 'none' : '1px solid #f1f5f9' }}>
+                      <div key={item.id} className="cart-item-row" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem 0', borderBottom: idx === items.length - 1 ? 'none' : '1px solid #f1f5f9' }}>
                         <div style={{ width: '70px', height: '70px', borderRadius: '16px', background: '#f8fafc', overflow: 'hidden', border: '1px solid #e2e8f0', flexShrink: 0 }}>
                           <img src={item.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
@@ -207,7 +213,7 @@ const Cart = () => {
                           <h4 style={{ margin: '0 0 0.4rem', fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3 }}>{item.title}</h4>
                           <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#2563eb' }}>₹{item.discountPrice}</p>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div className="cart-item-controls" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '4px' }}>
                             <button className="qty-btn" onClick={() => updateQuantity(item.id, -1)}>−</button>
                             <span style={{ width: '32px', textAlign: 'center', fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>{item.quantity}</span>

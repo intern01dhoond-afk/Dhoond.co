@@ -3,6 +3,7 @@ import { ArrowUpRight, Clock, ShieldCheck, Star, ChevronRight, ChevronLeft } fro
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useUI } from '../context/UIContext';
+import { useSEO } from '../hooks/useSEO';
 import { detectCurrentLocation, isInsideGeofence } from '../utils/location';
 import ComingSoonModal from '../components/ComingSoonModal';
 import heroVideo from '../assets/hero_video.mp4';
@@ -23,6 +24,14 @@ const Home = () => {
   const [featuredServices, setFeaturedServices] = useState([]);
   const { openComingSoon, closeComingSoon, showComingSoon, locationLabel, locationSubtext, userLat, userLng } = useUI();
   const [shakingId, setShakingId] = useState(null);
+  
+  // SEO Integration
+  useSEO({
+    title: "Dhoond.co — Home Services & Professional Painting in 15 Min",
+    description: "Book professional painters, electricians, AC technicians, and more in Bengaluru and Nagpur. Reliable home services delivered to your doorstep in just 15 minutes.",
+    canonicalPath: "/"
+  });
+
   const scrollContainerRef = useRef(null);
   const servicesRef = useRef(null);
 
@@ -265,11 +274,6 @@ const Home = () => {
            .service-grid-mobile .svc-icon-box img { width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center !important; padding: 4px !important; }
            .service-grid-mobile .svc-label { font-size: 0.65rem !important; font-weight: 700 !important; }
            .service-grid-mobile .svc-tag { font-size: 6px !important; padding: 1px 4px !important; }
-           
-           @media(max-width: 400px) {
-             .service-grid-mobile { grid-template-columns: repeat(2, 1fr) !important; gap: 0.85rem !important; }
-             .service-grid-mobile .svc-label { font-size: 0.75rem !important; }
-           }
            
            .availability-tag { font-size: 6px !important; padding: 1px 3px !important; border-radius: 3px !important; margin-top: 2px !important; }
            .painting-highlight { border: 2.5px solid #facc15 !important; background: #fffcf0 !important; }

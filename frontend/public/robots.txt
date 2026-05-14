@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Block problematic query parameters that cause duplicate content
+Disallow: /*?order=
+Disallow: /*?sort=
+Disallow: /*?filter=
+Disallow: /*?s=
+Disallow: /*?price=
+
+# Block utility and private pages
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /success/
+Disallow: /cancel/
+
+Sitemap: https://www.dhoond.co/sitemap.xml

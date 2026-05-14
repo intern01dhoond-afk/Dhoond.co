@@ -3,10 +3,18 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Building2, School, Home as House, Sparkles, ShieldCheck, ArrowRight, Palette } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useUI } from '../context/UIContext';
+import { useSEO } from '../hooks/useSEO';
 
 const CommercialPainting = () => {
   const navigate = useNavigate();
   const { addToCart, cartItems } = useCart();
+
+  // SEO Integration
+  useSEO({
+    title: "Commercial Painting Services — Dhoond.co",
+    description: "Professional painting solutions for offices, buildings, and industrial spaces. High-quality finishes and project management for commercial properties.",
+    canonicalPath: "/commercial-painting"
+  });
 
   const consultationItem = {
     id: 'comm-paint-consult',

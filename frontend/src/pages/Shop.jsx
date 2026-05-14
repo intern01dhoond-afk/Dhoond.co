@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import PaintingBookingModal from '../components/PaintingBookingModal';
 import { useUI } from '../context/UIContext';
+import { useSEO } from '../hooks/useSEO';
 import { isInsideGeofence } from '../utils/location';
 
 // ─── Painting sub-category data (frontend-only, no DB needed) ─────────────────
@@ -86,9 +87,21 @@ const Pill = ({ label, emoji, active, onClick }) => (
 
 // ─── Main Shop Component ───────────────────────────────────────────────────────
 const Shop = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { addToCart } = useCart();
+  const { isNagpur } = useUI();
+  
+  // SEO Integration
+  useSEO({
+    title: "All Home Services — Dhoond.co Shop",
+    description: "Browse and book electricians, AC technicians, plumbers, and cleaning services. Instant booking and professional delivery in 15 minutes.",
+    canonicalPath: "/shop"
+  });
+
+  const [activeCategory, setActiveCategory] = useState('all');
   const [allServices, setAllServices] = useState([]);
   const [search, setSearch] = useState('');
-  const [searchParams, setSearchParams] = useSearchParams();
   const category = searchParams.get('cat') || 'all';
   const subcat   = searchParams.get('subcat') || 'all';
   const [page, setPage] = useState(1);
