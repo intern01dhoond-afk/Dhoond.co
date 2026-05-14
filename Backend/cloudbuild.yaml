@@ -1,0 +1,33 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'us-central1-docker.pkg.dev/${PROJECT_ID}/dhoond-repo/backend',
+      '.'
+    ]
+    
+  # Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/${PROJECT_ID}/dhoond-repo/backend']
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'dhoond-backend'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/${PROJECT_ID}/dhoond-repo/backend'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+images:
+  - 'us-central1-docker.pkg.dev/${PROJECT_ID}/dhoond-repo/backend'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

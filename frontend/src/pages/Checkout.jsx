@@ -70,6 +70,7 @@ const Checkout = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [tempDate, setTempDate] = useState('');
   const [tempTime, setTempTime] = useState('');
+  const [bookedSlots, setBookedSlots] = useState([]);
 
   // Payment State
   const [status, setStatus] = useState('idle'); // idle, booking, payment, success
@@ -143,18 +144,48 @@ const Checkout = () => {
 
   // Dynamic Time Slots
   const allTimeSlots = [
-    { label: 'Morning', time: '09:00 AM', hour: 9 },
-    { label: 'Midday', time: '11:30 AM', hour: 11.5 },
+    { label: 'Morning', time: '10:00 AM', hour: 10 },
+    { label: 'Morning', time: '11:00 AM', hour: 11 },
+    { label: 'Midday', time: '12:00 PM', hour: 12 },
     { label: 'Afternoon', time: '02:00 PM', hour: 14 },
-    { label: 'Evening', time: '04:30 PM', hour: 16.5 },
-    { label: 'Late', time: '07:00 PM', hour: 19 }
+    { label: 'Afternoon', time: '03:00 PM', hour: 15 },
+    { label: 'Afternoon', time: '04:00 PM', hour: 16 },
+    { label: 'Evening', time: '05:00 PM', hour: 17 },
+    { label: 'Evening', time: '06:00 PM', hour: 18 },
+    { label: 'Evening', time: '07:00 PM', hour: 19 },
+    { label: 'Late', time: '08:00 PM', hour: 20 },
+    { label: 'Late', time: '09:00 PM', hour: 21 }
   ];
 
   const getAvailableSlots = (dateDisplay) => {
-    if (!dateDisplay.startsWith("Today")) return allTimeSlots;
-    const currentHour = now.getHours() + (now.getMinutes() / 60);
-    return allTimeSlots.filter(slot => slot.hour > (currentHour + 2)); // 2 hour buffer
+    let available = allTimeSlots;
+    if (dateDisplay.startsWith("Today")) {
+      const currentHour = now.getHours() + (now.getMinutes() / 60);
+      available = allTimeSlots.filter(slot => slot.hour > (currentHour + 2)); // 2 hour buffer
+    }
+    
+    // Filter out slots already booked on this date
+    return available.filter(slot => !bookedSlots.includes(slot.time));
   };
+
+  // Fetch booked slots from backend when tempDate changes
+  useEffect(() => {
+    const fetchBookedSlots = async () => {
+      if (!tempDate) return;
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${apiUrl}/api/V1/orders/booked-slots?date=${encodeURIComponent(tempDate)}`);
+        const data = await res.json();
+        if (data.success) {
+          setBookedSlots(data.data || []);
+        }
+      } catch (err) {
+        console.error("Error fetching booked slots:", err);
+        setPaymentError(`Booking Error: ${err.message}`);
+      }
+    };
+    fetchBookedSlots();
+  }, [tempDate]);
 
   // Financial Math
   const subtotal = cartItems.reduce((acc, item) => acc + (Number(item.originalPrice || item.discountPrice || 0) * (item.quantity || 1)), 0);
@@ -345,7 +376,9 @@ const Checkout = () => {
             title: i.title,
             quantity: i.quantity,
             price: i.discountPrice
-          }))
+          })),
+          service_date: selectedDate,
+          service_slot: selectedTime
         })
       });
       const dhoondOrderData = await dhoondOrderRes.json();
@@ -389,12 +422,12 @@ const Checkout = () => {
 
       // 3. Open Razorpay with both IDs
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_SeSxsY1JZab5Lw",
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: Math.round(finalAmountToPay * 100),
         currency: "INR",
         name: "Dhoond Services",
         description: "Service Booking Transaction",
-        image: "https://dhoond.vercel.app/vite.svg",
+        image: "https://dhoond.co/favicon.png",
         order_id: orderData.order_id,
         handler: function (response) {
           processFinalBooking(dhoondOrderId, response.razorpay_payment_id);
@@ -638,12 +671,12 @@ const Checkout = () => {
                 <div style={{ borderTop: '2px dashed #f1f5f9' }} />
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>Price (excl. GST)</span>
+                  <span>Price (excl. Taxes and Fee)</span>
                   <span style={{ color: '#0f172a', fontWeight: 800 }}>₹{netPrice.toFixed(2)}</span>
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>GST <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#64748b', padding: '2px 8px', borderRadius: '8px', fontWeight: 800 }}>18%</span></span>
+                  <span>Taxes and Fee <span style={{ fontSize: '0.75rem', background: '#f1f5f9', color: '#64748b', padding: '2px 8px', borderRadius: '8px', fontWeight: 800 }}>18%</span></span>
                   <span style={{ color: '#0f172a', fontWeight: 800 }}>+ ₹{inclusiveTax.toFixed(2)}</span>
                 </div>
 

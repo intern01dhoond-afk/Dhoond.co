@@ -1,10 +1,18 @@
 import React, { useEffect } from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Building2, School, Home as House, Sparkles, ShieldCheck, ArrowRight, Palette } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useUI } from '../context/UIContext';
 
 const CommercialPainting = () => {
+  useSEO({
+    title: 'Commercial Painting Services — Offices, Schools & Warehouses | Dhoond.co',
+    description: 'Expert commercial painting for offices, schools, colleges & warehouses in Bengaluru. Industrial-grade coatings, fixed timelines, certified professionals. Book a consultation at ₹49.',
+    canonical: '/commercial-painting',
+    ogImage: 'https://dhoond.co/commercial_painting.jpg',
+  });
+
   const navigate = useNavigate();
   const { addToCart, cartItems } = useCart();
 

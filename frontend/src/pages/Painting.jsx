@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 import { ChevronRight } from 'lucide-react';
 import PaintingServiceList from '../components/PaintingServiceList';
 import { useUI } from '../context/UIContext';
@@ -28,6 +29,13 @@ const PHONE = '+919102740274';
 const isTouch = () => typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
 export default function Painting() {
+  useSEO({
+    title: 'Professional Painting Services in Bengaluru — Interior, Exterior & Commercial | Dhoond.co',
+    description: 'Book verified painting professionals in Bengaluru. Interior, exterior, commercial & texture painting starting from ₹49 consultation. Quality guaranteed, transparent pricing.',
+    canonical: '/painting',
+    ogImage: 'https://dhoond.co/painting_banner.png',
+  });
+
   const navigate = useNavigate();
   const location = useLocation();
   const [galleryActive, setGalleryActive] = useState('after');

@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# Block filter/sort query parameter URLs from being indexed
+# These create duplicate content issues in Google Search Console
+Disallow: /*?order=
+Disallow: /*?sort=
+Disallow: /*?category=
+Disallow: /*?cat=
+Disallow: /*?subcat=
+Disallow: /*?page=
+Disallow: /*?filter=
+Disallow: /*?sequence=
+
+# Block internal/utility pages
+Disallow: /admin/
+Disallow: /shop/cart
+Disallow: /checkout
+Disallow: /profile
+Disallow: /cart
+
+# Block old static pages that redirect (they're handled by server)
+Disallow: /index.html
+Disallow: /website/social/
+
+# Sitemap
+Sitemap: https://dhoond.co/sitemap.xml

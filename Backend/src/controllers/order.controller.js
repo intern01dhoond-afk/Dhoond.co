@@ -9,7 +9,9 @@ const createOrderController = async (req, res) => {
       address,
       price,
       platform_fee,
-      items
+      items,
+      service_date,
+      service_slot
     } = req.body;
 
     if (!user_id || !address) {
@@ -28,7 +30,9 @@ const createOrderController = async (req, res) => {
       address,
       price,
       platform_fee,
-      items || []
+      items || [],
+      service_date,
+      service_slot
     );
 
     res.status(201).json({
@@ -88,9 +92,23 @@ const getSyncDetailsController = async (req, res) => {
   }
 };
 
+const getBookedSlotsController = async (req, res) => {
+  try {
+    const { date } = req.query;
+    if (!date) {
+      return res.status(400).json({ success: false, message: "date is required" });
+    }
+    const bookedSlots = await orderModel.getBookedSlots(date);
+    res.status(200).json({ success: true, data: bookedSlots });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   createOrderController,
   getOrdersController,
   updateOrderController,
   getSyncDetailsController,
+  getBookedSlotsController,
 };

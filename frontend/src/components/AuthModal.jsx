@@ -39,6 +39,7 @@ const AuthModal = ({ isOpen, onClose, onSuccess }) => {
     setOtpLoading(true);
     setOtpError('');
     const apiUrl = import.meta.env.VITE_API_URL || '';
+    console.log("[AuthModal] Fetching OTP from:", `${apiUrl}/api/auth/send-otp`);
     try {
       const res = await fetch(`${apiUrl}/api/auth/send-otp`, {
         method: 'POST',

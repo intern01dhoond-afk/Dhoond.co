@@ -4,9 +4,9 @@ dist/
 Backend/
 Painting/
 Service Images Dhoond/
-*.png
-*.jpg
-*.webp
-*.mp4
-*.html
+/*.png
+/*.jpg
+/*.webp
+/*.mp4
+/*.html
 frontend/node_modules/
