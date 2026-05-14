@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSEO } from '../hooks/useSEO';
 import { Search, ChevronDown, ChevronRight, ChevronLeft, ArrowLeft, ArrowRight, ShieldCheck, Star, Plus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -87,12 +86,6 @@ const Pill = ({ label, emoji, active, onClick }) => (
 
 // ─── Main Shop Component ───────────────────────────────────────────────────────
 const Shop = () => {
-  useSEO({
-    title: 'Book Home Services — Electricians, AC & RO Technicians | Dhoond.co',
-    description: 'Find and book electricians, AC technicians, RO technicians, washing machine repair and more in Nagpur. Transparent pricing, verified professionals, 15-min response.',
-    canonical: '/shop',
-  });
-
   const [allServices, setAllServices] = useState([]);
   const [search, setSearch] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();

@@ -138,20 +138,7 @@ const Cart = () => {
         .qty-btn.plus { background: #eff6ff; color: #2563eb; }
         .qty-btn.plus:hover { background: #dbeafe; }
         .trust-badge { display: flex; align-items: center; gap: 0.5rem; background: #fff; padding: 0.6rem 1rem; border-radius: 99px; border: 1px solid #f1f5f9; box-shadow: 0 2px 10px rgba(0,0,0,0.02); color: #475569; font-size: 0.8rem; font-weight: 600; }
-        /* Cart item row: image left, content right — controls always on own row on mobile */
-        .cart-item-row { display: flex; align-items: center; gap: 1.25rem; padding: 1.5rem 0; }
-        .cart-item-content { flex: 1; min-width: 0; }
-        .cart-item-controls { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
-        @media (max-width: 600px) {
-          .cart-header-img { height: 70px; opacity: 0.4; }
-          .checkout-btn { width: 100%; justify-content: center; }
-          .trust-badge { padding: 0.5rem 0.8rem; font-size: 0.75rem; }
-          /* On mobile: wrap item content so controls go to second line */
-          .cart-item-row { align-items: flex-start; }
-          .cart-item-content { display: flex; flex-direction: column; gap: 0.6rem; }
-          .cart-item-controls { margin-top: 0.25rem; }
-          .cart-item-img { width: 58px !important; height: 58px !important; }
-        }
+        @media (max-width: 600px) { .cart-header-img { height: 70px; opacity: 0.4; } .checkout-btn { width: 100%; justify-content: center; } .trust-badge { padding: 0.5rem 0.8rem; font-size: 0.75rem; } }
       `}</style>
       
       {/* Header */}
@@ -212,34 +199,21 @@ const Cart = () => {
                   
                   <div style={{ padding: '0 1.75rem' }}>
                     {items.map((item, idx) => (
-                      <div key={item.id} className="cart-item-row" style={{ borderBottom: idx === items.length - 1 ? 'none' : '1px solid #f1f5f9' }}>
-                        {/* Thumbnail */}
-                        <div className="cart-item-img" style={{ width: '70px', height: '70px', borderRadius: '16px', background: '#f8fafc', overflow: 'hidden', border: '1px solid #e2e8f0', flexShrink: 0 }}>
+                      <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem 0', borderBottom: idx === items.length - 1 ? 'none' : '1px solid #f1f5f9' }}>
+                        <div style={{ width: '70px', height: '70px', borderRadius: '16px', background: '#f8fafc', overflow: 'hidden', border: '1px solid #e2e8f0', flexShrink: 0 }}>
                           <img src={item.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
-                        {/* Title + price + controls — stacks on mobile */}
-                        <div className="cart-item-content">
-                          <div>
-                            <h4 style={{ margin: '0 0 0.25rem', fontSize: '1rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3 }}>{item.title}</h4>
-                            <p style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#2563eb' }}>₹{item.discountPrice}</p>
+                        <div style={{ flex: 1 }}>
+                          <h4 style={{ margin: '0 0 0.4rem', fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.3 }}>{item.title}</h4>
+                          <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#2563eb' }}>₹{item.discountPrice}</p>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '4px' }}>
+                            <button className="qty-btn" onClick={() => updateQuantity(item.id, -1)}>−</button>
+                            <span style={{ width: '32px', textAlign: 'center', fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>{item.quantity}</span>
+                            <button className="qty-btn plus" onClick={() => updateQuantity(item.id, 1)}>+</button>
                           </div>
-                          {/* Controls always visible */}
-                          <div className="cart-item-controls">
-                            <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '4px' }}>
-                              <button className="qty-btn" onClick={() => updateQuantity(item.id, -1)}>−</button>
-                              <span style={{ width: '32px', textAlign: 'center', fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>{item.quantity}</span>
-                              <button className="qty-btn plus" onClick={() => updateQuantity(item.id, 1)}>+</button>
-                            </div>
-                            <button
-                              onClick={() => removeFromCart(item.id)}
-                              style={{ background: '#fff', border: '1px solid #fee2e2', width: '36px', height: '36px', borderRadius: '10px', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', flexShrink: 0 }}
-                              onMouseEnter={e => { e.currentTarget.style.background = '#fee2e2'; }}
-                              onMouseLeave={e => { e.currentTarget.style.background = '#fff'; }}
-                              aria-label="Remove item"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
+                          <button onClick={() => removeFromCart(item.id)} style={{ background: '#fff', border: '1px solid #fee2e2', width: '40px', height: '40px', borderRadius: '12px', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#fee2e2'; }} onMouseLeave={e => { e.currentTarget.style.background = '#fff'; }}><Trash2 size={18} /></button>
                         </div>
                       </div>
                     ))}

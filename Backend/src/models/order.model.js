@@ -1,11 +1,11 @@
 const pool = require('../db/db.js'); 
 
-const createOrder = async (user_id, partner_id, category_id, address, price, platform_fee, items = [], service_date = null, service_slot = null) => {
+const createOrder = async (user_id, partner_id, category_id, address, price, platform_fee, items = []) => {
   const insertRes = await pool.query(
-    `INSERT INTO orders (user_id, partner_id, category_id, address, price, platform_fee, items, service_date, service_slot)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `INSERT INTO orders (user_id, partner_id, category_id, address, price, platform_fee, items)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING id`,
-    [user_id, partner_id, category_id, address, price, platform_fee, JSON.stringify(items), service_date, service_slot]
+    [user_id, partner_id, category_id, address, price, platform_fee, JSON.stringify(items)]
   );
 
   const orderId = insertRes.rows[0].id;
@@ -109,19 +109,10 @@ const getSyncDetails = async (key) => {
   return null;
 };
 
-const getBookedSlots = async (date) => {
-  const result = await pool.query(
-    "SELECT service_slot FROM orders WHERE service_date = $1 AND status != 'Cancelled'",
-    [date]
-  );
-  return result.rows.map(row => row.service_slot);
-};
-
 module.exports = {
   createOrder,
   getOrders,
   getOrdersByUserId,
   updateOrder,
   getSyncDetails,
-  getBookedSlots,
 };

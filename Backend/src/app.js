@@ -23,9 +23,10 @@ const corsOptions = {
     // Allow explicit origins from ALLOWED_ORIGINS env var
     if (allowedList.length > 0 && allowedList.includes(origin)) return callback(null, true);
 
-    // In development (no ALLOWED_ORIGINS set) allow localhost variants or any origin for local testing
+    // In development (no ALLOWED_ORIGINS set) allow localhost variants
     if (allowedList.length === 0) {
-      return callback(null, true);
+      const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+      return callback(null, isLocal);
     }
 
     callback(new Error(`CORS: origin '${origin}' is not allowed`));
@@ -35,10 +36,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use((req, res, next) => {
-  console.log(`[Backend] ${req.method} ${req.url}`);
-  next();
-});
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 const userRoutes = require("./routes/user.route");
@@ -63,38 +60,5 @@ app.use('/api/admin/services', serviceRoutes);
 app.use('/api/admin/partners', partnerRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/auth', authRoutes);
-
-// ─── IP Location Proxy (for Meta browser fallback) ──────────────────────────
-app.get('/api/ip-location', async (req, res) => {
-  try {
-    // Extract real client IP from proxy headers
-    const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
-      || req.headers['x-real-ip']
-      || req.socket?.remoteAddress
-      || '';
-
-    const cleanIP = clientIP.replace('::ffff:', ''); // Strip IPv6-mapped prefix
-    const apiUrl = cleanIP && cleanIP !== '127.0.0.1' && cleanIP !== '::1'
-      ? `http://ip-api.com/json/${cleanIP}?fields=city,regionName,lat,lon,status`
-      : `http://ip-api.com/json/?fields=city,regionName,lat,lon,status`;
-
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-
-    if (data.status === 'success') {
-      res.json({
-        city: data.city,
-        region: data.regionName,
-        latitude: data.lat,
-        longitude: data.lon
-      });
-    } else {
-      res.status(404).json({ error: 'Could not determine location' });
-    }
-  } catch (err) {
-    console.error('[IP Location] Error:', err.message);
-    res.status(500).json({ error: 'IP location failed' });
-  }
-});
 
 module.exports = app;

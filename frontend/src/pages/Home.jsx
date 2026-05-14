@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { ArrowUpRight, Clock, ShieldCheck, Star, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useSEO } from '../hooks/useSEO';
 import { useCart } from '../context/CartContext';
 import { useUI } from '../context/UIContext';
 import { detectCurrentLocation, isInsideGeofence } from '../utils/location';
@@ -19,13 +18,6 @@ import rahulImg from '../assets/rahul_avatar.png';
 import sunitaImg from '../assets/sunita_avatar.png';
 
 const Home = () => {
-  useSEO({
-    title: 'Dhoond.co — Electricians & Technicians at Your Doorstep in 15 Min',
-    description: 'Book verified electricians, AC technicians, RO technicians & more at your doorstep in Nagpur. Fast, affordable, and trusted home services. Book in 60 seconds.',
-    canonical: '/',
-    ogImage: 'https://dhoond.co/services_collage.png',
-  });
-
   const navigate = useNavigate();
   const { addToCart, cartItems } = useCart();
   const [featuredServices, setFeaturedServices] = useState([]);
@@ -273,6 +265,11 @@ const Home = () => {
            .service-grid-mobile .svc-icon-box img { width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center !important; padding: 4px !important; }
            .service-grid-mobile .svc-label { font-size: 0.65rem !important; font-weight: 700 !important; }
            .service-grid-mobile .svc-tag { font-size: 6px !important; padding: 1px 4px !important; }
+           
+           @media(max-width: 400px) {
+             .service-grid-mobile { grid-template-columns: repeat(2, 1fr) !important; gap: 0.85rem !important; }
+             .service-grid-mobile .svc-label { font-size: 0.75rem !important; }
+           }
            
            .availability-tag { font-size: 6px !important; padding: 1px 3px !important; border-radius: 3px !important; margin-top: 2px !important; }
            .painting-highlight { border: 2.5px solid #facc15 !important; background: #fffcf0 !important; }
