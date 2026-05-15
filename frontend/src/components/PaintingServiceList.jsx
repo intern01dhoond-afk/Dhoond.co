@@ -418,146 +418,187 @@ const PaintingServiceList = ({ service, onClose }) => {
                         background: '#fff', borderRadius: '18px',
                         border: qty > 0 && isConsultation && group.key === 'consultation' ? '2px solid #2563eb' : '1px solid #f1f5f9',
                         padding: '1.1rem 1.25rem',
-                        display: 'flex', alignItems: 'center', gap: '1rem',
+                        display: 'flex', flexDirection: isExpanded ? 'column' : 'row', 
+                        alignItems: 'flex-start', gap: '1rem',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
                         transition: 'all 0.2s ease',
                       }}
                     >
-                      {/* Image */}
-                      <div style={{ width: '72px', height: '72px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0, background: '#f1f5f9' }}>
-                        <img src={svc.image} alt={svc.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          onError={e => { e.target.src = '/interior.jpg'; }} />
-                      </div>
-
-                      {/* Info */}
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111', marginBottom: '0.2rem', lineHeight: 1.3 }}>
-                          {svc.title}
+                      <div style={{ display: 'flex', width: '100%', gap: '1rem', alignItems: 'flex-start' }}>
+                        {/* Image */}
+                        <div style={{ width: '72px', height: '72px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0, background: '#f1f5f9' }}>
+                          <img src={svc.image} alt={svc.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            onError={e => { e.target.src = '/interior.jpg'; }} />
                         </div>
-                        {(() => {
-                          if (!isExpanded) {
-                            return (
-                              <div style={{
-                                fontSize: '0.78rem', color: '#64748b', fontWeight: 500, marginBottom: '0.2rem', lineHeight: 1.5,
-                                display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                                whiteSpace: 'pre-wrap'
-                              }}>
-                                {svc.description.split('[NOT_INCLUDED]')[0].replace('Includes\n', '')}
-                              </div>
-                            );
-                          }
 
-                          const parts = svc.description.split('[NOT_INCLUDED]');
-                          return (
-                            <div style={{ marginTop: '0.5rem' }}>
-                              {parts.map((part, idx) => {
-                                const lines = part.trim().split('\n');
-                                if (lines.length === 0) return null;
-                                const heading = lines[0];
-                                const items = lines.slice(1);
-                                const isExcluded = heading.toLowerCase().includes('not');
-
+                        {/* Info Header */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111', marginBottom: '0.2rem', lineHeight: 1.3 }}>
+                            {svc.title}
+                          </div>
+                          {!isExpanded && (
+                            <div style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 500, marginBottom: '0.2rem', lineHeight: 1.5, display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+                              {(() => {
+                                const text = svc.description.split('[NOT_INCLUDED]')[0].replace('Includes\n', '').trim();
+                                const truncated = text.length > 20 ? text.slice(0, 20) : text;
                                 return (
-                                  <div key={idx} style={{ marginBottom: idx === 0 ? '0.75rem' : '0' }}>
-                                    <div style={{ fontWeight: 800, color: '#111', fontSize: '0.85rem', marginBottom: '0.5rem' }}>{heading}</div>
-                                    {items.map((item, i) => (
-                                      <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '6px', alignItems: 'flex-start' }}>
-                                        {isExcluded ? 
-                                          <XCircle size={14} color="#ef4444" style={{ marginTop: '3px', flexShrink: 0 }} /> : 
-                                          <CheckCircle2 size={14} color="#22c55e" style={{ marginTop: '3px', flexShrink: 0 }} />
-                                        }
-                                        <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 500, lineHeight: 1.4 }}>
-                                          {item.replace('• ', '')}
-                                        </span>
-                                      </div>
-                                    ))}
-                                  </div>
+                                  <span style={{ display: 'inline-block' }}>
+                                    {truncated}
+                                    {text.length > 20 && (
+                                      <button
+                                        onClick={(e) => { e.stopPropagation(); setExpandedDescs(prev => ({ ...prev, [svc.id]: true })); }}
+                                        style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: '0.78rem', fontWeight: 800, padding: '0 0 0 4px', cursor: 'pointer', display: 'inline', whiteSpace: 'nowrap' }}
+                                      >
+                                        ...more
+                                      </button>
+                                    )}
+                                  </span>
                                 );
-                              })}
+                              })()}
                             </div>
-                          );
-                        })()}
-                        {hasLongDesc && (
-                          <button
-                            onClick={() => setExpandedDescs(prev => ({ ...prev, [svc.id]: !isExpanded }))}
-                            style={{
-                              background: 'none', border: 'none', color: '#2563eb',
-                              fontSize: '0.75rem', fontWeight: 800, padding: '0.25rem 0 0.5rem 0',
-                              cursor: 'pointer', display: 'block'
-                            }}
-                          >
-                            {isExpanded ? 'Show Less' : '...more'}
-                          </button>
-                        )}
-                        {!svc.title.toLowerCase().includes('on call') && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                            <span style={{ fontWeight: 900, fontSize: '1rem', color: '#111' }}>
-                              {'\u20b9'}{svc.title.toLowerCase().includes('consultation') ? 49 : Number(svc.discount_price).toLocaleString('en-IN')}
-                            </span>
-                            {svc.original_price > svc.discount_price && (
-                              <>
-                                <span style={{ fontSize: '0.8rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>
-                                  {'\u20b9'}{Number(svc.original_price).toLocaleString('en-IN')}
-                                </span>
-                                <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.7rem', fontWeight: 800, padding: '2px 7px', borderRadius: '100px' }}>
-                                  {discount}% OFF
-                                </span>
-                              </>
-                            )}
-                            {(!isConsultation || group.key !== 'consultation') && (
-                              <span style={{ background: '#fef9c3', color: '#854d0e', fontSize: '0.7rem', fontWeight: 800, padding: '2px 7px', borderRadius: '100px' }}>
-                                Final price after consultation
-                              </span>
+                          )}
+                        </div>
+
+                        {/* Action Buttons (ONLY when Collapsed - positioned on the right) */}
+                        {!isExpanded && isConsultation && group.key === 'consultation' && (
+                          <div style={{ flexShrink: 0 }}>
+                            {svc.title.toLowerCase().includes('on call') ? (
+                              <a
+                                href="tel:+919102740274"
+                                style={{
+                                  background: '#22c55e', color: '#fff', border: 'none',
+                                  borderRadius: '10px', padding: '0.55rem 1rem', fontWeight: 800,
+                                  fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'none',
+                                  display: 'flex', alignItems: 'center', gap: '4px',
+                                  transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(34,197,94,0.2)'
+                                }}
+                              >
+                                <Phone size={15} /> Call Now
+                              </a>
+                            ) : qty > 0 ? (
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', background: '#f0fdf4', border: '1.5px solid #22c55e', borderRadius: '10px', overflow: 'hidden' }}>
+                                  <button onClick={() => qty === 1 ? removeFromCart(svc.id) : updateQuantity(svc.id, -1)}
+                                    style={{ width: '32px', height: '32px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: qty === 1 ? '#ef4444' : '#16a34a', fontWeight: 900 }}>{'\u2212'}</button>
+                                  <span style={{ width: '24px', textAlign: 'center', fontWeight: 800, fontSize: '0.95rem', color: '#111' }}>{qty}</span>
+                                  <button onClick={() => updateQuantity(svc.id, 1)}
+                                    disabled={qty >= 1}
+                                    style={{
+                                      width: '32px', height: '32px', background: 'none', border: 'none',
+                                      cursor: qty >= 1 ? 'not-allowed' : 'pointer', fontSize: '1.1rem',
+                                      color: qty >= 1 ? '#cbd5e1' : '#16a34a', fontWeight: 900
+                                    }}>+</button>
+                                </div>
+                                <span style={{ fontSize: '0.65rem', color: '#16a34a', fontWeight: 800 }}>In Cart</span>
+                              </div>
+                            ) : (
+                              <button onClick={() => handleAdd(svc)}
+                                style={{ background: justAdded ? '#22c55e' : '#2563eb', color: '#fff', border: 'none', borderRadius: '10px', padding: '0.55rem 1.1rem', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '4px', transform: justAdded ? 'scale(0.96)' : 'scale(1)' }}>
+                                {justAdded ? <><CheckCheck size={15} /> Added!</> : <><Plus size={15} /> Add</>}
+                              </button>
                             )}
                           </div>
                         )}
                       </div>
 
-                      {isConsultation && group.key === 'consultation' && (
-                        <div style={{ flexShrink: 0 }}>
-                          {svc.title.toLowerCase().includes('on call') ? (
-                            <a
-                              href="tel:+919102740274"
-                              style={{
-                                background: '#22c55e',
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: '10px',
-                                padding: '0.55rem 1rem',
-                                fontWeight: 800,
-                                fontSize: '0.85rem',
-                                cursor: 'pointer',
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                transition: 'all 0.2s',
-                                boxShadow: '0 4px 12px rgba(34,197,94,0.2)'
-                              }}
-                            >
-                              <Phone size={15} /> Call Now
-                            </a>
-                          ) : qty > 0 ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', background: '#f0fdf4', border: '1.5px solid #22c55e', borderRadius: '10px', overflow: 'hidden' }}>
-                                <button onClick={() => qty === 1 ? removeFromCart(svc.id) : updateQuantity(svc.id, -1)}
-                                  style={{ width: '32px', height: '32px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: qty === 1 ? '#ef4444' : '#16a34a', fontWeight: 900 }}>{'\u2212'}</button>
-                                <span style={{ width: '24px', textAlign: 'center', fontWeight: 800, fontSize: '0.95rem', color: '#111' }}>{qty}</span>
-                                <button onClick={() => updateQuantity(svc.id, 1)}
-                                  disabled={qty >= 1}
-                                  style={{
-                                    width: '32px', height: '32px', background: 'none', border: 'none',
-                                    cursor: qty >= 1 ? 'not-allowed' : 'pointer', fontSize: '1.1rem',
-                                    color: qty >= 1 ? '#cbd5e1' : '#16a34a', fontWeight: 900
-                                  }}>+</button>
-                              </div>
-                              <span style={{ fontSize: '0.65rem', color: '#16a34a', fontWeight: 800 }}>In Cart</span>
+                      {/* Expanded Content Section */}
+                      {isExpanded && (
+                        <div style={{ width: '100%', minWidth: 0 }}>
+                          <div style={{ marginTop: '0.5rem' }}>
+                            {svc.description.split('[NOT_INCLUDED]').map((part, idx) => {
+                              const lines = part.trim().split('\n');
+                              if (lines.length === 0) return null;
+                              const heading = lines[0];
+                              const items = lines.slice(1);
+                              const isExcluded = heading.toLowerCase().includes('not');
+
+                              return (
+                                <div key={idx} style={{ marginBottom: idx === 0 ? '0.75rem' : '0' }}>
+                                  <div style={{ fontWeight: 800, color: '#111', fontSize: '0.85rem', marginBottom: '0.5rem' }}>{heading}</div>
+                                  {items.map((item, i) => (
+                                    <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '6px', alignItems: 'flex-start' }}>
+                                      {isExcluded ? 
+                                        <XCircle size={14} color="#ef4444" style={{ marginTop: '3px', flexShrink: 0 }} /> : 
+                                        <CheckCircle2 size={14} color="#22c55e" style={{ marginTop: '3px', flexShrink: 0 }} />
+                                      }
+                                      <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 500, lineHeight: 1.4, flex: 1 }}>
+                                        {item.replace('• ', '')}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          <button
+                            onClick={() => setExpandedDescs(prev => ({ ...prev, [svc.id]: false }))}
+                            style={{
+                              background: 'none', border: 'none', color: '#2563eb',
+                              fontSize: '0.75rem', fontWeight: 800, padding: '0.5rem 0 0.5rem 0',
+                              cursor: 'pointer', display: 'block'
+                            }}
+                          >
+                            Show Less
+                          </button>
+
+                          {!svc.title.toLowerCase().includes('on call') && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                              <span style={{ fontWeight: 900, fontSize: '1.1rem', color: '#111' }}>
+                                {'\u20b9'}{svc.title.toLowerCase().includes('consultation') ? 49 : Number(svc.discount_price).toLocaleString('en-IN')}
+                              </span>
+                              {svc.original_price > svc.discount_price && (
+                                <>
+                                  <span style={{ fontSize: '0.85rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>
+                                    {'\u20b9'}{Number(svc.original_price).toLocaleString('en-IN')}
+                                  </span>
+                                  <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.75rem', fontWeight: 800, padding: '2px 7px', borderRadius: '100px' }}>
+                                    {discount}% OFF
+                                  </span>
+                                </>
+                              )}
                             </div>
-                          ) : (
-                            <button onClick={() => handleAdd(svc)}
-                              style={{ background: justAdded ? '#22c55e' : '#2563eb', color: '#fff', border: 'none', borderRadius: '10px', padding: '0.55rem 1rem', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', transition: 'background 0.2s', display: 'flex', alignItems: 'center', gap: '4px', transform: justAdded ? 'scale(0.96)' : 'scale(1)' }}>
-                              {justAdded ? <><CheckCheck size={15} /> Added!</> : <><Plus size={15} /> Add</>}
-                            </button>
+                          )}
+
+                          {/* Action Buttons (ONLY when Expanded) */}
+                          {isConsultation && group.key === 'consultation' && (
+                            <div style={{ marginTop: '1.25rem', width: '100%' }}>
+                              {svc.title.toLowerCase().includes('on call') ? (
+                                <a
+                                  href="tel:+919102740274"
+                                  style={{
+                                    background: '#22c55e', color: '#fff', border: 'none',
+                                    borderRadius: '12px', padding: '0.65rem 1rem', fontWeight: 800,
+                                    fontSize: '0.9rem', cursor: 'pointer', textDecoration: 'none',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                                    transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(34,197,94,0.2)'
+                                  }}
+                                >
+                                  <Phone size={16} /> Call Now
+                                </a>
+                              ) : qty > 0 ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', background: '#f0fdf4', border: '2.5px solid #22c55e', borderRadius: '12px', overflow: 'hidden' }}>
+                                    <button onClick={() => qty === 1 ? removeFromCart(svc.id) : updateQuantity(svc.id, -1)}
+                                      style={{ width: '40px', height: '40px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: qty === 1 ? '#ef4444' : '#16a34a', fontWeight: 900 }}>{'\u2212'}</button>
+                                    <span style={{ width: '30px', textAlign: 'center', fontWeight: 800, fontSize: '1.1rem', color: '#111' }}>{qty}</span>
+                                    <button onClick={() => updateQuantity(svc.id, 1)}
+                                      disabled={qty >= 1}
+                                      style={{
+                                        width: '40px', height: '40px', background: 'none', border: 'none',
+                                        cursor: qty >= 1 ? 'not-allowed' : 'pointer', fontSize: '1.2rem',
+                                        color: qty >= 1 ? '#cbd5e1' : '#16a34a', fontWeight: 900
+                                      }}>+</button>
+                                  </div>
+                                  <span style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 800 }}>In Cart</span>
+                                </div>
+                              ) : (
+                                <button onClick={() => handleAdd(svc)}
+                                  style={{ width: '100%', background: justAdded ? '#22c55e' : '#2563eb', color: '#fff', border: 'none', borderRadius: '12px', padding: '0.75rem 1rem', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transform: justAdded ? 'scale(0.96)' : 'scale(1)' }}>
+                                  {justAdded ? <><CheckCheck size={18} /> Added!</> : <><Plus size={18} /> Add</>}
+                                </button>
+                              )}
+                            </div>
                           )}
                         </div>
                       )}
@@ -570,18 +611,24 @@ const PaintingServiceList = ({ service, onClose }) => {
         ))}
 
         {!loading && !error && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginTop: '1.5rem' }}>
-            <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '0.75rem', textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#374151' }}>
-              <CheckCircle2 size={22} color="#22c55e" style={{ marginBottom: 4 }} />
-              Verified Pros
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginTop: '2rem', padding: '0 0.5rem' }}>
+            <div style={{ background: '#f0fdf4', borderRadius: '16px', padding: '1rem 0.5rem', textAlign: 'center', border: '1px solid #dcfce7' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                <CheckCircle2 size={24} color="#22c55e" weight="fill" />
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#166534', lineHeight: 1.2 }}>Verified<br/>Pros</span>
+              </div>
             </div>
-            <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '0.75rem', textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#374151' }}>
-              <ShieldCheck size={22} color="#2563eb" style={{ marginBottom: 4 }} />
-              Insured Work
+            <div style={{ background: '#eff6ff', borderRadius: '16px', padding: '1rem 0.5rem', textAlign: 'center', border: '1px solid #dbeafe' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                <ShieldCheck size={24} color="#2563eb" />
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#1e40af', lineHeight: 1.2 }}>Insured<br/>Work</span>
+              </div>
             </div>
-            <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '0.75rem', textAlign: 'center', fontSize: '0.78rem', fontWeight: 700, color: '#374151' }}>
-              <Star size={22} color="#f59e0b" fill="#f59e0b" style={{ marginBottom: 4 }} />
-              4.9 Rated
+            <div style={{ background: '#fffbeb', borderRadius: '16px', padding: '1rem 0.5rem', textAlign: 'center', border: '1px solid #fef3c7' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                <Star size={24} color="#f59e0b" fill="#f59e0b" />
+                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#92400e', lineHeight: 1.2 }}>4.9<br/>Rated</span>
+              </div>
             </div>
           </div>
         )}
