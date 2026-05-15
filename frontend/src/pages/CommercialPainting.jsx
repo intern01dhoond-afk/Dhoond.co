@@ -18,7 +18,7 @@ const CommercialPainting = () => {
 
   const consultationItem = {
     id: 'comm-paint-consult',
-    title: 'Commercial Painting Expert Consultation',
+    title: 'Commercial Painting Expert Consultation on Site',
     category: 'Commercial',
     price: 499,
     discountPrice: 49,

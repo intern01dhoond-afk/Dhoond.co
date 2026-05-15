@@ -300,6 +300,11 @@ export default function Painting() {
         .p-sel-btn.active { background: #facc15; border-color: #facc15; color: #111; box-shadow: 0 8px 28px rgba(250,204,21,0.45); }
         .p-sel-btn.active .p-sel-btn-sub { opacity: .9; }
 
+        /* Gallery specific button overrides */
+        .p-gallery .p-sel-btn { background: #fff; border: 1.5px solid #e2e8f0; color: #64748b; }
+        .p-gallery .p-sel-btn:hover { border-color: #cbd5e1; background: #f8fafc; }
+        .p-gallery .p-sel-btn.active { background: #facc15; color: #111; border-color: #facc15; }
+
         /* ── CTA Actions ── */
         .p-hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; opacity: 0; transform: translateY(18px); }
         .p-btn-primary {
@@ -641,26 +646,11 @@ export default function Painting() {
             </h1>
             <p className="p-hero-sub">Dhoond brings verified painting professionals to your doorstep — interior, exterior &amp; texture painting done right, on time.</p>
 
-            <div className="p-service-selector">
-              {services.map(s => (
-                <button
-                  key={s.n}
-                  className={`p-sel-btn${activeService === s.n ? ' active' : ''}`}
-                  onClick={() => {
-                    setActiveService(s.n);
-                    navigate(`?service=${encodeURIComponent(s.n)}&sub=${encodeURIComponent(s.p)}`);
-                  }}
-                  aria-pressed={activeService === s.n}
-                >
-                  {s.n}
-                  <span className="p-sel-btn-sub">{s.p}</span>
-                </button>
-              ))}
-            </div>
+
 
             <div className="p-hero-actions">
               <button onClick={() => navigate(`?service=${encodeURIComponent('Book your Consultation')}&sub=${encodeURIComponent('Talk to an expert')}`)} className="p-btn-primary">
-                <span>Book a consultant</span>
+                <span>On-Site Consultation at just ₹49</span>
               </button>
               <a href="#p-gallery" className="p-btn-outline">View Our Work</a>
             </div>
@@ -693,7 +683,7 @@ export default function Painting() {
         <div style={{ background: '#fff', paddingTop: '12px', paddingBottom: '8px' }}>
           <div className="p-services-strip" id="p-sstrip" role="list">
             {[
-              { img: consultationImg, title: 'Book Consultation', sub: 'Talk to an expert — ₹49', filter: 'consultation', badge: 'Popular' },
+              { img: consultationImg, title: 'Expert Consultation on Site', sub: 'Talk to an expert — ₹49', filter: 'consultation', badge: 'Popular' },
               { img: commercialImg, title: 'Commercial Painting', sub: 'Offices, Schools & warehouses', filter: 'commercial', badge: null },
               { img: interiorImg, title: 'Interior Painting', sub: 'Walls, ceilings & trims', filter: 'interior', badge: null },
               { img: exteriorImg, title: 'Exterior Painting', sub: 'Weather-resistant finishes', filter: 'exterior', badge: null },
@@ -805,13 +795,25 @@ export default function Painting() {
           </div>
           <div className="p-gallery-grid">
             {[
-              { bg: 'url(/Gemini_Generated_Image_nixczynixczynixc.png)', title: 'Living Room Makeover', loc: 'Nagpur', tag: 'Luxury', price: '₹18,000' },
-              { bg: galleryActive === 'before' ? 'url(/wall2.jpg)' : 'url(/images/interior.jpg)', title: 'Bedroom Retreat', loc: 'Bengaluru, HSR Layout Sector 1', tag: galleryActive === 'before' ? 'Before' : 'After', price: '₹12,000' },
-              { bg: 'url(/space.jpg)', title: 'Full Home Painting', loc: 'Bengaluru, Koramangala', tag: 'Elite', price: '₹45,000' },
-              { bg: 'url(/exterior_excellence.png)', title: 'Exterior Excellence', loc: 'Nagpur, Ramdaspeth', tag: 'Premium', price: '₹32,000' },
+              { 
+                title: 'Living Room Makeover', loc: 'Nagpur', tag: galleryActive === 'before' ? 'Before' : 'After', price: '₹18,000',
+                bg: galleryActive === 'before' ? 'url(/images/before/Gemini_Generated_Image_nixczynixczynixc.png)' : 'url(/Gemini_Generated_Image_nixczynixczynixc.png)'
+              },
+              { 
+                title: 'Bedroom Retreat', loc: 'Bengaluru, HSR Layout Sector 1', tag: galleryActive === 'before' ? 'Before' : 'After', price: '₹12,000',
+                bg: galleryActive === 'before' ? 'url(/images/before/interior.png)' : 'url(/images/interior.jpg)'
+              },
+              { 
+                title: 'Full Home Painting', loc: 'Bengaluru, Koramangala', tag: galleryActive === 'before' ? 'Before' : 'After', price: '₹45,000',
+                bg: galleryActive === 'before' ? 'url(/images/before/space.png)' : 'url(/space.jpg)'
+              },
+              { 
+                title: 'Exterior Excellence', loc: 'Nagpur, Ramdaspeth', tag: galleryActive === 'before' ? 'Before' : 'After', price: '₹32,000',
+                bg: galleryActive === 'before' ? 'url(/images/before/exterior_excellence.png)' : 'url(/exterior_excellence.png)'
+              },
             ].map(g => (
               <div key={g.title} className="gitem" tabIndex={0} role="img" aria-label={`${g.title}, ${g.loc}`}>
-                <div className="p-gbg" style={{ background: `${g.bg} center/cover no-repeat`, filter: galleryActive === 'before' ? 'grayscale(0.4) contrast(1.05)' : 'none', transition: 'filter .6s' }} />
+                <div className="p-gbg" style={{ background: `${g.bg} center/cover no-repeat`, filter: galleryActive === 'before' ? 'grayscale(0.1) contrast(1.02)' : 'none', transition: 'filter .6s' }} />
                 <div className="p-goverlay" />
                 <div className="p-g-badge">{g.tag}</div>
                 <div className="p-glabel">
@@ -904,7 +906,7 @@ export default function Painting() {
                   className="p-btn-cta"
                   style={{ width: '100%', marginBottom: '12px' }}
                 >
-                  Book Consultation
+                  On-Site Consultation
                 </button>
                 <div style={{ textAlign: 'center', fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>
                   Or call <a href={`tel:${PHONE}`} style={{ color: '#facc15', textDecoration: 'none' }}>+91 91027 40274</a>
@@ -923,7 +925,7 @@ export default function Painting() {
           >
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', opacity: 0.8 }}>Book Professional Painting</span>
-              <span style={{ fontSize: '15px', fontWeight: 900 }}>Book Consultation @ ₹49</span>
+              <span style={{ fontSize: '15px', fontWeight: 900 }}>On-Site Consultation @ ₹49</span>
             </div>
             <ChevronRight size={20} />
           </button>

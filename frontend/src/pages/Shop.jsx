@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, ChevronDown, ChevronRight, ChevronLeft, ArrowLeft, ArrowRight, ShieldCheck, Star, Plus } from 'lucide-react';
+import { Search, ChevronDown, ChevronRight, ChevronLeft, ArrowLeft, ArrowRight, ShieldCheck, Star, Plus, Phone } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import PaintingBookingModal from '../components/PaintingBookingModal';
@@ -88,7 +88,7 @@ const Pill = ({ label, emoji, active, onClick }) => (
 // ─── Main Shop Component ───────────────────────────────────────────────────────
 const Shop = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   
   // SEO Integration
   useSEO({
@@ -378,18 +378,38 @@ const Shop = () => {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111', margin: '0 0 0.25rem', lineHeight: 1.3 }}>{service.title}</p>
                     <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '0 0 0.5rem', lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{service.description}</p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                      <span style={{ fontWeight: 800, color: '#111', fontSize: '1rem' }}>₹{service.discountPrice}</span>
-                      <span style={{ color: '#aaa', textDecoration: 'line-through', fontSize: '0.78rem' }}>₹{service.originalPrice}</span>
-                      {service.discountTag && (
-                        <span style={{ background: '#dcfce7', color: '#16a34a', fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', borderRadius: '6px' }}>{service.discountTag}</span>
-                      )}
-                    </div>
+                    {!service.title?.toLowerCase().includes('on call') && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <span style={{ fontWeight: 800, color: '#111', fontSize: '1rem' }}>₹{service.discountPrice}</span>
+                        <span style={{ color: '#aaa', textDecoration: 'line-through', fontSize: '0.78rem' }}>₹{service.originalPrice}</span>
+                        {service.discountTag && (
+                          <span style={{ background: '#dcfce7', color: '#16a34a', fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', borderRadius: '6px' }}>{service.discountTag}</span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Add button / Quantity controls */}
                   <div style={{ flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
                     {(() => {
+                      if (service.title?.toLowerCase().includes('on call')) {
+                        return (
+                          <a
+                            href="tel:+919102740274"
+                            onClick={() => { if (window.fbq) window.fbq('track', 'Contact'); }}
+                            style={{ 
+                              padding: '0.5rem 1rem', background: '#22c55e', color: '#fff', 
+                              border: 'none', borderRadius: '8px', fontSize: '0.85rem', 
+                              fontWeight: 700, cursor: 'pointer', display: 'flex', 
+                              alignItems: 'center', gap: '6px', textDecoration: 'none',
+                              boxShadow: '0 4px 12px rgba(34,197,94,0.2)'
+                            }}
+                          >
+                            <Phone size={14} fill="currentColor" /> Call Now
+                          </a>
+                        );
+                      }
+
                       const cartItem = cartItems.find(item => item.id === service.id);
                       if (cartItem) {
                         return (

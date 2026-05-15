@@ -5,8 +5,8 @@ import {
   X, Star, Clock, ChevronRight, ShieldCheck,
   Share2, CircleHelp, CheckCircle2,
   ArrowRight, Plus, Check, ArrowLeft, ChevronDown,
-  Paintbrush, Home, Building2, Sparkles, Droplets, TreePine, Layers,
-  ShoppingCart, CheckCheck
+  Paintbrush, Home, Building2, Sparkles, ChevronUp, Minus,
+  ShoppingCart, Phone, XCircle
 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
@@ -95,6 +95,7 @@ const FILTER_TITLES = {
 // Map service titles to distinct local images by keyword
 const pickImage = (title = '') => {
   const t = title.toLowerCase();
+  if (t.includes('on call')) return '/services/free_consultation.webp';
   if (t.includes('consultation') || t.includes('expert')) return '/consultation.png';
   if (t.includes('single')) return '/images/single%20wall.jpg';
   if (t.includes('exterior') || t.includes('weather')) return '/images/exterior_painting.webp';
@@ -121,6 +122,7 @@ const PaintingServiceList = ({ service, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedGroups, setExpandedGroups] = useState({});
+  const [expandedDescs, setExpandedDescs] = useState({});
   const [addedId, setAddedId] = useState(null);
 
   useEffect(() => {
@@ -176,7 +178,8 @@ const PaintingServiceList = ({ service, onClose }) => {
   const getCartQty = (id) => cartItems.find((i) => i.id === id)?.quantity || 0;
 
   const handleAdd = (svc) => {
-    const finalPrice = svc.title.toLowerCase().includes('consultation') ? 49 : Number(svc.discount_price);
+    const isCall = svc.title.toLowerCase().includes('on call');
+    const finalPrice = isCall ? 0 : (svc.title.toLowerCase().includes('consultation') ? 49 : Number(svc.discount_price));
     
     addToCart({
       id: svc.id,
@@ -216,7 +219,7 @@ const PaintingServiceList = ({ service, onClose }) => {
         addToCart({
           id: consult.id,
           title: consult.title,
-          discountPrice: 49, // Forced consistency
+          discountPrice: consult.title.toLowerCase().includes('on call') ? 0 : 49, // Forced consistency
           originalPrice: Number(consult.original_price),
           image: pickImage(consult.title),
           category: 'painter',
@@ -301,11 +304,20 @@ const PaintingServiceList = ({ service, onClose }) => {
       >
         <style>{`
           .psl-hero-img { position: absolute; right: 2%; top: 50%; transform: translateY(-50%); height: 90%; width: auto; object-fit: contain; pointer-events: none; user-select: none; }
-          @media (max-width: 600px) { .psl-hero-img { height: 55px; opacity: 0.6; } }
+          @media (max-width: 600px) { 
+            .psl-hero-img { 
+              height: 40px; 
+              opacity: 0.3; 
+              top: auto; 
+              bottom: 10px; 
+              right: 10px; 
+              transform: none; 
+            } 
+          }
         `}</style>
         {/* Decorative image — visible on right */}
         <img src="/images/cart nav.png" alt="" aria-hidden="true" className="psl-hero-img" />
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '80%' }}>
           <div
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '6px',
@@ -396,6 +408,9 @@ const PaintingServiceList = ({ service, onClose }) => {
                     ((svc.original_price - svc.discount_price) / svc.original_price) * 100
                   );
 
+                  const isExpanded = expandedDescs[svc.id];
+                  const hasLongDesc = svc.description?.length > 80;
+
                   return (
                     <div
                       key={svc.id}
@@ -419,37 +434,110 @@ const PaintingServiceList = ({ service, onClose }) => {
                         <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111', marginBottom: '0.2rem', lineHeight: 1.3 }}>
                           {svc.title}
                         </div>
-                        <div style={{
-                          fontSize: '0.78rem', color: '#64748b', fontWeight: 500, marginBottom: '0.4rem', lineHeight: 1.4,
-                          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
-                        }}>
-                          {svc.description}
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                          <span style={{ fontWeight: 900, fontSize: '1rem', color: '#111' }}>
-                            {'\u20b9'}{svc.title.toLowerCase().includes('consultation') ? 49 : Number(svc.discount_price).toLocaleString('en-IN')}
-                          </span>
-                          {svc.original_price > svc.discount_price && (
-                            <>
-                              <span style={{ fontSize: '0.8rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>
-                                {'\u20b9'}{Number(svc.original_price).toLocaleString('en-IN')}
-                              </span>
-                              <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.7rem', fontWeight: 800, padding: '2px 7px', borderRadius: '100px' }}>
-                                {discount}% OFF
-                              </span>
-                            </>
-                          )}
-                          {(!isConsultation || group.key !== 'consultation') && (
-                            <span style={{ background: '#fef9c3', color: '#854d0e', fontSize: '0.7rem', fontWeight: 800, padding: '2px 7px', borderRadius: '100px' }}>
-                              Final price after consultation
+                        {(() => {
+                          if (!isExpanded) {
+                            return (
+                              <div style={{
+                                fontSize: '0.78rem', color: '#64748b', fontWeight: 500, marginBottom: '0.2rem', lineHeight: 1.5,
+                                display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                                whiteSpace: 'pre-wrap'
+                              }}>
+                                {svc.description.split('[NOT_INCLUDED]')[0].replace('Includes\n', '')}
+                              </div>
+                            );
+                          }
+
+                          const parts = svc.description.split('[NOT_INCLUDED]');
+                          return (
+                            <div style={{ marginTop: '0.5rem' }}>
+                              {parts.map((part, idx) => {
+                                const lines = part.trim().split('\n');
+                                if (lines.length === 0) return null;
+                                const heading = lines[0];
+                                const items = lines.slice(1);
+                                const isExcluded = heading.toLowerCase().includes('not');
+
+                                return (
+                                  <div key={idx} style={{ marginBottom: idx === 0 ? '0.75rem' : '0' }}>
+                                    <div style={{ fontWeight: 800, color: '#111', fontSize: '0.85rem', marginBottom: '0.5rem' }}>{heading}</div>
+                                    {items.map((item, i) => (
+                                      <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '6px', alignItems: 'flex-start' }}>
+                                        {isExcluded ? 
+                                          <XCircle size={14} color="#ef4444" style={{ marginTop: '3px', flexShrink: 0 }} /> : 
+                                          <CheckCircle2 size={14} color="#22c55e" style={{ marginTop: '3px', flexShrink: 0 }} />
+                                        }
+                                        <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 500, lineHeight: 1.4 }}>
+                                          {item.replace('• ', '')}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        })()}
+                        {hasLongDesc && (
+                          <button
+                            onClick={() => setExpandedDescs(prev => ({ ...prev, [svc.id]: !isExpanded }))}
+                            style={{
+                              background: 'none', border: 'none', color: '#2563eb',
+                              fontSize: '0.75rem', fontWeight: 800, padding: '0.25rem 0 0.5rem 0',
+                              cursor: 'pointer', display: 'block'
+                            }}
+                          >
+                            {isExpanded ? 'Show Less' : '...more'}
+                          </button>
+                        )}
+                        {!svc.title.toLowerCase().includes('on call') && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <span style={{ fontWeight: 900, fontSize: '1rem', color: '#111' }}>
+                              {'\u20b9'}{svc.title.toLowerCase().includes('consultation') ? 49 : Number(svc.discount_price).toLocaleString('en-IN')}
                             </span>
-                          )}
-                        </div>
+                            {svc.original_price > svc.discount_price && (
+                              <>
+                                <span style={{ fontSize: '0.8rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>
+                                  {'\u20b9'}{Number(svc.original_price).toLocaleString('en-IN')}
+                                </span>
+                                <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '0.7rem', fontWeight: 800, padding: '2px 7px', borderRadius: '100px' }}>
+                                  {discount}% OFF
+                                </span>
+                              </>
+                            )}
+                            {(!isConsultation || group.key !== 'consultation') && (
+                              <span style={{ background: '#fef9c3', color: '#854d0e', fontSize: '0.7rem', fontWeight: 800, padding: '2px 7px', borderRadius: '100px' }}>
+                                Final price after consultation
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       {isConsultation && group.key === 'consultation' && (
                         <div style={{ flexShrink: 0 }}>
-                          {qty > 0 ? (
+                          {svc.title.toLowerCase().includes('on call') ? (
+                            <a
+                              href="tel:+919102740274"
+                              style={{
+                                background: '#22c55e',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '10px',
+                                padding: '0.55rem 1rem',
+                                fontWeight: 800,
+                                fontSize: '0.85rem',
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                transition: 'all 0.2s',
+                                boxShadow: '0 4px 12px rgba(34,197,94,0.2)'
+                              }}
+                            >
+                              <Phone size={15} /> Call Now
+                            </a>
+                          ) : qty > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', background: '#f0fdf4', border: '1.5px solid #22c55e', borderRadius: '10px', overflow: 'hidden' }}>
                                 <button onClick={() => qty === 1 ? removeFromCart(svc.id) : updateQuantity(svc.id, -1)}
